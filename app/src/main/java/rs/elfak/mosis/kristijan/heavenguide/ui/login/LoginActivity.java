@@ -2,9 +2,11 @@ package rs.elfak.mosis.kristijan.heavenguide.ui.login;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -22,6 +24,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModel;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModelFactory;
@@ -29,6 +38,7 @@ import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModelFactory;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
+    private FirebaseAuth mAuth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
+
+        mAuth = FirebaseAuth.getInstance();
 
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
@@ -113,8 +125,25 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                //loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                mAuth.signInWithEmailAndPassword(usernameEditText.getText().toString(), passwordEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(LoginActivity.this, user.getEmail(), Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(LoginActivity.this, MapsActivity.class);
+                            startActivity(i);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
+
             }
         });
     }
