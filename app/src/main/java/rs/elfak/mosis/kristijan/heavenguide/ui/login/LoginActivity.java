@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.R;
+import rs.elfak.mosis.kristijan.heavenguide.RegisterActivity;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModel;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModelFactory;
 
@@ -52,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
+        final Button registerButton = findViewById(R.id.register);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
@@ -144,6 +146,16 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }

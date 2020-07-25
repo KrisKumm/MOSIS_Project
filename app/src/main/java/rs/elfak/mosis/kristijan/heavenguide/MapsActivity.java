@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,6 +19,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -41,6 +44,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
+import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static final int DEFAULT_UPDATE_INTERVAL = 4;
@@ -48,6 +53,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int PERMISSIONS_FINE_LOCATION = 99;
 
     private GoogleMap mMap;
+
+    //Global marker for my location
+    public Marker meMarker;
 
     Switch sw_locationsupdates, sw_gps;
 
@@ -67,9 +75,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Google's API fot location services. The Majority of the app functions using this class.
     FusedLocationProviderClient fusedLocationProviderClient;
-
-    //Global marker for my location
-    public Marker meMarker;
 
 
     @Override
@@ -98,6 +103,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        //mMap.setOnMarkerClickListener((OnMarkerClickListener) this);
 
 //         //Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
@@ -216,6 +223,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         updateGPS();
+
+        mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if(marker.equals(meMarker)){
+                    Intent i = new Intent(MapsActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
