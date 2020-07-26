@@ -1,5 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide.service;
 
+import android.app.Notification;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -14,6 +16,14 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Atraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Region;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 
 public class DBService
 {
@@ -53,13 +63,13 @@ public class DBService
         });
         return atraction[0];
     }
-    public void AddAtraction(String atractionId,Atraction atraction, String managerId){
+    public void AddAtraction(Atraction atraction, String managerId){
 
         DocumentReference documentReference;
-        if(atractionId == null){
+        if(atraction.getUId() == null){
             documentReference = fStore.collection("atractions").document();
         }else{
-            documentReference = fStore.collection("atractions").document(atractionId);
+            documentReference = fStore.collection("atractions").document(atraction.getUId());
         }
         documentReference.set(atraction).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -73,7 +83,7 @@ public class DBService
                         //Log.w(TAG, "Error adding document", e);
                     }
                 });
-        if(atractionId == null){
+        if(atraction.getUId() == null){
             fStore.collection("managers").document(managerId)
                     .update( "atractions" , FieldValue.arrayUnion( documentReference ))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -83,6 +93,94 @@ public class DBService
                         }
                     });
         }
+    }
+
+    public void AddTourGroup(TourGroup tourGroup){
+
+        DocumentReference documentReference;
+        if(tourGroup.getUId() == null){
+            documentReference = fStore.collection("tour-groups").document();
+        }else{
+            documentReference = fStore.collection("tour-groups").document(tourGroup.getUId());
+        }
+        documentReference.set(tourGroup).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //Log.d(TAG, "DocumentSnapshot successfully updated!");
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //Log.w(TAG, "Error adding document", e);
+            }
+        });
+    }
+    public TourGroup GetTourGroup(String id){
+        final DocumentReference documentReference = fStore.collection("tour-groups").document(id);
+
+        final TourGroup[] tourGroup = new TourGroup[1];
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                tourGroup[0] = documentSnapshot.toObject(TourGroup.class);
+            }
+        });
+        return tourGroup[0];
+    }
+    public void DeleteTourGroup(String id){
+        final DocumentReference documentReference = fStore.collection("tour-groups").document(id);
+
+        documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // moz dodas neki TOST OVDE
+            }
+        });
+    }
+
+    public void AddRegion(Region region){
+
+        DocumentReference documentReference;
+        if(region.getUId() == null){
+            documentReference = fStore.collection("regions").document();
+        }else{
+            documentReference = fStore.collection("regions").document(region.getUId());
+        }
+        documentReference.set(region).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //Log.d(TAG, "DocumentSnapshot successfully updated!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+    public Region GetRegion(String id){
+        final DocumentReference documentReference = fStore.collection("regions").document(id);
+
+        final Region[] region = new Region[1];
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                region[0] = documentSnapshot.toObject(Region.class);
+            }
+        });
+        return region[0];
+    }
+    public void DeleteRegion(String id){
+        final DocumentReference documentReference = fStore.collection("regions").document(id);
+
+        documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // moz dodas neki TOST OVDE
+            }
+        });
     }
 
     public void DeleteTour(String id){
@@ -140,7 +238,7 @@ public class DBService
     }
 
     public void AddUser(User user){
-        DocumentReference documentReference = fStore.collection("users").document(user.getUid());
+        DocumentReference documentReference = fStore.collection("users").document(user.getUId());
 
         documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -164,6 +262,72 @@ public class DBService
     }
     public void DeleteUser(String id){
         final DocumentReference documentReference = fStore.collection("users").document(id);
+        documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void avoid) {
+                //dodaj neki TOST nzm
+            }
+        });
+    }
+
+    public void AddManager(Manager manager){
+        DocumentReference documentReference = fStore.collection("managers").document(manager.getUId());
+
+        documentReference.set(manager).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //Toast.makeText( LoginActivity.this, "uspeo si",
+                //Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public Manager GetManager(String id){
+        final DocumentReference documentReference = fStore.collection("managers").document(id);
+
+        final Manager[] manager = new Manager[1];
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                manager[0] = documentSnapshot.toObject(Manager.class);
+            }
+        });
+        return manager[0];
+    }
+    public void DeleteManager(String id){
+        final DocumentReference documentReference = fStore.collection("managers").document(id);
+        documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void avoid) {
+                //dodaj neki TOST nzm
+            }
+        });
+    }
+
+    public void AddGuide(TourGuide guide){
+        DocumentReference documentReference = fStore.collection("guides").document(guide.getUId());
+
+        documentReference.set(guide).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //Toast.makeText( LoginActivity.this, "uspeo si",
+                //Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public TourGuide GetGuide(String id){
+        final DocumentReference documentReference = fStore.collection("guides").document(id);
+
+        final TourGuide[] guide = new TourGuide[1];
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                guide[0] = documentSnapshot.toObject(TourGuide.class);
+            }
+        });
+        return guide[0];
+    }
+    public void DeleteGuide(String id){
+        final DocumentReference documentReference = fStore.collection("guides").document(id);
         documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void avoid) {
@@ -209,227 +373,13 @@ public class DBService
 
 }
 
-class Atraction{
-
-    private String uId;
-    private String name;
-    private String description;
-    private ArrayList pictures;
-    private GeoPoint location;
-    private DocumentReference myRegion;
 
 
-    Atraction(){}
-
-    Atraction(String uId, String name, String description, ArrayList pictures, GeoPoint location, DocumentReference myRegion){
-
-        this.uId = uId;
-        this.name = name;
-        this.description = description;
-        this.pictures = pictures;
-        this.location = location;
-        this.myRegion = myRegion;
-    }
-
-    public String getUId(){
-        return uId;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public String getDescription(){
-        return description;
-    }
-
-    public ArrayList getPictures(){
-        return pictures;
-    }
-
-    public GeoPoint getLocation(){
-        return location;
-    }
-
-    public DocumentReference getMyRegion(){
-        return myRegion;
-    }
-}
-
-class Tour{
-
-    private String uId;
-    private String managerId;
-    private String guideId;
-    private String name;
-    private String description;
-    private String portrait;
-    private GeoPoint location;
-    private Timestamp startsAt;
-    private Timestamp endsAt;
-    private DocumentReference myRegion;
-    private ArrayList<DocumentReference> atractions;
-    private ArrayList<String> pendingTourists;
 
 
-    Tour(){}
-
-    Tour(String uId, String managerId, String guideId, String name, String description, String portrait, GeoPoint location,
-         Timestamp startsAt, Timestamp endsAt, DocumentReference myRegion, ArrayList<DocumentReference> atractions,
-         ArrayList<String> pendingTourists){
-        this.uId = uId;
-        this.managerId = managerId;
-        this.guideId = guideId;
-        this.name = name;
-        this.description = description;
-        this.portrait = portrait;
-        this.location = location;
-        this.startsAt = startsAt;
-        this.endsAt = endsAt;
-        this.myRegion = myRegion;
-        this.atractions = atractions;
-        this.pendingTourists = pendingTourists;
-    }
-
-    public String getUId(){
-        return this.uId;
-    }
-    public String getManagerId(){
-        return this.managerId;
-    }
-    public String getGuideId(){
-        return this.guideId;
-    }
-    public String getName(){
-        return this.name;
-    }
-    public String getDescription(){
-        return this.description;
-    }
-    public String getPortrait(){
-        return this.portrait;
-    }
-    public GeoPoint getLocation(){
-        return this.location;
-    }
-    public Timestamp getStartsAt(){
-        return this.startsAt;
-    }
-    public Timestamp getEndsAt(){
-        return this.endsAt;
-    }
-    public DocumentReference getMyRegion(){
-        return this.myRegion;
-    }
-    public ArrayList<DocumentReference> getAtractions(){
-        return this.atractions;
-    }
-    public ArrayList<String> getPendingTourists(){
-        return this.pendingTourists;
-    }
-}
-
-class Manager{
-
-    private String uId;
-    private String name;
-    private String portrait;
-    private ArrayList<DocumentReference> atractions;
-    private ArrayList<DocumentReference> tours;
-
-    Manager(){}
-
-    Manager(String uId, String name, String portrait, ArrayList<DocumentReference> atractions, ArrayList<DocumentReference> tours){
-        this.uId = uId;
-        this.name = name;
-        this.portrait = portrait;
-        this.atractions = atractions;
-        this.tours = tours;
-    }
-
-    public String getUId(){
-        return this.uId;
-    }
-    public String getName(){
-        return this.name;
-    }
-    public String getPortrait(){
-        return this.portrait;
-    }
-    public ArrayList<DocumentReference> getAtractions(){
-        return this.atractions;
-    }
-    public ArrayList<DocumentReference> getTours(){
-        return this.tours;
-    }
-}
-
-class Notification {
-
-    private String uId;
-    private String message;
-    private String from;
-    private DocumentReference sender;
-    private int type;
 
 
-    public Notification(){}
 
-    public Notification(String uId, String message,String from, DocumentReference sender, int type){
-        this.uId = uId;
-        this.message = message;
-        this.from = from;
-        this.sender = sender;
-        this.type = type;
-    }
 
-    public String getUId(){
-        return this.uId;
-    }
 
-    public String getMessage(){
-        return this.message;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public DocumentReference getSender(){
-        return this.sender;
-    }
-
-    public int getType() {
-        return type;
-    }
-}
-
-class User {
-
-    private String name;
-    private String uId;
-    private String portrait;
-
-    public User(){
-
-    }
-
-    public User(String name, String uId, String portrait){
-        this.name = name;
-        this.uId = uId;
-        this.portrait = portrait;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public String getUid(){
-        return uId;
-    }
-
-    public String getPortrait(){
-        return portrait;
-    }
-}
 
