@@ -12,6 +12,7 @@ public class User {
     protected String portrait;
     protected ArrayList<String> friends;
     protected GeoPoint location;
+    public ArrayList<Notification> notifications;
 
     public User(){
 

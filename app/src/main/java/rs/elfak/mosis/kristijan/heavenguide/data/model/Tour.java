@@ -22,7 +22,7 @@ public class Tour{
     private ArrayList<String> tourGuides;
     private ArrayList<DocumentReference> atractions;
     private ArrayList<String> pendingTourists;
-
+    public ArrayList<Review> reviews;
 
     Tour(){}
 

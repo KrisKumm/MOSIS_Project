@@ -1,6 +1,6 @@
 package rs.elfak.mosis.kristijan.heavenguide.service;
 
-import android.app.Notification;
+
 
 import androidx.annotation.NonNull;
 
@@ -12,14 +12,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Atraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Region;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Review;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
@@ -31,6 +34,7 @@ public class DBService
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private DBService()
     {
+
     }
 
     public static DBService getInstance()
@@ -61,6 +65,7 @@ public class DBService
                 atraction[0] = documentSnapshot.toObject(Atraction.class);
             }
         });
+        atraction[0].reviews = new ArrayList<Review>(getReviews(documentReference));
         return atraction[0];
     }
     public void AddAtraction(Atraction atraction, String managerId){
@@ -138,6 +143,22 @@ public class DBService
             }
         });
     }
+    public void UpdateGuideLocation(String id, GeoPoint location){
+        final DocumentReference documentReference = fStore.collection("tour-groups").document(id);
+        documentReference
+                .update("tourGuideLocation", location)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
 
     public void AddRegion(Region region){
 
@@ -193,17 +214,18 @@ public class DBService
             }
         });
     }
-    public DocumentSnapshot GetTour(String id){
+    public Tour GetTour(String id){
         final DocumentReference documentReference = fStore.collection("tours").document(id);
 
-        final DocumentSnapshot[] doc = new DocumentSnapshot[1];
+        final Tour[] tour = new Tour[1];
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                doc[0] = documentSnapshot;
+                tour[0] = documentSnapshot.toObject(Tour.class);
             }
         });
-        return doc[0];
+        tour[0].reviews = new ArrayList<Review>(getReviews(documentReference));
+        return tour[0];
     }
     public void AddTour(Tour tour){
 
@@ -258,6 +280,7 @@ public class DBService
                 user[0] = documentSnapshot.toObject(User.class);
             }
         });
+        user[0].notifications = new ArrayList<Notification>(getNotifications(documentReference));
         return user[0];
     }
     public void DeleteUser(String id){
@@ -291,6 +314,7 @@ public class DBService
                 manager[0] = documentSnapshot.toObject(Manager.class);
             }
         });
+        manager[0].notifications = new ArrayList<Notification>(getNotifications(documentReference));
         return manager[0];
     }
     public void DeleteManager(String id){
@@ -324,6 +348,8 @@ public class DBService
                 guide[0] = documentSnapshot.toObject(TourGuide.class);
             }
         });
+
+        guide[0].notifications = new ArrayList<Notification>(getNotifications(documentReference));
         return guide[0];
     }
     public void DeleteGuide(String id){
@@ -336,13 +362,8 @@ public class DBService
         });
     }
 
-    public void AddReview(DocumentReference documentReference, int rating, String comment){
+    public void AddReview(DocumentReference documentReference, Review review){
 
-        Map<String, Object> review = new HashMap<String , Object>();
-        review.put("rating", rating);
-        if(comment != null){
-            review.put("comment", comment);
-        }
         documentReference.collection("review").document().set(review).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -351,10 +372,24 @@ public class DBService
         });
 
     }
+    public ArrayList<Review> getReviews(DocumentReference documentReference){
+
+        final ArrayList<Review> reviews = new ArrayList<Review>();
+        documentReference.collection("reviews").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for (DocumentSnapshot doc: queryDocumentSnapshots) {
+                    reviews.add(doc.toObject(Review.class));
+                }
+            }
+        });
+        return reviews;
+    }
 
     public void AddNotification(DocumentReference documentReference, Notification notification){
         // treba da se doda kod za ostali tip notifikacija
-        documentReference.collection("notification").document().set(notification).addOnSuccessListener(new OnSuccessListener<Void>() {
+        documentReference.collection("notifications").document().set(notification).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 //DODAJ TOST AKO OCES
@@ -363,12 +398,26 @@ public class DBService
     }
     public void DeleteNotification(DocumentReference documentReference, String id){
 
-        documentReference.collection("notification").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        documentReference.collection("notifications").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 // URADI NESTO AKO OCES
             }
         });
+    }
+    public ArrayList<Notification> getNotifications(DocumentReference documentReference){
+
+        final ArrayList<Notification> notifications = new ArrayList<Notification>();
+        documentReference.collection("notifications").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for (DocumentSnapshot doc: queryDocumentSnapshots) {
+                    notifications.add(doc.toObject(Notification.class));
+                }
+            }
+        });
+        return notifications;
     }
 
 }

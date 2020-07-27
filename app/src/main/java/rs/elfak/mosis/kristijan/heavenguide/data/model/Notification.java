@@ -2,7 +2,7 @@ package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
 import com.google.firebase.firestore.DocumentReference;
 
-class Notification {
+public class Notification {
 
     private String uId;
     private String message;

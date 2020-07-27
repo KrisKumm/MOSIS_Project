@@ -7,6 +7,7 @@ public class TourGuide extends User {
     private String description;
     private ArrayList<String> myTours;
     private String managerID;
+    public ArrayList<Notification> notifications;
 
     public  TourGuide(){}
 

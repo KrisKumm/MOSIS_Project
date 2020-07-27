@@ -15,7 +15,7 @@ public class Atraction{
     private ArrayList<String> pictures;
     private GeoPoint location;
     private DocumentReference myRegion;
-
+    public ArrayList<Review> reviews;
 
     Atraction(){}
 

@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.Switch;
@@ -41,9 +42,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.List;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -51,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final int DEFAULT_UPDATE_INTERVAL = 4;
     public static final int FAST_UPDATE_INTERVAL = 2;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
+    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
     private GoogleMap mMap;
 
@@ -312,5 +320,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
             }
         }
+    }
+
+    public void onGroupUpdate(String id){
+        final DocumentReference docRef = fStore.collection("tour-groups").document(id);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot snapshot, FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("TAG", "Current data: " + snapshot.toObject(TourGroup.class));
+                    TourGroup tgUpdate =  snapshot.toObject(TourGroup.class);
+                    // U TOUR GROUP SE NALAZI LOKACIJA VODICA I KAD SE PROMENI OVO SE POZIVA
+                    // ILI KAD SE PROMENI OVO readyAll
+                    // TAKO DA MOZEMO DA TURIMO ONE ZVEZDICE I BILO KAD KAD SE DODA NEKA NOVA DA SAMO PRIKAZEMO NA MAPI
+                } else {
+                    Log.d("TAG", "Current data: null");
+                }
+            }
+        });
     }
 }

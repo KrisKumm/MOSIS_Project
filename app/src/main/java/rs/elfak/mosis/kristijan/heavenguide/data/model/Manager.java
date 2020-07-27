@@ -13,6 +13,7 @@ public class Manager{
     private ArrayList<String> tourGuides;
     private ArrayList<DocumentReference> atractions;
     private ArrayList<DocumentReference> tours;
+    public ArrayList<Notification> notifications;
 
 
     Manager(){}
