@@ -55,18 +55,23 @@ public class DBService
             }
         });
     }
-    public Atraction GetAtraction(String id){
+    public void GetAtraction(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("atractions").document(id);
 
-        final Atraction[] atraction = new Atraction[1];
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                atraction[0] = documentSnapshot.toObject(Atraction.class);
+                final Atraction atraction = documentSnapshot.toObject(Atraction.class);
+                getReviews(documentReference, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        atraction.reviews = new ArrayList<Review>((ArrayList<Review> )object);
+                        firebaseCallback.onCallback(atraction);
+                    }
+                });
             }
         });
-        atraction[0].reviews = new ArrayList<Review>(getReviews(documentReference));
-        return atraction[0];
+
     }
     public void AddAtraction(Atraction atraction, String managerId){
 
@@ -121,17 +126,15 @@ public class DBService
             }
         });
     }
-    public TourGroup GetTourGroup(String id){
+    public void GetTourGroup(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("tour-groups").document(id);
 
-        final TourGroup[] tourGroup = new TourGroup[1];
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                tourGroup[0] = documentSnapshot.toObject(TourGroup.class);
+                firebaseCallback.onCallback(documentSnapshot.toObject(TourGroup.class));
             }
         });
-        return tourGroup[0];
     }
     public void DeleteTourGroup(String id){
         final DocumentReference documentReference = fStore.collection("tour-groups").document(id);
@@ -181,17 +184,15 @@ public class DBService
                     }
                 });
     }
-    public Region GetRegion(String id){
+    public void GetRegion(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("regions").document(id);
 
-        final Region[] region = new Region[1];
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                region[0] = documentSnapshot.toObject(Region.class);
+                firebaseCallback.onCallback(documentSnapshot.toObject(Region.class));
             }
         });
-        return region[0];
     }
     public void DeleteRegion(String id){
         final DocumentReference documentReference = fStore.collection("regions").document(id);
@@ -214,18 +215,23 @@ public class DBService
             }
         });
     }
-    public Tour GetTour(String id){
+    public void GetTour(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("tours").document(id);
 
-        final Tour[] tour = new Tour[1];
+
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                tour[0] = documentSnapshot.toObject(Tour.class);
+                final Tour tour = documentSnapshot.toObject(Tour.class);
+                getReviews(documentReference, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        tour.reviews = new ArrayList<Review>((ArrayList<Review> )object);
+                        firebaseCallback.onCallback(tour);
+                    }
+                });
             }
         });
-        tour[0].reviews = new ArrayList<Review>(getReviews(documentReference));
-        return tour[0];
     }
     public void AddTour(Tour tour){
 
@@ -270,18 +276,22 @@ public class DBService
             }
         });
     }
-    public User GetUser(String id){
+    public void GetUser(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("users").document(id);
 
-        final User[] user = new User[1];
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                user[0] = documentSnapshot.toObject(User.class);
+               final User user = documentSnapshot.toObject(User.class);
+               getNotifications(documentReference, new FirebaseCallback() {
+                   @Override
+                   public void onCallback(Object object) {
+                       user.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                       firebaseCallback.onCallback(user);
+                   }
+               });
             }
         });
-        user[0].notifications = new ArrayList<Notification>(getNotifications(documentReference));
-        return user[0];
     }
     public void DeleteUser(String id){
         final DocumentReference documentReference = fStore.collection("users").document(id);
@@ -304,18 +314,23 @@ public class DBService
             }
         });
     }
-    public Manager GetManager(String id){
+    public void GetManager(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("managers").document(id);
 
-        final Manager[] manager = new Manager[1];
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                manager[0] = documentSnapshot.toObject(Manager.class);
+                final Manager manager = documentSnapshot.toObject(Manager.class);
+                getNotifications(documentReference, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        manager.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                        firebaseCallback.onCallback(manager);
+                    }
+                });
+
             }
         });
-        manager[0].notifications = new ArrayList<Notification>(getNotifications(documentReference));
-        return manager[0];
     }
     public void DeleteManager(String id){
         final DocumentReference documentReference = fStore.collection("managers").document(id);
@@ -338,19 +353,23 @@ public class DBService
             }
         });
     }
-    public TourGuide GetGuide(String id){
+    public void GetGuide(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("guides").document(id);
 
-        final TourGuide[] guide = new TourGuide[1];
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                guide[0] = documentSnapshot.toObject(TourGuide.class);
+                final TourGuide guide = documentSnapshot.toObject(TourGuide.class);
+                getNotifications(documentReference, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        guide.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                        firebaseCallback.onCallback(guide);
+                    }
+                });
             }
         });
 
-        guide[0].notifications = new ArrayList<Notification>(getNotifications(documentReference));
-        return guide[0];
     }
     public void DeleteGuide(String id){
         final DocumentReference documentReference = fStore.collection("guides").document(id);
@@ -372,7 +391,7 @@ public class DBService
         });
 
     }
-    public ArrayList<Review> getReviews(DocumentReference documentReference){
+    public void getReviews(DocumentReference documentReference, final FirebaseCallback firebaseCallback){
 
         final ArrayList<Review> reviews = new ArrayList<Review>();
         documentReference.collection("reviews").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -382,9 +401,9 @@ public class DBService
                 for (DocumentSnapshot doc: queryDocumentSnapshots) {
                     reviews.add(doc.toObject(Review.class));
                 }
+                firebaseCallback.onCallback(reviews);
             }
         });
-        return reviews;
     }
 
     public void AddNotification(DocumentReference documentReference, Notification notification){
@@ -405,7 +424,7 @@ public class DBService
             }
         });
     }
-    public ArrayList<Notification> getNotifications(DocumentReference documentReference){
+    public void getNotifications(DocumentReference documentReference, final FirebaseCallback firebaseCallback){
 
         final ArrayList<Notification> notifications = new ArrayList<Notification>();
         documentReference.collection("notifications").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -415,9 +434,9 @@ public class DBService
                 for (DocumentSnapshot doc: queryDocumentSnapshots) {
                     notifications.add(doc.toObject(Notification.class));
                 }
+                firebaseCallback.onCallback(notifications);
             }
         });
-        return notifications;
     }
 
 }

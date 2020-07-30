@@ -33,6 +33,10 @@ import com.google.firebase.auth.FirebaseUser;
 import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.RegisterActivity;
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModel;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModelFactory;
 
@@ -133,8 +137,17 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, user.getEmail(), Toast.LENGTH_SHORT).show();
+                            FirebaseUser curUser = mAuth.getCurrentUser();
+                            UserData.getInstance().uId = curUser.getUid();
+                            UserData.getInstance().gmail = curUser.getEmail();
+                            DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
+                                @Override
+                                public void onCallback(Object object) {
+                                    User usr = (User) object;
+                                    Toast.makeText(LoginActivity.this, usr.getName(), Toast.LENGTH_SHORT).show();
+                                    UserData.getInstance().name = usr.getName();
+                                }
+                            });
                             Intent i = new Intent(LoginActivity.this, MapsActivity.class);
                             startActivity(i);
                         } else {
