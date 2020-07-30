@@ -59,9 +59,8 @@ public class StorageService {
         })
         ;
     }
-    public Bitmap downloadPhoto(String from, String myId, String photoName){
+    public void downloadPhoto(String from, String myId, String photoName,final FirebaseCallback firebaseCallback){
 
-        final Bitmap[] image = new Bitmap[1];
         StorageReference islandRef = mStorageRef.child("images/" + from + "/" + myId + "/" + photoName + ".jpeg");
         islandRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
             @Override
@@ -73,7 +72,7 @@ public class StorageService {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap b = BitmapFactory.decodeByteArray(bytes,0,picSize);
-                image[0] = b;
+                firebaseCallback.onCallback(b);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -82,14 +81,19 @@ public class StorageService {
             }
         });
 
-        return image[0];
     }
-    public ArrayList<Bitmap> downloadPhotos(String from, String myId, ArrayList<String> photoNames){
-        ArrayList<Bitmap> photos = new ArrayList<Bitmap>();
+    public void downloadPhotos(String from, String myId, ArrayList<String> photoNames,final FirebaseCallback firebaseCallback){
+        final ArrayList<Bitmap> photos = new ArrayList<Bitmap>();
         for (String photo : photoNames) {
-            photos.add(downloadPhoto(from, myId, photo));
+            downloadPhoto(from, myId, photo, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    photos.add((Bitmap) object);
+                }
+            });
         }
-        return photos;
+        firebaseCallback.onCallback(photos);
+
     }
     private void toastMessage(String message, Context context){
         Toast.makeText( context ,message,Toast.LENGTH_SHORT).show();
