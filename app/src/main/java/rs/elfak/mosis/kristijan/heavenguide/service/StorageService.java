@@ -16,6 +16,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class StorageService {
@@ -35,12 +37,13 @@ public class StorageService {
 
         return instance;
     }
-    public void uploadPhoto(String to, String myId, String photoName, File photo, final Context context){
+    public void uploadPhoto(String to, String myId, String photoName, Bitmap photo, final Context context){
         mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setMessage("Uploading Image...");
         mProgressDialog.show();
 
-        Uri uri = Uri.fromFile(photo);
+
+        Uri uri = Uri.fromFile(persistImage(photo, photoName, context));
         StorageReference storageReference = mStorageRef.child("images/" + to + "/" + myId + "/" + photoName + ".jpeg");
         storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -61,25 +64,27 @@ public class StorageService {
     }
     public void downloadPhoto(String from, String myId, String photoName,final FirebaseCallback firebaseCallback){
 
-        StorageReference islandRef = mStorageRef.child("images/" + from + "/" + myId + "/" + photoName + ".jpeg");
+        final StorageReference islandRef = mStorageRef.child("images/" + from + "/" + myId + "/" + photoName + ".jpeg");
         islandRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
             @Override
             public void onSuccess(StorageMetadata storageMetadata) {
                 picSize = (int) storageMetadata.getSizeBytes();
+                islandRef.getBytes(picSize).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, picSize);
+                        firebaseCallback.onCallback(b);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception exception) {
+                        // Handle any errors
+                        firebaseCallback.onCallback(null);
+                    }
+                });
             }
         });
-        islandRef.getBytes(picSize).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap b = BitmapFactory.decodeByteArray(bytes,0,picSize);
-                firebaseCallback.onCallback(b);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(Exception exception) {
-                // Handle any errors
-            }
-        });
+
 
     }
     public void downloadPhotos(String from, String myId, ArrayList<String> photoNames,final FirebaseCallback firebaseCallback){
@@ -89,14 +94,32 @@ public class StorageService {
                 @Override
                 public void onCallback(Object object) {
                     photos.add((Bitmap) object);
+                    firebaseCallback.onCallback(photos);
                 }
             });
         }
-        firebaseCallback.onCallback(photos);
+
 
     }
     private void toastMessage(String message, Context context){
         Toast.makeText( context ,message,Toast.LENGTH_SHORT).show();
+    }
+
+    private File persistImage(Bitmap bitmap, String name, Context context) {
+        File filesDir = context.getApplicationContext().getFilesDir();
+        File imageFile = new File(filesDir, name + ".jpg");
+
+        OutputStream os;
+        try {
+            os = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+        }
+
+        return imageFile;
     }
 }
 

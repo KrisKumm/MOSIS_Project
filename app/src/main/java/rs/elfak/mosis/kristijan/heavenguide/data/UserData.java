@@ -7,11 +7,8 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
-enum userType{
-    tourist,
-    guide,
-    manager
-}
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
+
 
 public class UserData {
 

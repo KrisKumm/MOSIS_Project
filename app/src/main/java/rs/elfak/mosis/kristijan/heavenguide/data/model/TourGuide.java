@@ -11,8 +11,8 @@ public class TourGuide extends User {
 
     public  TourGuide(){}
 
-    public TourGuide(String name, String uId, String portrait, ArrayList<String> friends, String description, ArrayList<String> myTours, String managerID){
-        super(name, uId, portrait, friends);
+    public TourGuide(String name, String uId, ArrayList<String> friends, String description, ArrayList<String> myTours, String managerID){
+        super(name, uId, friends);
         this.description = description;
         this.myTours = myTours;
         this.managerID = managerID;

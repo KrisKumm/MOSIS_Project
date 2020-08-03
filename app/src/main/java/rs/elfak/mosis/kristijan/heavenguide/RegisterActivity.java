@@ -16,7 +16,23 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
+import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -31,10 +47,13 @@ public class RegisterActivity extends AppCompatActivity {
     public Context context;
     public int activity = 4;
 
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        mAuth = FirebaseAuth.getInstance();
 
         emailET = findViewById(R.id.emailET);
         usernameET = findViewById(R.id.usernameET);
@@ -58,40 +77,42 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                mAuth.createUserWithEmailAndPassword(emailET.getText().toString(), passwordET.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            UserData.getInstance().gmail = user.getEmail();
+                            UserData.getInstance().uId = user.getUid();
+                            if(tourGuideRB.isChecked()) {
+                                UserData.getInstance().userType = userType.guide;
+                                DBService.getInstance().AddGuide(new TourGuide(usernameET.getText().toString(), UserData.getInstance().uId , new ArrayList<String>(),
+                                        "" , new ArrayList<String>() , "ZYoXf3MCcCaqBywc8gOXgHUQGaf1"));
+                                StorageService.getInstance().uploadPhoto("guide", UserData.getInstance().uId , emailET.getText().toString(), picture, RegisterActivity.this);
+                            }
+                            else {
+                                DBService.getInstance().AddUser(new User(usernameET.getText().toString(), UserData.getInstance().uId , new ArrayList<String>()));
+                                UserData.getInstance().userType = userType.tourist;
+                                StorageService.getInstance().uploadPhoto("tourist", UserData.getInstance().uId , emailET.getText().toString(), picture, RegisterActivity.this);
+                            }
+                            Toast.makeText(RegisterActivity.this, "Upisaja si se", Toast.LENGTH_SHORT).show();
 
-                Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(i);
+                            Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                            startActivity(i);
+                            RegisterActivity.this.finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(RegisterActivity.this, "Register failed.", Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
+
             }
         });
     }
-
-//    protected void sendPicture(){ //Slika upload
-//        final ImageThread ithread = new ImageThread(context, picture, loginPreferences.getString("username", ""), loginPreferences.getString("password", ""));
-//        ithread.start();
-//        try {
-//            Thread.sleep(1500);
-//            ithread.join();
-//            String link = ithread.getResult();
-//            if(link.equals("Error")){
-//                int duration = Toast.LENGTH_SHORT;
-//                Toast toast = Toast.makeText(context, "Error uploading picture", duration);
-//                toast.show();
-//                //loginPrefsEditor.putString("picture", "Not Found");
-//            }
-//            else{
-//                loginPrefsEditor.putString("picture", link);
-//                loginPrefsEditor.apply();
-//                Picasso.get().load(link)
-//                        //.resize(100,130)
-//                        .into(avatar);
-//            }
-//
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        //data.putExtra("image", ithread.getImage());
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) //Posle edita i izbora slike
@@ -110,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
             avatar.setImageURI(selectedImageUri);
             try {
                 picture = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                //sendPicture();
+
             }
             catch(Exception e){
                 e.printStackTrace();

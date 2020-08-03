@@ -21,6 +21,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +33,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
+import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.RegisterActivity;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModel;
@@ -44,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
     private FirebaseAuth mAuth;
+
+    public RadioGroup rg;
+    public RadioButton touristRB, tourGuideRB;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,9 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.login);
         final Button registerButton = findViewById(R.id.register);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        rg = findViewById(R.id.radioGroup);
+        touristRB = findViewById(R.id.touristRB);
+        tourGuideRB = findViewById(R.id.tourGuideRB);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -140,16 +152,46 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser curUser = mAuth.getCurrentUser();
                             UserData.getInstance().uId = curUser.getUid();
                             UserData.getInstance().gmail = curUser.getEmail();
-                            DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
-                                @Override
-                                public void onCallback(Object object) {
-                                    User usr = (User) object;
-                                    Toast.makeText(LoginActivity.this, usr.getName(), Toast.LENGTH_SHORT).show();
-                                    UserData.getInstance().name = usr.getName();
-                                }
-                            });
-                            Intent i = new Intent(LoginActivity.this, MapsActivity.class);
-                            startActivity(i);
+
+                            final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
+
+                            if(tourGuideRB.isChecked()){
+                                DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
+                                    @Override
+                                    public void onCallback(Object object) {
+                                        TourGuide usr = (TourGuide) object;
+                                        UserData.getInstance().name = usr.getName();
+                                        UserData.getInstance().userType = userType.guide;
+                                        startActivity(i);
+                                        LoginActivity.this.finish();
+                                    }
+                                });
+                            }
+                            else if(touristRB.isChecked()){
+                                DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
+                                    @Override
+                                    public void onCallback(Object object) {
+                                        User usr = (User) object;
+                                        UserData.getInstance().name = usr.getName();
+                                        UserData.getInstance().userType = userType.tourist;
+                                        startActivity(i);
+                                        LoginActivity.this.finish();
+                                    }
+                                });
+                            }
+                            else{
+                                DBService.getInstance().GetManager(UserData.getInstance().uId, new FirebaseCallback() {
+                                    @Override
+                                    public void onCallback(Object object) {
+                                        Manager usr = (Manager) object;
+                                        UserData.getInstance().name = usr.getName();
+                                        UserData.getInstance().userType = userType.manager;
+                                        startActivity(i);
+                                        LoginActivity.this.finish();
+                                    }
+                                });
+                            }
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();

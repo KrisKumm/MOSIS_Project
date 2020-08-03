@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class User {
 
     protected String name;
-    protected String uId;
+    protected String uid;
     protected String portrait;
     protected ArrayList<String> friends;
     protected GeoPoint location;
@@ -18,19 +18,27 @@ public class User {
 
     }
 
-    public User(String name, String uId, String portrait, ArrayList<String> friends){
+    public User(String name, String uid, ArrayList<String> friends){
         this.name = name;
-        this.uId = uId;
-        this.portrait = portrait;
+        this.uid = uid;
         this.friends = friends;
+    }
+    public User(User user){
+        this.name = user.name;
+        this.uid = user.uid;
+        this.friends = user.friends;
     }
 
     public String getName(){
         return name;
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
     public String getUId(){
-        return uId;
+        return uid;
     }
 
     public String getPortrait(){
@@ -48,4 +56,6 @@ public class User {
     public void setLocation(GeoPoint location) {
         this.location = location;
     }
+
+
 }
