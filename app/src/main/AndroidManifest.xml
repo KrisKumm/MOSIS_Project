@@ -23,6 +23,7 @@
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".RegisterActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

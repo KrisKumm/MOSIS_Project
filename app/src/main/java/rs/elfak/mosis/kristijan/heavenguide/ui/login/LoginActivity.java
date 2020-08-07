@@ -72,6 +72,9 @@ public class LoginActivity extends AppCompatActivity {
         touristRB = findViewById(R.id.touristRB);
         tourGuideRB = findViewById(R.id.tourGuideRB);
 
+        usernameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        passwordEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
             public void onChanged(@Nullable LoginFormState loginFormState) {
