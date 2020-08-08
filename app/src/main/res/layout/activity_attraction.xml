@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AttractionActivity">
+
+    <ImageView
+        android:id="@+id/imageViewAttraction"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/attraction_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attraction Name!"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/imageViewAttraction"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/attraction_region_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Region: Name!"
+        android:textSize="30sp"
+        android:textStyle="italic"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/attraction_name_label"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <Button
+        android:id="@+id/edit_attraction_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/imageViewAttraction"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp"
+        android:text="EDIT"/>
+
+    <TextView
+        android:id="@+id/rating_bar_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/attraction_region_label"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp"
+        android:text="Rating:"
+        android:textSize="20sp"/>
+
+    <RatingBar
+        android:id="@+id/rating_bar_attraction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/attraction_region_label"
+        app:layout_constraintLeft_toRightOf="@id/rating_bar_label"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:numStars="5"
+        android:stepSize="1"/>
+
+    <TextView
+        android:id="@+id/rating_bar_grade_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/attraction_region_label"
+        app:layout_constraintLeft_toRightOf="@id/rating_bar_attraction"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:text="Rating:"
+        android:textSize="30sp"/>
+
+    <View
+        android:id="@+id/divider_attraction_1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rating_bar_attraction"/>
+
+    <TextView
+        android:id="@+id/description_attraction_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Description of the attraction"
+        android:textSize="25sp"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_attraction_1"/>
+
+    <View
+        android:id="@+id/divider_attraction_2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description_attraction_label"/>
+
+    <ListView
+        android:id="@+id/attraction_reviews_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/divider_attraction_2"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,14 +20,14 @@ public class Tour{
     private com.google.firebase.Timestamp endsAt;
     private DocumentReference myRegion;
     private ArrayList<String> tourGuides;
-    private ArrayList<DocumentReference> atractions;
+    private ArrayList<DocumentReference> attractions;
     private ArrayList<String> pendingTourists;
     public ArrayList<Review> reviews;
 
     Tour(){}
 
     Tour(String uId, String managerId, String guideId, String name, String description, String portrait, GeoPoint location,
-         com.google.firebase.Timestamp startsAt, com.google.firebase.Timestamp endsAt, DocumentReference myRegion, ArrayList<String> tourGuides, ArrayList<DocumentReference> atractions,
+         com.google.firebase.Timestamp startsAt, com.google.firebase.Timestamp endsAt, DocumentReference myRegion, ArrayList<String> tourGuides, ArrayList<DocumentReference> attractions,
          ArrayList<String> pendingTourists){
         this.uId = uId;
         this.managerId = managerId;
@@ -40,7 +40,7 @@ public class Tour{
         this.endsAt = endsAt;
         this.myRegion = myRegion;
         this.tourGuides = tourGuides;
-        this.atractions = atractions;
+        this.attractions = attractions;
         this.pendingTourists = pendingTourists;
     }
 
@@ -74,8 +74,8 @@ public class Tour{
     public DocumentReference getMyRegion(){
         return this.myRegion;
     }
-    public ArrayList<DocumentReference> getAtractions(){
-        return this.atractions;
+    public ArrayList<DocumentReference> getAttractions(){
+        return this.attractions;
     }
     public ArrayList<String> getPendingTourists(){
         return this.pendingTourists;

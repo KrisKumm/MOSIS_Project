@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -15,11 +14,9 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.Atraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Region;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Review;
@@ -45,8 +42,8 @@ public class DBService
         return instance;
     }
 
-    public void DeleteAtraction(String id){
-        final DocumentReference documentReference = fStore.collection("atractions").document(id);
+    public void DeleteAttraction(String id){
+        final DocumentReference documentReference = fStore.collection("attractions").document(id);
 
         documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -55,33 +52,33 @@ public class DBService
             }
         });
     }
-    public void GetAtraction(String id, final FirebaseCallback firebaseCallback){
-        final DocumentReference documentReference = fStore.collection("atractions").document(id);
+    public void GetAttraction(String id, final FirebaseCallback firebaseCallback){
+        final DocumentReference documentReference = fStore.collection("attractions").document(id);
 
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                final Atraction atraction = documentSnapshot.toObject(Atraction.class);
+                final Attraction attraction = documentSnapshot.toObject(Attraction.class);
                 getReviews(documentReference, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {
-                        atraction.reviews = new ArrayList<Review>((ArrayList<Review> )object);
-                        firebaseCallback.onCallback(atraction);
+                        attraction.reviews = new ArrayList<Review>((ArrayList<Review> )object);
+                        firebaseCallback.onCallback(attraction);
                     }
                 });
             }
         });
 
     }
-    public void AddAtraction(Atraction atraction, String managerId){
+    public void AddAttraction(Attraction attraction, String managerId){
 
         DocumentReference documentReference;
-        if(atraction.getUId() == null){
-            documentReference = fStore.collection("atractions").document();
+        if(attraction.getUId() == null){
+            documentReference = fStore.collection("attractions").document();
         }else{
-            documentReference = fStore.collection("atractions").document(atraction.getUId());
+            documentReference = fStore.collection("attractions").document(attraction.getUId());
         }
-        documentReference.set(atraction).addOnSuccessListener(new OnSuccessListener<Void>() {
+        documentReference.set(attraction).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 //Log.d(TAG, "DocumentSnapshot successfully updated!");
@@ -93,9 +90,9 @@ public class DBService
                         //Log.w(TAG, "Error adding document", e);
                     }
                 });
-        if(atraction.getUId() == null){
+        if(attraction.getUId() == null){
             fStore.collection("managers").document(managerId)
-                    .update( "atractions" , FieldValue.arrayUnion( documentReference ))
+                    .update( "attractions" , FieldValue.arrayUnion( documentReference ))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

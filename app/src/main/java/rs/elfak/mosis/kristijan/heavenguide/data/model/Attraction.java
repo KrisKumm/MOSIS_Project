@@ -7,7 +7,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Atraction{
+public class Attraction {
 
     private String uId;
     private String name;
@@ -17,9 +17,9 @@ public class Atraction{
     private DocumentReference myRegion;
     public ArrayList<Review> reviews;
 
-    Atraction(){}
+    Attraction(){}
 
-    Atraction(String uId, String name, String description, ArrayList pictures, GeoPoint location, DocumentReference myRegion){
+    Attraction(String uId, String name, String description, ArrayList pictures, GeoPoint location, DocumentReference myRegion){
 
         this.uId = uId;
         this.name = name;

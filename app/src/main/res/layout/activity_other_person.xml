@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OtherPersonActivity">
+
+    <ImageView
+        android:id="@+id/imageViewAvatarOther"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/avatar_image"
+        android:hint="@string/Avatar"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/other_username_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:text="Username"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/imageViewAvatarOther"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/other_role_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="24dp"
+        android:text="Role:"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/imageViewAvatarOther"
+        app:layout_constraintTop_toBottomOf="@+id/other_username_label" />
+
+    <View
+        android:id="@+id/divider_other"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewAvatarOther"/>
+
+    <Button
+        android:id="@+id/add_friend_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/ic_baseline_person_add_24"
+        app:layout_constraintTop_toBottomOf="@+id/divider_other"/>
+
+    <TextView
+        android:id="@+id/add_friend_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="24dp"
+        android:text="Add friend!"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/divider_other"
+        app:layout_constraintStart_toEndOf="@+id/add_friend_button"/>
+
+    <Button
+        android:id="@+id/remove_friend_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/ic_baseline_remove_circle_outline_24"
+        app:layout_constraintTop_toBottomOf="@+id/add_friend_button"/>
+
+    <TextView
+        android:id="@+id/remove_friend_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="24dp"
+        android:text="Remove friend!"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/add_friend_button"
+        app:layout_constraintStart_toEndOf="@+id/remove_friend_button"/>
+
+    <Button
+        android:id="@+id/send_notification_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/ic_baseline_chat_bubble_outline_24"
+        app:layout_constraintTop_toBottomOf="@+id/remove_friend_button"/>
+
+    <TextView
+        android:id="@+id/send_notification_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="24dp"
+        android:text="Send notification!"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/remove_friend_button"
+        app:layout_constraintStart_toEndOf="@+id/send_notification_button"/>
+
+    <Button
+        android:id="@+id/add_to_tour_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/ic_baseline_add_shopping_cart_24"
+        app:layout_constraintTop_toBottomOf="@+id/send_notification_button"/>
+
+    <TextView
+        android:id="@+id/add_to_tour_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="24dp"
+        android:text="Add to tour!"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/send_notification_button"
+        app:layout_constraintStart_toEndOf="@+id/add_to_tour_button"/>
+
+    <Button
+        android:id="@+id/delete_account_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/ic_baseline_delete_forever_24"
+        app:layout_constraintTop_toBottomOf="@+id/add_to_tour_button"/>
+
+    <TextView
+        android:id="@+id/delete_account_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="24dp"
+        android:text="Delete account!"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/add_to_tour_button"
+        app:layout_constraintStart_toEndOf="@+id/delete_account_button"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
