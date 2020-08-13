@@ -32,6 +32,14 @@
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_notifications"/>
 
+    <ListView
+        android:id="@+id/profile_notification_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_notifications"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

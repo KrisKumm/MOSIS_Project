@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/profile_home_tours_imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tour Guide:"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/profile_home_tours_imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/profile_home_tours_guide_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/profile_home_tours_imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="60dp"
+        android:text="Tour Guide Name"
+        android:textSize="20sp"
+        android:textAlignment="textEnd"/>
+
+    <TextView
+        android:id="@+id/profile_home_tours_region_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Region Name"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_home_tours_region_name_label"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Strat time/date:"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/profile_home_tours_start_time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_home_tours_region_name_label"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="70dp"
+        android:text="TIME/DATE"
+        android:textSize="25sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

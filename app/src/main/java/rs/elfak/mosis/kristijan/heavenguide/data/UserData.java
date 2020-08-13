@@ -1,12 +1,12 @@
 package rs.elfak.mosis.kristijan.heavenguide.data;
 
 
-import android.app.Notification;
-
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 
 
@@ -20,7 +20,7 @@ public class UserData {
     public userType userType;
     public String portrait;
     public GeoPoint location;
-    public ArrayList<String> friends;
+    public ArrayList<User> friends;
     public ArrayList<Notification> notifications;
 
     private static UserData instance = null;

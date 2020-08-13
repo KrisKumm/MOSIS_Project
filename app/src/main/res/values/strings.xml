@@ -34,17 +34,20 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="edit_profile_header">Edit your profile</string>
+    <string name="gps_tracker_header">Configure GPS tracker</string>
+    <string name="theme_header">Change app theme</string>
+    <string name="manager_add_header">Add tour/attraction</string>
+
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="new_username_title">Your new username</string>
+    <string name="new_email_title">Your new email</string>
+    <string name="new_password_title">Your new password</string>
+    <string name="change_theme_title">Light/Dark theme</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="turn_gps_title">Turn GPS on/off</string>
+    <string name="show_my_gps_title">Show my tracker on the map</string>
+
 </resources>
