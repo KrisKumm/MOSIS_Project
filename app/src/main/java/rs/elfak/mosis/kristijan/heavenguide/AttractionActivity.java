@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -78,10 +79,12 @@ public class AttractionActivity extends AppCompatActivity {
         attractionName.setText(myAttraction.getName());
         attractionDescription.setText((myAttraction.getDescription()));
 
-        setCoverPhoto();
-        setReviewsInfo();
 
-        userTypeCheck();
+       setCoverPhoto();
+       setReviewsInfo();
+
+       userTypeCheck();
+       //PROMENI uId da pise uid za sve i dodaj da zadaja id kada pravi sve
     }
 
     private void userTypeCheck(){
@@ -89,10 +92,11 @@ public class AttractionActivity extends AppCompatActivity {
     }
 
     private void setCoverPhoto(){
-        StorageService.getInstance().downloadPhoto("attractions", myAttraction.getUId(), "cover", new FirebaseCallback() {
+
+        StorageService.getInstance().downloadPhoto("attraction",myAttraction.getUid(), "cover", new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
-                attractionImageView.setImageBitmap((Bitmap) object);
+                attractionImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  attractionImageView.getWidth(), attractionImageView.getHeight(),false));
             }
         });
     }

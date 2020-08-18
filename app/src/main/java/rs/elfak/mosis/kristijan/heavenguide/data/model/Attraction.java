@@ -9,19 +9,19 @@ import java.util.List;
 
 public class Attraction {
 
-    private String uId;
+    private String uid;
     private String name;
     private String description;
     private ArrayList<String> pictures;
     private GeoPoint location;
-    private DocumentReference myRegion;
+    private String myRegion;
     public ArrayList<Review> reviews;
 
-    Attraction(){}
+    public Attraction(){}
 
-    Attraction(String uId, String name, String description, ArrayList pictures, GeoPoint location, DocumentReference myRegion){
+    public Attraction(String uId, String name, String description, ArrayList<String> pictures, GeoPoint location, String myRegion){
 
-        this.uId = uId;
+        this.uid = uId;
         this.name = name;
         this.description = description;
         this.pictures = pictures;
@@ -29,9 +29,11 @@ public class Attraction {
         this.myRegion = myRegion;
     }
 
-    public String getUId(){
-        return uId;
+    public String getUid(){
+        return uid;
     }
+
+    public void setUid(String id){ this.uid = id;}
 
     public String getName(){
         return name;
@@ -41,7 +43,7 @@ public class Attraction {
         return description;
     }
 
-    public ArrayList getPictures(){
+    public ArrayList<String> getPictures(){
         return pictures;
     }
 
@@ -49,7 +51,7 @@ public class Attraction {
         return location;
     }
 
-    public DocumentReference getMyRegion(){
+    public String getMyRegion(){
         return myRegion;
     }
 }

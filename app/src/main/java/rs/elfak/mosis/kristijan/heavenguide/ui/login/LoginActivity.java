@@ -31,12 +31,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.RegisterActivity;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
@@ -155,6 +159,8 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser curUser = mAuth.getCurrentUser();
                             UserData.getInstance().uId = curUser.getUid();
                             UserData.getInstance().gmail = curUser.getEmail();
+
+                            DBService.getInstance().AddAttraction(new Attraction(null, "Tvrdjava", "Ubava tvrdjava", new ArrayList<String>(), new GeoPoint(0,0), "Niska tvrdjava"), "");
 
                             final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
 

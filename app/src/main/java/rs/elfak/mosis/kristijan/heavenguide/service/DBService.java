@@ -59,13 +59,14 @@ public class DBService
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 final Attraction attraction = documentSnapshot.toObject(Attraction.class);
-                getReviews(documentReference, new FirebaseCallback() {
-                    @Override
-                    public void onCallback(Object object) {
-                        attraction.reviews = new ArrayList<Review>((ArrayList<Review> )object);
-                        firebaseCallback.onCallback(attraction);
-                    }
-                });
+                firebaseCallback.onCallback(attraction);
+//                getReviews(documentReference, new FirebaseCallback() {
+//                    @Override
+//                    public void onCallback(Object object) {
+//                        attraction.reviews = new ArrayList<Review>((ArrayList<Review> )object);
+//                        firebaseCallback.onCallback(attraction);
+//                    }
+//                });
             }
         });
 
@@ -73,11 +74,12 @@ public class DBService
     public void AddAttraction(Attraction attraction, String managerId){
 
         DocumentReference documentReference;
-        if(attraction.getUId() == null){
+        if(attraction.getUid() == null){
             documentReference = fStore.collection("attractions").document();
         }else{
-            documentReference = fStore.collection("attractions").document(attraction.getUId());
+            documentReference = fStore.collection("attractions").document(attraction.getUid());
         }
+        attraction.setUid(documentReference.getId());
         documentReference.set(attraction).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -90,7 +92,7 @@ public class DBService
                         //Log.w(TAG, "Error adding document", e);
                     }
                 });
-        if(attraction.getUId() == null){
+        if(attraction.getUid() == null){
             fStore.collection("managers").document(managerId)
                     .update( "attractions" , FieldValue.arrayUnion( documentReference ))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {

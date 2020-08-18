@@ -236,7 +236,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if(marker.equals(meMarker)){
-                    Intent i = new Intent(MapsActivity.this, LoginActivity.class);
+                    Intent i = new Intent(MapsActivity.this, AttractionActivity.class);
+                    i.putExtra("ATTRACTION","fA2Pk8nEl7QEE0bN4H8j");
                     startActivity(i);
                     finish();
                     return true;
