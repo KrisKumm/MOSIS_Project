@@ -9,11 +9,19 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Attr;
+
+import java.util.ArrayList;
+
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Region;
+import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 
 public class RegionActivity extends AppCompatActivity {
 
     private Region myRegion;
+    private ArrayList<Attraction> myAttractions;
 
     private LinearLayout linearLayoutRegionImages;
     private TextView regionName;
@@ -39,17 +47,42 @@ public class RegionActivity extends AppCompatActivity {
             }
         });
 
-        getRegion();
-        setRegionInfo();
+        getRegion(getIntent().getExtras().getString("REGION"));
+
 
     }
 
-    public void getRegion(){
-
+    public void getRegion(final String id){
+        DBService.getInstance().GetRegion(id, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                myRegion = (Region) object;
+                setRegionInfo();
+            }
+        });
     }
 
     public void setRegionInfo(){
-        
+        regionName.setText(myRegion.getName());
+        regionDescription.setText((myRegion.getDescription()));
+
+        getAttractions(myRegion.getAttractionIDList());
+    }
+
+    private void getAttractions(ArrayList<String> attractionIds){
+        for (String id : attractionIds){
+            DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    Attraction attraction  = (Attraction) object;
+                    myAttractions.add(attraction);
+                    setAttractionInfo(attraction);
+                }
+            });
+        }
+    }
+    private void setAttractionInfo(Attraction attraction){
+        //TODO nzm kako radi ovaj ListView
     }
 }
 

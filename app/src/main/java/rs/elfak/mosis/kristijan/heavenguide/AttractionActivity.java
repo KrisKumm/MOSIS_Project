@@ -16,6 +16,9 @@ import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.SearchRecyclerItem;
+import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
+import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 
 public class AttractionActivity extends AppCompatActivity {
 
@@ -58,15 +61,43 @@ public class AttractionActivity extends AppCompatActivity {
             }
         });
 
-        getAttraction();
-        setAttractionInfo();
+
+        getAttraction(getIntent().getExtras().getString("ATTRACTION"));
     }
 
-    private void getAttraction(){
-
+    private void getAttraction(final String id){
+        DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                myAttraction = (Attraction) object;
+                setAttractionInfo();
+            }
+        });
     }
-
     private void setAttractionInfo(){
-        
+        attractionName.setText(myAttraction.getName());
+        attractionDescription.setText((myAttraction.getDescription()));
+
+        setCoverPhoto();
+        setReviewsInfo();
+
+        userTypeCheck();
+    }
+
+    private void userTypeCheck(){
+        //TODO ukloni ili dodaj dugmice za managera ili vodica ili turistu
+    }
+
+    private void setCoverPhoto(){
+        StorageService.getInstance().downloadPhoto("attractions", myAttraction.getUId(), "cover", new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                attractionImageView.setImageBitmap((Bitmap) object);
+            }
+        });
+    }
+
+    private void setReviewsInfo(){
+        //TODO jos nismo odlucili kako ce da racunamo ocenu za bilo sta
     }
 }

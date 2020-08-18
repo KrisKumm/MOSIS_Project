@@ -16,18 +16,18 @@ public class Tour{
     private String description;
     private String portrait;
     private GeoPoint location;
-    private com.google.firebase.Timestamp startsAt;
-    private com.google.firebase.Timestamp endsAt;
-    private DocumentReference myRegion;
+    private Timestamp startsAt;
+    private Timestamp endsAt;
+    private String myRegion;
     private ArrayList<String> tourGuides;
-    private ArrayList<DocumentReference> attractions;
+    private ArrayList<String> attractions;
     private ArrayList<String> pendingTourists;
     public ArrayList<Review> reviews;
 
     Tour(){}
 
     Tour(String uId, String managerId, String guideId, String name, String description, String portrait, GeoPoint location,
-         com.google.firebase.Timestamp startsAt, com.google.firebase.Timestamp endsAt, DocumentReference myRegion, ArrayList<String> tourGuides, ArrayList<DocumentReference> attractions,
+         Timestamp startsAt, Timestamp endsAt, String myRegion, ArrayList<String> tourGuides, ArrayList<String> attractions,
          ArrayList<String> pendingTourists){
         this.uId = uId;
         this.managerId = managerId;
@@ -71,10 +71,10 @@ public class Tour{
     public Timestamp getEndsAt(){
         return this.endsAt;
     }
-    public DocumentReference getMyRegion(){
+    public String getMyRegion(){
         return this.myRegion;
     }
-    public ArrayList<DocumentReference> getAttractions(){
+    public ArrayList<String> getAttractions(){
         return this.attractions;
     }
     public ArrayList<String> getPendingTourists(){
@@ -83,4 +83,6 @@ public class Tour{
     public ArrayList<String> getTourGuides() {
         return tourGuides;
     }
+
+    public ArrayList<Review> getReviews() {return reviews;}
 }

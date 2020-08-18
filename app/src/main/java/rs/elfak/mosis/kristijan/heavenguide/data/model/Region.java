@@ -12,9 +12,9 @@ public class Region {
     private int radius;
     private GeoPoint centerPoint;
     private ArrayList<String> tours;
-    private ArrayList<String> attractionIDList;
+    private ArrayList<String> attractions;
 
-    public  Region(){}
+    public Region(){}
 
     public Region(String uId, String name, String description, int radius, GeoPoint centerPoint, ArrayList<String> tours, ArrayList<String> attractionIDList){
 
@@ -24,7 +24,7 @@ public class Region {
         this.radius = radius;
         this.centerPoint = centerPoint;
         this.tours = tours;
-        this.attractionIDList = attractionIDList;
+        this.attractions = attractionIDList;
     }
 
     public String getUId() {
@@ -52,6 +52,6 @@ public class Region {
     }
 
     public ArrayList<String> getAttractionIDList() {
-        return attractionIDList;
+        return attractions;
     }
 }
