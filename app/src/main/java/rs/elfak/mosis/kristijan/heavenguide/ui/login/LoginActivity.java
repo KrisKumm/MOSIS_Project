@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -57,6 +58,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public RadioGroup rg;
     public RadioButton touristRB, tourGuideRB;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "profile";
+    public String profileP;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -175,6 +180,13 @@ public class LoginActivity extends AppCompatActivity {
                                         LoginActivity.this.finish();
                                     }
                                 });
+
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(PROFILE, "guide");
+                                editor.apply();
+                                Toast.makeText(LoginActivity.this, "Guide has logged in", Toast.LENGTH_SHORT).show();
+
                             }
                             else if(touristRB.isChecked()){
                                 DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
@@ -187,6 +199,13 @@ public class LoginActivity extends AppCompatActivity {
                                         LoginActivity.this.finish();
                                     }
                                 });
+
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(PROFILE, "tourist");
+                                editor.apply();
+                                Toast.makeText(LoginActivity.this, "Tourist has logged in", Toast.LENGTH_SHORT).show();
+
                             }
                             else{
                                 DBService.getInstance().GetManager(UserData.getInstance().uId, new FirebaseCallback() {
@@ -199,6 +218,13 @@ public class LoginActivity extends AppCompatActivity {
                                         LoginActivity.this.finish();
                                     }
                                 });
+
+                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(PROFILE, "manager");
+                                editor.apply();
+                                Toast.makeText(LoginActivity.this, "Manager has logged in", Toast.LENGTH_SHORT).show();
+
                             }
 
                         } else {

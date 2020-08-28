@@ -1,6 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
@@ -49,6 +50,10 @@ import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "tourist";
+    public String profileP;
+
     private AppBarConfiguration mAppBarConfiguration;
 
     private RelativeLayout relativeLayoutSearch;
@@ -85,8 +90,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        NavigationView navigationView2 = findViewById(R.id.nav_view2);
-        navigationView2.setEnabled(false);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -108,12 +111,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        profileP = sharedPreferences.getString(PROFILE, "");
 
+        relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
         createSearchItemList();
         buildRecyclerView();
         setButtons();
-
         relativeLayoutSearch.setEnabled(false);
         relativeLayoutSearch.setVisibility(View.INVISIBLE);
 

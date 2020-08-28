@@ -1,6 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide.ui.home;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,6 +35,10 @@ import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 
 public class HomeFragment extends Fragment {
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "profile";
+    public String profileP;
 
     private HomeViewModel homeViewModel;
 
@@ -100,19 +105,33 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        //Shared preference tourist/guide
-
         toursListView = root.findViewById(R.id.profile_home_tours_list_view);
         toursGuideListView = root.findViewById(R.id.profile_home_tours_guide_list_view);
 
-        toursListView.setEnabled(true);
-        toursGuideListView.setEnabled(false);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, getContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        profileP = sharedPreferences.getString(PROFILE, "");
 
-        toursListView.setVisibility(View.VISIBLE);
-        toursGuideListView.setVisibility(View.INVISIBLE);
-
-        fillToursList(root);
-        //fillToursGuideList(root);
+        if(profileP.equals("tourist")){
+            toursListView.setEnabled(true);
+            toursListView.setVisibility(View.VISIBLE);
+            toursGuideListView.setEnabled(false);
+            toursGuideListView.setVisibility(View.INVISIBLE);
+            fillToursList(root);
+        }
+        if(profileP.equals("guide")){
+            toursGuideListView.setEnabled(true);
+            toursGuideListView.setVisibility(View.VISIBLE);
+            toursListView.setEnabled(false);
+            toursListView.setVisibility(View.INVISIBLE);
+            fillToursGuideList(root);
+        }
+        if(profileP.equals("manager")){
+            toursListView.setEnabled(false);
+            toursListView.setVisibility(View.INVISIBLE);
+            toursGuideListView.setEnabled(false);
+            toursGuideListView.setVisibility(View.INVISIBLE);
+        }
         //tourUserData = UserData.getInstance().tours;
 
         return root;
