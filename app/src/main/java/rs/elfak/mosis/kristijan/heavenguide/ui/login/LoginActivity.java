@@ -176,6 +176,8 @@ public class LoginActivity extends AppCompatActivity {
                                         TourGuide usr = (TourGuide) object;
                                         UserData.getInstance().name = usr.getName();
                                         UserData.getInstance().userType = userType.guide;
+                                        UserData.getInstance().friends = usr.getFriends();
+                                        UserData.getInstance().notifications = usr.notifications;
                                         startActivity(i);
                                         LoginActivity.this.finish();
                                     }
@@ -195,6 +197,8 @@ public class LoginActivity extends AppCompatActivity {
                                         User usr = (User) object;
                                         UserData.getInstance().name = usr.getName();
                                         UserData.getInstance().userType = userType.tourist;
+                                        UserData.getInstance().friends = usr.getFriends();
+                                        UserData.getInstance().notifications = usr.notifications;
                                         startActivity(i);
                                         LoginActivity.this.finish();
                                     }
@@ -214,6 +218,7 @@ public class LoginActivity extends AppCompatActivity {
                                         Manager usr = (Manager) object;
                                         UserData.getInstance().name = usr.getName();
                                         UserData.getInstance().userType = userType.manager;
+                                        UserData.getInstance().notifications = usr.notifications;
                                         startActivity(i);
                                         LoginActivity.this.finish();
                                     }

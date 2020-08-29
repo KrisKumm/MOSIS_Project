@@ -9,14 +9,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 
 public class OtherPersonActivity extends AppCompatActivity {
 
     private User otherUser;
+    private Bitmap picture;
 
     private ImageView avatar;
-    private Bitmap picture;
     private TextView otherUsernameLabel;
     private TextView otherRoleLabel;
     private Button addFriendButton;
@@ -83,16 +84,17 @@ public class OtherPersonActivity extends AppCompatActivity {
 
             }
         });
-
         getUser();
         setOtherUserInfo();
     }
 
     private void getUser(){
-        //get from Firebase and put in object otherUser
+        otherUser = UserData.getInstance().friend;
+        picture = UserData.getInstance().friendPhoto;
     }
 
     private void setOtherUserInfo(){
-        //set otherUser info to objects
+        avatar.setImageBitmap(Bitmap.createScaledBitmap(picture,  100, 100,false));
+        otherUsernameLabel.setText(otherUser.getName());
     }
 }

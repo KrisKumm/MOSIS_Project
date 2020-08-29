@@ -48,8 +48,8 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
+        notificationsUserData = UserData.getInstance().notifications;
         fillNotificationsList(root);
-        //notificationsUserData = UserData.getInstance().notifications;
 
         return root;
     }
@@ -57,14 +57,15 @@ public class NotificationsFragment extends Fragment {
     public void fillNotificationsList(final View root){
         notificationListView = root.findViewById(R.id.profile_notification_list_view);
 
-        profileNotifications.add(new ProfileNotificationItem(R.drawable.baseline_message_black_18dp, "Notifikacija 1"));
-        profileNotifications.add(new ProfileNotificationItem(R.drawable.baseline_message_black_18dp, "Notifikacija 2"));
-        profileNotifications.add(new ProfileNotificationItem(R.drawable.baseline_message_black_18dp, "Notifikacija 3"));
-        profileNotifications.add(new ProfileNotificationItem(R.drawable.baseline_message_black_18dp, "Notifikacija 4"));
-
+        for(Notification notification : notificationsUserData){
+            profileNotifications.add(new ProfileNotificationItem(R.drawable.baseline_message_black_18dp, notification.getMessage()));
+        }
         notificationsAdapter = new ProfileNotificationAdapter((Activity) root.getContext(), profileNotifications);
         notificationListView.setAdapter(notificationsAdapter);
 
+        setListClickHandler(root);
+    }
+    public void setListClickHandler(final View root){
         notificationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

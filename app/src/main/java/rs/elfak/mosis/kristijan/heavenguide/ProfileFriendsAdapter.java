@@ -2,6 +2,7 @@ package rs.elfak.mosis.kristijan.heavenguide;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,8 @@ public class ProfileFriendsAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) itemView.findViewById(R.id.profile_friends_list_imageView);
         TextView textView = (TextView) itemView.findViewById(R.id.profile_friends_list_textView);
         ProfileFriendsItem profileFriendsItem = friends.get(i);
-        imageView.setImageResource(profileFriendsItem.getImageResource());
+        Bitmap image = profileFriendsItem.getImageResource();
+        imageView.setImageBitmap(Bitmap.createScaledBitmap(image,80, 80,false));
         textView.setText(profileFriendsItem.getText1());
         return itemView;
     }

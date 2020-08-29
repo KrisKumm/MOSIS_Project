@@ -1,6 +1,8 @@
 package rs.elfak.mosis.kristijan.heavenguide.data;
 
 
+import android.graphics.Bitmap;
+
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -20,8 +22,10 @@ public class UserData {
     public userType userType;
     public String portrait;
     public GeoPoint location;
-    public ArrayList<User> friends;
+    public ArrayList<String> friends;
     public ArrayList<Notification> notifications;
+    public User friend;
+    public Bitmap friendPhoto;
 
     private static UserData instance = null;
     private UserData()
