@@ -41,6 +41,8 @@ public class User {
         return uid;
     }
 
+    public void setUid(String id){ this.uid = id;}
+
     public String getPortrait(){
         return portrait;
     }

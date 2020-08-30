@@ -1,5 +1,6 @@
 package rs.elfak.mosis.kristijan.heavenguide;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,8 +89,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         SearchRecyclerItem currentItem = mSearchRecyclerList.get(position);
-
-        holder.mImageView.setImageResource(currentItem.getImageResource());
+        Bitmap picture = currentItem.getImageResource();
+        holder.mImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) picture,  80, 80,false));
         holder.mTextView1.setText(currentItem.getText1());
         holder.mTextView2.setText(currentItem.getText2());
     }

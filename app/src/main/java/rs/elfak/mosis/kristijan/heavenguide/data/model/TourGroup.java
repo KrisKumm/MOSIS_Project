@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class TourGroup {
 
-    private String uId;
+    private String uid;
     private String tourId;
     private String tourGuide;
     private boolean readyAll;
@@ -18,7 +18,7 @@ public class TourGroup {
     public  TourGroup(){}
 
     public TourGroup(String uId, String tourId, String tourGuide, boolean readyAll, GeoPoint tourGuideLocation, ArrayList<String> touristIDList, ArrayList<String> starLocationIdList){
-        this.uId = uId;
+        this.uid = uId;
         this.tourId = tourId;
         this.tourGuide = tourGuide;
         this.readyAll = readyAll;
@@ -29,8 +29,10 @@ public class TourGroup {
 
 
     public String getUId() {
-        return uId;
+        return uid;
     }
+
+    public void setUid(String id){ this.uid = id;}
 
     public String getTourId() {
         return tourId;

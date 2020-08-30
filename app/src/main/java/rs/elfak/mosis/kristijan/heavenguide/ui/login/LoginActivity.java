@@ -165,10 +165,9 @@ public class LoginActivity extends AppCompatActivity {
                             UserData.getInstance().uId = curUser.getUid();
                             UserData.getInstance().gmail = curUser.getEmail();
 
-                            DBService.getInstance().AddAttraction(new Attraction(null, "Tvrdjava", "Ubava tvrdjava", new ArrayList<String>(), new GeoPoint(0,0), "Niska tvrdjava"), "");
-
                             final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
-
+//                            DBService.getInstance().AddAttraction(new Attraction(null , "Cegar", "stace mi opis", null,
+//                                    new GeoPoint( 0,0) , "okle mi"), "sadas");
                             if(tourGuideRB.isChecked()){
                                 DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
                                     @Override
@@ -244,6 +243,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        setRegisterBtnHandler(registerButton, loadingProgressBar);
+    }
+    private void setRegisterBtnHandler(Button registerButton, final ProgressBar loadingProgressBar ){
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -254,7 +256,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
         // TODO : initiate successful logged in experience

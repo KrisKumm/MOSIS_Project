@@ -1,17 +1,19 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
+import android.graphics.Bitmap;
+
 public class SearchRecyclerItem {
-    private int mImageResource;
+    private Bitmap mImageResource;
     private String mText1;
     private String mText2;
 
-    public SearchRecyclerItem(int imageResource, String text1, String text2) {
+    public SearchRecyclerItem(Bitmap imageResource, String text1, String text2) {
         mImageResource = imageResource;
         mText1 = text1;
         mText2 = text2;
     }
 
-    public int getImageResource() {
+    public Bitmap getImageResource() {
         return mImageResource;
     }
 

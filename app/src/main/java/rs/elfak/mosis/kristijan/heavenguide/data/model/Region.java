@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Region {
 
-    private String uId;
+    private String uid;
     private String name;
     private String description;
     private int radius;
@@ -18,7 +18,7 @@ public class Region {
 
     public Region(String uId, String name, String description, int radius, GeoPoint centerPoint, ArrayList<String> tours, ArrayList<String> attractionIDList){
 
-        this.uId = uId;
+        this.uid = uId;
         this.name = name;
         this.description = description;
         this.radius = radius;
@@ -28,8 +28,10 @@ public class Region {
     }
 
     public String getUId() {
-        return uId;
+        return uid;
     }
+
+    public void setUid(String uid){ this.uid = uid;}
 
     public String getName() {
         return name;

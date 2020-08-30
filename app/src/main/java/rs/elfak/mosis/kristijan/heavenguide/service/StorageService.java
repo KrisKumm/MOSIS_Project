@@ -98,9 +98,18 @@ public class StorageService {
                 }
             });
         }
-
-
     }
+    public void downloadCoverPhotos(String from, String photoName, ArrayList<String> ids,final FirebaseCallback firebaseCallback){
+        for (String id : ids) {
+            downloadPhoto(from, id, photoName, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    firebaseCallback.onCallback((Bitmap) object);
+                }
+            });
+        }
+    }
+
     private void toastMessage(String message, Context context){
         Toast.makeText( context ,message,Toast.LENGTH_SHORT).show();
     }

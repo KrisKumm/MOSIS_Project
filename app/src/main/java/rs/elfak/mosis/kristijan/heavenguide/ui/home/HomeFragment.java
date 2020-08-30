@@ -20,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.ProfileFriendsAdapter;
@@ -27,10 +29,12 @@ import rs.elfak.mosis.kristijan.heavenguide.ProfileTourAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.ProfileTourGuideAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileTourGuideItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileTourItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 
@@ -94,7 +98,14 @@ public class HomeFragment extends Fragment {
         favTours.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                DBService.getInstance().GetAttractionsByLocation(new GeoPoint(5, 5),
+                        new GeoPoint(-5, -5), new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                ArrayList<Attraction> attractions = (ArrayList<Attraction>) object;
+                                Toast.makeText( getContext() , object.toString(), Toast.LENGTH_LONG);
+                            }
+                        });
             }
         });
 

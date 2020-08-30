@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.SearchRecyclerItem;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
@@ -24,9 +25,9 @@ import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 public class AttractionActivity extends AppCompatActivity {
 
     private Attraction myAttraction;
+    private Bitmap picture;
 
     private ImageView attractionImageView;
-    private Bitmap picture;
     private TextView attractionName;
     private TextView attractionRegionName;
     private Button editManagerButton;
@@ -63,17 +64,27 @@ public class AttractionActivity extends AppCompatActivity {
         });
 
 
-        getAttraction(getIntent().getExtras().getString("ATTRACTION"));
+        getAttraction();
     }
 
-    private void getAttraction(final String id){
-        DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                myAttraction = (Attraction) object;
-                setAttractionInfo();
-            }
-        });
+    private void getAttraction(){
+
+        if(UserData.getInstance().attraction != null){
+            myAttraction = UserData.getInstance().attraction;
+            picture = UserData.getInstance().attractionPhoto;
+            setAttractionInfo();
+        }
+        else{
+            String id = getIntent().getExtras().getString("ATTRACTION");
+            DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    myAttraction = (Attraction) object;
+                    picture = null;
+                    setAttractionInfo();
+                }
+            });
+        }
     }
     private void setAttractionInfo(){
         attractionName.setText(myAttraction.getName());
@@ -92,13 +103,17 @@ public class AttractionActivity extends AppCompatActivity {
     }
 
     private void setCoverPhoto(){
-
-        StorageService.getInstance().downloadPhoto("attraction",myAttraction.getUid(), "cover", new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                attractionImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  attractionImageView.getWidth(), attractionImageView.getHeight(),false));
-            }
-        });
+        if(picture != null){
+            attractionImageView.setImageBitmap(Bitmap.createScaledBitmap(picture,  200, 200,false));
+        }
+        else{
+            StorageService.getInstance().downloadPhoto("attraction",myAttraction.getUid(), "cover", new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    attractionImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  200, 200,false));
+                }
+            });
+        }
     }
 
     private void setReviewsInfo(){

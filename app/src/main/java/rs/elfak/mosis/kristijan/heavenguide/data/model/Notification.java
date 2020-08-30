@@ -4,7 +4,7 @@ import com.google.firebase.firestore.DocumentReference;
 
 public class Notification {
 
-    private String uId;
+    private String uid;
     private String message;
     private String from;
     private DocumentReference sender;
@@ -14,16 +14,16 @@ public class Notification {
     public Notification(){}
 
     public Notification(String uId, String message,String from, DocumentReference sender, int type){
-        this.uId = uId;
+        this.uid = uId;
         this.message = message;
         this.from = from;
         this.sender = sender;
         this.type = type;
     }
 
-    public String getUId(){
-        return this.uId;
-    }
+    public String getUId(){return this.uid;}
+
+    public void setUid(String uid){this.uid = uid;}
 
     public String getMessage(){
         return this.message;

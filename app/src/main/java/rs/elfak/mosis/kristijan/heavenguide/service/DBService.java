@@ -11,6 +11,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -60,13 +62,13 @@ public class DBService
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 final Attraction attraction = documentSnapshot.toObject(Attraction.class);
                 firebaseCallback.onCallback(attraction);
-//                getReviews(documentReference, new FirebaseCallback() {
-//                    @Override
-//                    public void onCallback(Object object) {
-//                        attraction.reviews = new ArrayList<Review>((ArrayList<Review> )object);
-//                        firebaseCallback.onCallback(attraction);
-//                    }
-//                });
+                getReviews(documentReference, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        attraction.reviews = new ArrayList<Review>((ArrayList<Review> )object);
+                        firebaseCallback.onCallback(attraction);
+                    }
+                });
             }
         });
 
@@ -76,10 +78,10 @@ public class DBService
         DocumentReference documentReference;
         if(attraction.getUid() == null){
             documentReference = fStore.collection("attractions").document();
-        }else{
+            attraction.setUid(documentReference.getId());
+        }else {
             documentReference = fStore.collection("attractions").document(attraction.getUid());
         }
-        attraction.setUid(documentReference.getId());
         documentReference.set(attraction).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -103,12 +105,54 @@ public class DBService
                     });
         }
     }
+    public void GetAttractionsByName(String name, final  FirebaseCallback firebaseCallback){
+
+        final ArrayList<Attraction> attractions = new ArrayList<Attraction>();
+        final Query query = fStore.collection("attractions").whereEqualTo("name" , name);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                   attractions.add(document.toObject(Attraction.class));
+                }
+                firebaseCallback.onCallback(attractions);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                firebaseCallback.onCallback(attractions);
+            }
+        });
+    }
+    public void GetAttractionsByLocation(GeoPoint topLeftPoint, GeoPoint bottomRightPoint, final FirebaseCallback firebaseCallback){
+        final ArrayList<Attraction> attractions = new ArrayList<Attraction>();
+        final Query query = fStore.collection("attractions")
+                .whereLessThan("location" , topLeftPoint)
+                .whereGreaterThan("location" , bottomRightPoint);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    attractions.add(document.toObject(Attraction.class));
+                }
+                firebaseCallback.onCallback(attractions);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                firebaseCallback.onCallback(attractions);
+            }
+        });
+    }
 
     public void AddTourGroup(TourGroup tourGroup){
 
         DocumentReference documentReference;
         if(tourGroup.getUId() == null){
             documentReference = fStore.collection("tour-groups").document();
+            tourGroup.setUid(documentReference.getId());
         }else{
             documentReference = fStore.collection("tour-groups").document(tourGroup.getUId());
         }
@@ -167,6 +211,7 @@ public class DBService
         DocumentReference documentReference;
         if(region.getUId() == null){
             documentReference = fStore.collection("regions").document();
+            region.setUid(documentReference.getId());
         }else{
             documentReference = fStore.collection("regions").document(region.getUId());
         }
@@ -237,6 +282,7 @@ public class DBService
         DocumentReference documentReference;
         if(tour.getUId() == null){
             documentReference = fStore.collection("tours").document();
+            tour.setUid(documentReference.getId());
         }else{
             documentReference = fStore.collection("tours").document(tour.getUId());
         }
@@ -382,7 +428,9 @@ public class DBService
 
     public void AddReview(DocumentReference documentReference, Review review){
 
-        documentReference.collection("review").document().set(review).addOnSuccessListener(new OnSuccessListener<Void>() {
+        DocumentReference df = documentReference.collection("review").document();
+        review.setUid(documentReference.getId());
+        df.set(review).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 //DODAJ TOST AKO OCES
@@ -407,7 +455,9 @@ public class DBService
 
     public void AddNotification(DocumentReference documentReference, Notification notification){
         // treba da se doda kod za ostali tip notifikacija
-        documentReference.collection("notifications").document().set(notification).addOnSuccessListener(new OnSuccessListener<Void>() {
+        DocumentReference df = documentReference.collection("notifications").document();
+        notification.setUid(df.getId());
+        df.set(notification).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 //DODAJ TOST AKO OCES

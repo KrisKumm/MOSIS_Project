@@ -35,9 +35,7 @@ public class Attraction {
 
     public void setUid(String id){ this.uid = id;}
 
-    public String getName(){
-        return name;
-    }
+    public String getName(){return name;}
 
     public String getDescription(){
         return description;

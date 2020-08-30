@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.SearchRecyclerItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
@@ -47,6 +48,7 @@ import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
+import rs.elfak.mosis.kristijan.heavenguide.MyAppSingleton;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -63,6 +65,9 @@ public class ProfileActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private ArrayList<SearchRecyclerItem> searchRecyclerItemArrayList;
+
+    private ArrayList<Attraction> attractions = new ArrayList<>();
+    private ArrayList<Bitmap> attractionPictures = new ArrayList<>();
 
     private Button buttonInsert;
     private Button buttonRemove;
@@ -162,12 +167,28 @@ public class ProfileActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                DBService.getInstance().GetAttractionsByName(s, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        attractions = (ArrayList<Attraction>) object;
+                        for(final Attraction attraction : attractions){
+                            StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
+                                @Override
+                                public void onCallback(Object object) {
+                                    insertItem(attractionPictures.size(), (Bitmap) object, attraction.getName());
+                                    attractionPictures.add((Bitmap) object);
+                                }
+                            });
+                        }
+                    }
+                });
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                mAdapter.getFilter().filter(s);
+               // Toast.makeText( ProfileActivity.this , s , Toast.LENGTH_LONG);
+                // mAdapter.getFilter().filter(s);
                 return false;
             }
         });
@@ -211,13 +232,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void createSearchItemList(){
         searchRecyclerItemArrayList = new ArrayList<>();
-        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_double_arrow_black_18dp, "Line 1", "Line 2"));
-        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_north_black_18dp, "Line 3", "Line 4"));
-        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_south_black_18dp, "Line 5", "Line 6"));
-        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_west_black_18dp, "Six", "Line 2"));
-        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_west_black_18dp, "Seven", "Line 2"));
-        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_west_black_18dp, "Eight", "Line 2"));
-        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_west_black_18dp, "Nine", "Line 2"));
+
+//        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_west_black_18dp, "Nine", "Line 2"));
     }
 
     public void buildRecyclerView(){
@@ -232,7 +248,10 @@ public class ProfileActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                changeItem(position, "Clicked");
+                UserData.getInstance().attraction = attractions.get(position);
+                UserData.getInstance().attractionPhoto = attractionPictures.get(position);
+                Intent attractionActivity = new Intent(ProfileActivity.this , AttractionActivity.class );
+                startActivity(attractionActivity);
             }
 
             @Override
@@ -252,7 +271,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int position = Integer.parseInt(editTextInsert.getText().toString());
-                insertItem(position);
+               // insertItem(position);
             }
         });
 
@@ -265,8 +284,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    public void insertItem(int position) {
-        searchRecyclerItemArrayList.add(position, new SearchRecyclerItem(R.drawable.baseline_east_black_18dp, "New Item At Position" + position, "This is Line 2"));
+    public void insertItem(int position, Bitmap picture , String name) {
+        searchRecyclerItemArrayList.add(position, new SearchRecyclerItem(picture, name, ""));
         mAdapter.notifyItemInserted(position);
     }
     public void removeItem(int position) {
