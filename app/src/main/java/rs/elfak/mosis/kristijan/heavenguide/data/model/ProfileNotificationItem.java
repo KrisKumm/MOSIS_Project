@@ -3,10 +3,12 @@ package rs.elfak.mosis.kristijan.heavenguide.data.model;
 public class ProfileNotificationItem {
     private int mImageResource;
     private String mText1;
+    private Notification mNotification;
 
-    public ProfileNotificationItem(int imageResource, String text1) {
+    public ProfileNotificationItem(int imageResource, Notification mNotification1) {
         mImageResource = imageResource;
-        mText1 = text1;
+        mText1 = mNotification1.getMessage();
+        mNotification = mNotification1;
     }
 
     public int getImageResource() {
@@ -16,4 +18,6 @@ public class ProfileNotificationItem {
     public String getText1() {
         return mText1;
     }
+
+    public Notification getNotification() { return mNotification; }
 }

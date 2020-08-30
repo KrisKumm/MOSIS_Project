@@ -348,6 +348,10 @@ public class DBService
         });
     }
 
+    public DocumentReference GetUserReference(String id){
+        return fStore.collection("users").document(id);
+    }
+
     public void AddManager(Manager manager){
         DocumentReference documentReference = fStore.collection("managers").document(manager.getUId());
 

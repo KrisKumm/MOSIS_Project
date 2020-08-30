@@ -58,7 +58,7 @@ public class FriendsFragment extends Fragment {
         friendsListView = root.findViewById(R.id.profile_friends_list_view);
 
         setListClickHandler(root);
-        getFrends(root);
+        getFriends(root);
         fillFriendsList(root);
         return root;
     }
@@ -79,7 +79,7 @@ public class FriendsFragment extends Fragment {
             }
         });
     }
-    public void getFrends(final View root){
+    public void getFriends(final View root){
         for(String id : UserData.getInstance().friends){
             DBService.getInstance().GetUser(id, new FirebaseCallback() {
                 @Override
