@@ -2,6 +2,8 @@ package rs.elfak.mosis.kristijan.heavenguide;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,9 @@ import org.w3c.dom.Attr;
 import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileNotificationItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Review;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
@@ -27,6 +32,8 @@ public class TourActivity extends AppCompatActivity {
     private Tour myTour;
     private TourGuide myGuide;
     private ArrayList<Attraction> myAttractions = new ArrayList<Attraction>();
+    private ArrayList<ProfileFriendsItem> atractionItems = new ArrayList<ProfileFriendsItem>();
+    private ProfileFriendsAdapter attractionsAdapter;
 
     private LinearLayout linearLayoutTourImages;
     private TextView tourName;
@@ -38,6 +45,8 @@ public class TourActivity extends AppCompatActivity {
     private ListView tourAttractionsListView;
     private Button tourStartButton;
     private Button tourDeleteButton;
+
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +132,22 @@ public class TourActivity extends AppCompatActivity {
                     setAttractionInfo(attraction);
                 }
             });
+
         }
     }
-    private void setAttractionInfo(Attraction attraction){
+    private void setAttractionInfo(final Attraction attraction){
+        StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                atractionItems.add(new ProfileFriendsItem((Bitmap) object, attraction.getName()));
+
+                attractionsAdapter = new ProfileFriendsAdapter((Activity) context , atractionItems);
+                tourAttractionsListView.setAdapter(attractionsAdapter);
+            }
+        });
+
+
+        //setAttractionListClickHandler();
         //TODO nzm kako radi ovaj ListView
     }
 

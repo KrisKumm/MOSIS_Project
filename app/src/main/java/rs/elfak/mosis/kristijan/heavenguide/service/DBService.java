@@ -277,6 +277,26 @@ public class DBService
             }
         });
     }
+    public void GetToursByName(String name, final FirebaseCallback firebaseCallback){
+
+        final ArrayList<Tour> tours = new ArrayList<Tour>();
+        final Query query = fStore.collection("tours").whereEqualTo("name" , name);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    tours.add(document.toObject(Tour.class));
+                }
+                firebaseCallback.onCallback(tours);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                firebaseCallback.onCallback(tours);
+            }
+        });
+    }
     public void AddTour(Tour tour){
 
         DocumentReference documentReference;
@@ -335,6 +355,25 @@ public class DBService
                        firebaseCallback.onCallback(user);
                    }
                });
+            }
+        });
+    }
+    public void GetUsersByName(String name, final FirebaseCallback firebaseCallback){
+        final ArrayList<User> users = new ArrayList<User>();
+        final Query query = fStore.collection("users").whereEqualTo("name" , name);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    users.add(document.toObject(User.class));
+                }
+                firebaseCallback.onCallback(users);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                firebaseCallback.onCallback(users);
             }
         });
     }

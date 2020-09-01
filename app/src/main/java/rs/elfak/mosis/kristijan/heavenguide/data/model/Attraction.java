@@ -15,17 +15,19 @@ public class Attraction {
     private ArrayList<String> pictures;
     private GeoPoint location;
     private String myRegion;
+    private ArrayList<Integer> stars;
     public ArrayList<Review> reviews;
 
     public Attraction(){}
 
-    public Attraction(String uId, String name, String description, ArrayList<String> pictures, GeoPoint location, String myRegion){
+    public Attraction(String uId, String name, String description, ArrayList<String> pictures, GeoPoint location, ArrayList<Integer> stars, String myRegion){
 
         this.uid = uId;
         this.name = name;
         this.description = description;
         this.pictures = pictures;
         this.location = location;
+        this.stars = stars;
         this.myRegion = myRegion;
     }
 
@@ -48,6 +50,8 @@ public class Attraction {
     public GeoPoint getLocation(){
         return location;
     }
+
+    public ArrayList<Integer> getStars() {return stars; }
 
     public String getMyRegion(){
         return myRegion;

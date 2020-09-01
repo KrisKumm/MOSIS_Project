@@ -3,15 +3,14 @@ package rs.elfak.mosis.kristijan.heavenguide.data.model;
 public class Review {
 
     private String uid;
-    private int starRating;
     private String comment;
+    private String from;
 
     public  Review(){}
 
-    public Review(String uId, int starRating, String comment){
+    public Review(String uId, String from, String comment){
         this.uid = uId;
-
-        this.starRating = starRating;
+        this.from = from;
         this.comment = comment;
     }
 
@@ -19,7 +18,7 @@ public class Review {
 
     public void setUid(String id){ this.uid = id;}
 
-    public int getStarRating() {return starRating;}
+    public String getStarRating() {return from;}
 
     public String getComment() {return comment;}
 }

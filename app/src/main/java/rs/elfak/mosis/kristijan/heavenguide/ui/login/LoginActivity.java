@@ -34,7 +34,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
@@ -166,8 +168,10 @@ public class LoginActivity extends AppCompatActivity {
                             UserData.getInstance().gmail = curUser.getEmail();
 
                             final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
-//                            DBService.getInstance().AddAttraction(new Attraction(null , "Cegar", "stace mi opis", null,
-//                                    new GeoPoint( 0,0) , "okle mi"), "sadas");
+//                            ArrayList stars = new ArrayList(Arrays.asList(0, 0,5, 0, 0));
+////
+////                            DBService.getInstance().AddAttraction(new Attraction(null , "Cegar", "stace mi opis", null,
+////                                    new GeoPoint( 0,0) , stars ,"okle mi"), "sadas");
                             if(tourGuideRB.isChecked()){
                                 DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
                                     @Override
