@@ -27,7 +27,8 @@
             android:text="Name name name"
             android:textColor="@android:color/black"
             android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"/>
 
     </RelativeLayout>
 

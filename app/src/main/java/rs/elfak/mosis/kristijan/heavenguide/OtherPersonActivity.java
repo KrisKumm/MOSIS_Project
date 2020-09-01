@@ -97,7 +97,8 @@ public class OtherPersonActivity extends AppCompatActivity {
                 popUpMessage = sendNotificationPopUp.findViewById(R.id.notification_popup_message);
                 popUpSendButton = sendNotificationPopUp.findViewById(R.id.notification_popup_send_new_button);
 
-                popUpMessage.setText("to: " + otherUser.getName());
+                popUpReceiver.setText("to: " + otherUser.getName());
+                popUpMessage.setHint("Enter your message here...");
                 popUpSendButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -124,16 +125,24 @@ public class OtherPersonActivity extends AppCompatActivity {
         if(profileP.equals("tourist")){
             deleteAccountButton.setEnabled(false);
             deleteAccountButton.setVisibility(View.INVISIBLE);
+            deleteAccountLabel.setEnabled(false);
+            deleteAccountLabel.setVisibility(View.INVISIBLE);
         }
         if(profileP.equals("guide")){
             deleteAccountButton.setEnabled(false);
             deleteAccountButton.setVisibility(View.INVISIBLE);
+            deleteAccountLabel.setEnabled(false);
+            deleteAccountLabel.setVisibility(View.INVISIBLE);
         }
         if(profileP.equals("manager")){
             addFriendButton.setEnabled(false);
             addFriendButton.setVisibility(View.INVISIBLE);
             removeFriendButton.setEnabled(false);
             removeFriendButton.setVisibility(View.INVISIBLE);
+            addFriendLabel.setEnabled(false);
+            addFriendLabel.setVisibility(View.INVISIBLE);
+            removeFriendLabel.setEnabled(false);
+            removeFriendLabel.setVisibility(View.INVISIBLE);
         }
 
         getUser();

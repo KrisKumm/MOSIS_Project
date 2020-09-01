@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
         usernameLabel = root.findViewById(R.id.Username_label);
         roleLabel = root.findViewById(R.id.Role_label);
 
-        StorageService.getInstance().downloadPhoto(UserData.getInstance().userType.toString(), UserData.getInstance().uId, UserData.getInstance().gmail, new FirebaseCallback() {
+        StorageService.getInstance().downloadPhoto(UserData.getInstance().userType.toString(), UserData.getInstance().uId, "cover", new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
                 avatar.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  avatar.getWidth(), avatar.getHeight(),false));

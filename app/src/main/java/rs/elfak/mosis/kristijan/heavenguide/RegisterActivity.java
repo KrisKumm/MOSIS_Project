@@ -89,18 +89,19 @@ public class RegisterActivity extends AppCompatActivity {
                                 UserData.getInstance().userType = userType.guide;
                                 DBService.getInstance().AddGuide(new TourGuide(usernameET.getText().toString(), UserData.getInstance().uId , new ArrayList<String>(),
                                         "" , new ArrayList<String>() , "ZYoXf3MCcCaqBywc8gOXgHUQGaf1"));
-                                StorageService.getInstance().uploadPhoto("guide", UserData.getInstance().uId , "portrait", picture, RegisterActivity.this);
+                                StorageService.getInstance().uploadPhoto("guide", UserData.getInstance().uId , "cover", picture, RegisterActivity.this);
                             }
                             else {
                                 DBService.getInstance().AddUser(new User(usernameET.getText().toString(), UserData.getInstance().uId , new ArrayList<String>()));
                                 UserData.getInstance().userType = userType.tourist;
-                                StorageService.getInstance().uploadPhoto("tourist", UserData.getInstance().uId , "portrait", picture, RegisterActivity.this);
+                                StorageService.getInstance().uploadPhoto("tourist", UserData.getInstance().uId , "cover", picture, RegisterActivity.this);
                             }
                             Toast.makeText(RegisterActivity.this, "Upisaja si se", Toast.LENGTH_SHORT).show();
 
                             Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(i);
-                            RegisterActivity.this.finish();
+
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(RegisterActivity.this, "Register failed.", Toast.LENGTH_SHORT).show();

@@ -86,7 +86,7 @@ public class FriendsFragment extends Fragment {
                 public void onCallback(Object object) {
                     final User user = (User) object;
                     friendsUserData.add(user);
-                    StorageService.getInstance().downloadPhoto("tourist", user.getUId(), "portrait", new FirebaseCallback() {
+                    StorageService.getInstance().downloadPhoto("tourist", user.getUId(), "cover", new FirebaseCallback() {
                         @Override
                         public void onCallback(Object object) {
                             friendPhotos.add((Bitmap) object);

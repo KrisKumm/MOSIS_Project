@@ -43,6 +43,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.SearchRecyclerItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
@@ -72,7 +73,9 @@ public class ProfileActivity extends AppCompatActivity {
     private ArrayList<SearchRecyclerItem> searchRecyclerItemArrayList;
 
     private ArrayList<Attraction> attractions = new ArrayList<>();
-    private ArrayList<Bitmap> attractionPictures = new ArrayList<>();
+    private ArrayList<User> searchUsers = new ArrayList<>();
+    private ArrayList<Tour> searchTours = new ArrayList<>();
+    private ArrayList<Bitmap> searchPictures = new ArrayList<>();
 
     private Button buttonInsert;
     private Button buttonRemove;
@@ -125,7 +128,6 @@ public class ProfileActivity extends AppCompatActivity {
         profileP = sharedPreferences.getString(PROFILE, "");
 
         relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
-        createSearchItemList();
         buildRecyclerView();
         relativeLayoutSearch.setEnabled(false);
         relativeLayoutSearch.setVisibility(View.INVISIBLE);
@@ -167,22 +169,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                DBService.getInstance().GetAttractionsByName(s, new FirebaseCallback() {
-                    @Override
-                    public void onCallback(Object object) {
-                        attractions = (ArrayList<Attraction>) object;
-                        for(final Attraction attraction : attractions){
-                            StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
-                                @Override
-                                public void onCallback(Object object) {
-                                    insertItem(attractionPictures.size(), (Bitmap) object, attraction.getName());
-                                    attractionPictures.add((Bitmap) object);
-                                }
-                            });
-                        }
-                    }
-                });
+            public boolean onQueryTextSubmit(String searchText) {
+                if(attractionsRadioButton.isChecked())
+                    getAttractions(searchText);
+                else if(toursRadioButton.isChecked())
+                    getTours(searchText);
+                else if(profilesRadioButton.isChecked())
+                    getUsers(searchText);
+
                 return false;
             }
 
@@ -222,13 +216,13 @@ public class ProfileActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void createSearchItemList(){
-        searchRecyclerItemArrayList = new ArrayList<>();
-
-//        searchRecyclerItemArrayList.add(new SearchRecyclerItem(R.drawable.baseline_west_black_18dp, "Nine", "Line 2"));
-    }
-
     public void buildRecyclerView(){
+        radioGroupSearch = findViewById(R.id.radio_group_search);
+        profilesRadioButton = findViewById(R.id.radio_button_profiles_search);
+        toursRadioButton = findViewById(R.id.radio_button_tours_search);
+        attractionsRadioButton = findViewById(R.id.radio_button_attractions_search);
+
+        searchRecyclerItemArrayList = new ArrayList<>();
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
@@ -240,14 +234,99 @@ public class ProfileActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                UserData.getInstance().attraction = attractions.get(position);
-                UserData.getInstance().attractionPhoto = attractionPictures.get(position);
-                Intent attractionActivity = new Intent(ProfileActivity.this , AttractionActivity.class );
-                startActivity(attractionActivity);
+                if(attractionsRadioButton.isChecked())
+                    goToAttraction(position);
+                else if(toursRadioButton.isChecked())
+                    goToTour(position);
+                else if(profilesRadioButton.isChecked())
+                    goToUser(position);
+
+            }
+        });
+
+        radioGroupSearch.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                searchRecyclerItemArrayList.clear();
+                searchPictures.clear();
+                searchTours.clear();
+                attractions.clear();
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    private void goToTour(int position) {
+        UserData.getInstance().tour = searchTours.get(position);
+        UserData.getInstance().tourPhoto = searchPictures.get(position);
+        Intent attractionActivity = new Intent(ProfileActivity.this , TourActivity.class );
+        startActivity(attractionActivity);
+    }
+    private void goToAttraction(int position) {
+        UserData.getInstance().attraction = attractions.get(position);
+        UserData.getInstance().attractionPhoto = searchPictures.get(position);
+        Intent attractionActivity = new Intent(ProfileActivity.this , AttractionActivity.class );
+        startActivity(attractionActivity);
+    }
+    private void goToUser(int position) {
+        UserData.getInstance().friend = searchUsers.get(position);
+        UserData.getInstance().friendPhoto = searchPictures.get(position);
+        Intent attractionActivity = new Intent(ProfileActivity.this , OtherPersonActivity.class );
+        startActivity(attractionActivity);
+    }
+
+    public void getAttractions(String name){
+        DBService.getInstance().GetAttractionsByName(name, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                attractions = (ArrayList<Attraction>) object;
+                for(final Attraction attraction : attractions){
+                    StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
+                        @Override
+                        public void onCallback(Object object) {
+                            insertItem(searchPictures.size(), (Bitmap) object, attraction.getName());
+                            searchPictures.add((Bitmap) object);
+                        }
+                    });
+                }
             }
         });
     }
-
+    public void getTours(String name){
+        DBService.getInstance().GetToursByName(name, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                searchTours = (ArrayList<Tour>) object;
+                for(final Tour tour : searchTours){
+                    StorageService.getInstance().downloadPhoto("tour", tour.getUId(), "cover", new FirebaseCallback() {
+                        @Override
+                        public void onCallback(Object object) {
+                            insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
+                            searchPictures.add((Bitmap) object);
+                        }
+                    });
+                }
+            }
+        });
+    }
+    public void getUsers(String name){
+        DBService.getInstance().GetUsersByName(name, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                searchUsers = (ArrayList<User>) object;
+                for(final User user : searchUsers){
+                    StorageService.getInstance().downloadPhoto("tourist", user.getUId(), "cover", new FirebaseCallback() {
+                        @Override
+                        public void onCallback(Object object) {
+                            insertItem(searchPictures.size(), (Bitmap) object, user.getName());
+                            searchPictures.add((Bitmap) object);
+                        }
+                    });
+                }
+            }
+        });
+    }
 //    public void setButtons(){
 //        buttonInsert = findViewById(R.id.button_insert);
 //        buttonRemove = findViewById(R.id.button_remove);
