@@ -21,61 +21,44 @@
     <RelativeLayout
         android:id="@+id/relativeLayoutSearch"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
 
+        <RadioGroup
+            android:id="@+id/radio_group_search"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+            <RadioButton
+                android:id="@+id/radio_button_profile_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profiles"
+                android:layout_marginLeft="10dp"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/radio_button_tours_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tours"
+                android:layout_marginLeft="10dp"/>
+            <RadioButton
+                android:id="@+id/radio_button_attractions_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attractions"
+                android:layout_marginLeft="10dp"/>
+        </RadioGroup>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray"
+            android:background="#63B5D1"
             android:padding="4dp"
             android:scrollbars="vertical"
-            android:layout_marginBottom="100dp"
-            android:layout_marginTop="100dp" />
-
-        <EditText
-            android:id="@+id/edittext_insert"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginBottom="25dp"
-            android:inputType="number"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView"/>
-
-        <Button
-            android:id="@+id/button_insert"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/edittext_insert"
-            android:layout_toEndOf="@id/edittext_insert"
-            android:text="insert"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-            app:layout_constraintLeft_toRightOf="@+id/edittext_insert"/>
-
-        <EditText
-            android:id="@+id/edittext_remove"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/button_insert"
-            android:layout_marginStart="65dp"
-            android:layout_toEndOf="@id/button_insert"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-            app:layout_constraintLeft_toRightOf="@+id/button_insert"/>
-
-        <Button
-            android:id="@+id/button_remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/edittext_remove"
-            android:layout_toEndOf="@id/edittext_remove"
-            android:text="remove"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-            app:layout_constraintLeft_toRightOf="@+id/edittext_remove"/>
+            android:layout_marginTop="50dp"/>
 
     </RelativeLayout>
 

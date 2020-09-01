@@ -26,7 +26,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public interface OnItemClickListener {
         void onItemClick(int position);
-        void onDeleteClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -37,15 +36,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         public ImageView mImageView;
         public TextView mTextView1;
-        public TextView mTextView2;
-        public ImageView mDeleteImage;
 
         public RecyclerViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.search_recycler_imageView);
             mTextView1 = itemView.findViewById(R.id.search_recycler_textView);
-            mTextView2 = itemView.findViewById(R.id.search_recycler_textView2);
-            mDeleteImage = itemView.findViewById(R.id.search_recycler_image_delete);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -54,18 +49,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
                             listener.onItemClick(position);
-                        }
-                    }
-                }
-            });
-
-            mDeleteImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onDeleteClick(position);
                         }
                     }
                 }
@@ -92,7 +75,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Bitmap picture = currentItem.getImageResource();
         holder.mImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) picture,  80, 80,false));
         holder.mTextView1.setText(currentItem.getText1());
-        holder.mTextView2.setText(currentItem.getText2());
     }
 
     @Override

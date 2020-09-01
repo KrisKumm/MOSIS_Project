@@ -30,7 +30,9 @@ import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileNotificationItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 
 public class NotificationsFragment extends Fragment {
 
@@ -45,7 +47,7 @@ public class NotificationsFragment extends Fragment {
     private AlertDialog.Builder dialogBuilder;
     private TextView popUpSender, popUpMessage;
     private EditText popUpReplyMessage;
-    private Button popUpReplyButton, popUpOkButton, popUpSendButton;
+    private Button popUpReplyButton, popUpOkButton, popUpSendButton, popUpDeclineButton, popUpAcceptButton;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -84,7 +86,14 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
-                createNewNotificationDialog(root, profileNotifications.get(i));
+                ProfileNotificationItem clickedNotification = profileNotifications.get(i);
+                if(clickedNotification.getNotification().getType() == 0){
+                    createNewNotificationDialogType0(root, clickedNotification);
+                }
+                if(clickedNotification.getNotification().getType() == 1){
+                    createNewNotificationDialogType1(root, clickedNotification);
+                }
+
                 profileNotifications.remove(i);
                 notificationsAdapter = new ProfileNotificationAdapter((Activity) root.getContext(), profileNotifications);
                 notificationListView.setAdapter(notificationsAdapter);
@@ -92,7 +101,7 @@ public class NotificationsFragment extends Fragment {
         });
     }
 
-    public void createNewNotificationDialog(final View root, final ProfileNotificationItem profileNotificationItem) {
+    public void createNewNotificationDialogType0(final View root, final ProfileNotificationItem profileNotificationItem) {
         dialogBuilder = new AlertDialog.Builder(root.getContext());
         final View notificationPopUp = getLayoutInflater().inflate(R.layout.profile_notification_pop_up, null);
 
@@ -135,6 +144,48 @@ public class NotificationsFragment extends Fragment {
                 Notification newNotification = new Notification(UserData.getInstance().uId, popUpReplyMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
                 DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(profileNotificationItem.getNotification().getSender().getId()), newNotification);
                 DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUId());
+                dialog.dismiss();
+            }
+        });
+
+        dialogBuilder.setView(notificationPopUp);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    public void createNewNotificationDialogType1(final View root, final ProfileNotificationItem profileNotificationItem) {
+        dialogBuilder = new AlertDialog.Builder(root.getContext());
+        final View notificationPopUp = getLayoutInflater().inflate(R.layout.popup_friend_request, null);
+
+        popUpSender = notificationPopUp.findViewById(R.id.notification_popup_sender);
+        popUpMessage = notificationPopUp.findViewById(R.id.notification_popup_message);
+        popUpDeclineButton = notificationPopUp.findViewById(R.id.notification_popup_decline_button);
+        popUpAcceptButton = notificationPopUp.findViewById(R.id.notification_popup_accept_button);
+
+        popUpSender.setText(profileNotificationItem.getNotification().getFrom());
+        popUpMessage.setText(profileNotificationItem.getNotification().getMessage());
+
+        popUpDeclineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        popUpAcceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserData.getInstance().friends.add(profileNotificationItem.getNotification().getSender().getId());
+                DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
+
+                DBService.getInstance().GetUser(profileNotificationItem.getNotification().getSender().getId(), new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        User user = (User) object;
+                        user.getFriends().add(UserData.getInstance().uId);
+                        DBService.getInstance().AddUser(user);
+                    }
+                });
                 dialog.dismiss();
             }
         });

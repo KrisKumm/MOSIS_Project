@@ -120,7 +120,6 @@ public class HomeFragment extends Fragment {
         toursGuideListView = root.findViewById(R.id.profile_home_tours_guide_list_view);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, getContext().MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         profileP = sharedPreferences.getString(PROFILE, "");
 
         if(profileP.equals("tourist")){

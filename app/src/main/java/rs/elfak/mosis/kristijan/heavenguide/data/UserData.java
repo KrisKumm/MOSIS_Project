@@ -8,7 +8,9 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 
@@ -29,6 +31,10 @@ public class UserData {
     public Bitmap friendPhoto;
     public Attraction attraction = null;
     public Bitmap attractionPhoto;
+
+    public User itsMeT;
+    public TourGuide itsMeG;
+    public Manager itsMeM;
 
 
     private static UserData instance = null;

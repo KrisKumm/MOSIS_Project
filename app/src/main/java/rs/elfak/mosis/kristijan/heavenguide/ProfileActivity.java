@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -63,6 +65,9 @@ public class ProfileActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    public RadioGroup radioGroupSearch;
+    public RadioButton profilesRadioButton, toursRadioButton, attractionsRadioButton;
 
     private ArrayList<SearchRecyclerItem> searchRecyclerItemArrayList;
 
@@ -117,13 +122,11 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         profileP = sharedPreferences.getString(PROFILE, "");
 
         relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
         createSearchItemList();
         buildRecyclerView();
-        setButtons();
         relativeLayoutSearch.setEnabled(false);
         relativeLayoutSearch.setVisibility(View.INVISIBLE);
 
@@ -136,9 +139,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
-
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
 //        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
 //            @Override
 //            public boolean onClose() {
@@ -204,15 +205,6 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(i1);
                 return true;
             case R.id.action_search:
-//                if(!relativeLayoutSearch.isEnabled()){
-//                    relativeLayoutSearch.setEnabled(true);
-//                    relativeLayoutSearch.setVisibility(View.VISIBLE);
-//                }
-//                else if(relativeLayoutSearch.isEnabled()){
-//                    relativeLayoutSearch.setEnabled(false);
-//                    relativeLayoutSearch.setVisibility(View.INVISIBLE);
-//                }
-
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(ProfileActivity.this, SettingsActivity.class);
@@ -253,59 +245,54 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent attractionActivity = new Intent(ProfileActivity.this , AttractionActivity.class );
                 startActivity(attractionActivity);
             }
-
-            @Override
-            public void onDeleteClick(int position) {
-                removeItem(position);
-            }
         });
     }
 
-    public void setButtons(){
-        buttonInsert = findViewById(R.id.button_insert);
-        buttonRemove = findViewById(R.id.button_remove);
-        editTextInsert = findViewById(R.id.edittext_insert);
-        editTextRemove = findViewById(R.id.edittext_remove);
-
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = Integer.parseInt(editTextInsert.getText().toString());
-               // insertItem(position);
-            }
-        });
-
-        buttonRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = Integer.parseInt(editTextRemove.getText().toString());
-                removeItem(position);
-            }
-        });
-    }
+//    public void setButtons(){
+//        buttonInsert = findViewById(R.id.button_insert);
+//        buttonRemove = findViewById(R.id.button_remove);
+//        editTextInsert = findViewById(R.id.edittext_insert);
+//        editTextRemove = findViewById(R.id.edittext_remove);
+//
+//        buttonInsert.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int position = Integer.parseInt(editTextInsert.getText().toString());
+//               // insertItem(position);
+//            }
+//        });
+//
+//        buttonRemove.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int position = Integer.parseInt(editTextRemove.getText().toString());
+//                removeItem(position);
+//            }
+//        });
+//    }
 
     public void insertItem(int position, Bitmap picture , String name) {
-        searchRecyclerItemArrayList.add(position, new SearchRecyclerItem(picture, name, ""));
+        searchRecyclerItemArrayList.add(position, new SearchRecyclerItem(picture, name));
         mAdapter.notifyItemInserted(position);
     }
-    public void removeItem(int position) {
-        searchRecyclerItemArrayList.remove(position);
-        mAdapter.notifyItemRemoved(position);
-    }
+//    public void removeItem(int position) {
+//        searchRecyclerItemArrayList.remove(position);
+//        mAdapter.notifyItemRemoved(position);
+//    }
+//
+//    public void changeItem(int position, String text) {
+//        searchRecyclerItemArrayList.get(position).changeText1(text);
+//        mAdapter.notifyItemChanged(position);
+//    }
 
-    public void changeItem(int position, String text) {
-        searchRecyclerItemArrayList.get(position).changeText1(text);
-        mAdapter.notifyItemChanged(position);
-    }
-
-    private void filter(String text){
-        ArrayList<SearchRecyclerItem> filteredList = new ArrayList<>();
-        for (SearchRecyclerItem item : searchRecyclerItemArrayList) {
-            if (item.getText1().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(item);
-            }
-        }
-        mAdapter.filterList(filteredList);
-    }
+//    private void filter(String text){
+//        ArrayList<SearchRecyclerItem> filteredList = new ArrayList<>();
+//        for (SearchRecyclerItem item : searchRecyclerItemArrayList) {
+//            if (item.getText1().toLowerCase().contains(text.toLowerCase())) {
+//                filteredList.add(item);
+//            }
+//        }
+//        mAdapter.filterList(filteredList);
+//    }
 
 }

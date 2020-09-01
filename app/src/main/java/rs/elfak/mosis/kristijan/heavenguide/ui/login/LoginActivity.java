@@ -181,6 +181,7 @@ public class LoginActivity extends AppCompatActivity {
                                         UserData.getInstance().userType = userType.guide;
                                         UserData.getInstance().friends = usr.getFriends();
                                         UserData.getInstance().notifications = usr.notifications;
+                                        UserData.getInstance().itsMeG = usr;
                                         startActivity(i);
                                         LoginActivity.this.finish();
                                     }
@@ -202,6 +203,7 @@ public class LoginActivity extends AppCompatActivity {
                                         UserData.getInstance().userType = userType.tourist;
                                         UserData.getInstance().friends = usr.getFriends();
                                         UserData.getInstance().notifications = usr.notifications;
+                                        UserData.getInstance().itsMeT = usr;
                                         startActivity(i);
                                         LoginActivity.this.finish();
                                     }
@@ -222,6 +224,7 @@ public class LoginActivity extends AppCompatActivity {
                                         UserData.getInstance().name = usr.getName();
                                         UserData.getInstance().userType = userType.manager;
                                         UserData.getInstance().notifications = usr.notifications;
+                                        UserData.getInstance().itsMeM = usr;
                                         startActivity(i);
                                         LoginActivity.this.finish();
                                     }

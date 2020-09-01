@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/notification_popup_receiver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:text="to: Receiver Name"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textStyle="italic"
+        android:textColor="@color/ic_me_icon2_background"/>
+
+    <EditText
+        android:id="@+id/notification_popup_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/notification_popup_receiver"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:hint="Enter your message here..."
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:textColor="@color/ic_me_icon2_background"
+        android:autofillHints="Enter your message here..."/>
+
+    <Button
+        android:id="@+id/notification_popup_send_new_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/notification_popup_message"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:text="SEND"
+        android:textColor="@color/ic_me_icon2_background"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
