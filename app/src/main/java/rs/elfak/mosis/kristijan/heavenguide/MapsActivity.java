@@ -81,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //Global attraction list for the ones in my radius
     public ArrayList<Attraction> attractionsAroundMe;
-    public ArrayList<Marker> attractionsAroundMeMarkers;
+    public ArrayList<Marker> attractionsAroundMeMarkers = new ArrayList<Marker>();
 
     private Switch sw_locationsupdates, sw_gps;
 
@@ -217,9 +217,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             markerOptions.position(latLng);
             markerOptions.title(attraction.getName());
             markerOptions.snippet("Attraction");
-            //Marker mark =
-            mMap.addMarker(markerOptions);
-            //attractionsAroundMeMarkers.add(mark);
+            Marker mark = mMap.addMarker(markerOptions);
+            attractionsAroundMeMarkers.add(mark);
+        }
+    }
+
+    private void removeAttractionsMarker(){
+        for(Marker marker: attractionsAroundMeMarkers){
+            marker.remove();
         }
     }
 
@@ -362,6 +367,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     .snippet("It me")
                                     .icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round))
                     );
+                    if(!attractionsAroundMeMarkers.isEmpty()){
+                        removeAttractionsMarker();
+                    }
                     getAttractions();
                 }
             });

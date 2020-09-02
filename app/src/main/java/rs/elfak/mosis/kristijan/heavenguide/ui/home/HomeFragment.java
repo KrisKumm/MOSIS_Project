@@ -25,6 +25,8 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
+import rs.elfak.mosis.kristijan.heavenguide.SettingsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourGuideAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
@@ -38,6 +40,8 @@ import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 
 public class HomeFragment extends Fragment {
+
+    public View rootView;
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String PROFILE = "profile";
@@ -136,16 +140,17 @@ public class HomeFragment extends Fragment {
         }
         //tourUserData = UserData.getInstance().tours;
 
+        rootView = root;
         return root;
     }
 
     public void fillToursList(final View root){
         toursListView = root.findViewById(R.id.profile_home_tours_list_view);
 
-        profileTours.add(new ProfileTourItem(R.drawable.baseline_west_black_18dp, "Region 1", "Start 1", "Vodja 1"));
-        profileTours.add(new ProfileTourItem(R.drawable.baseline_east_black_18dp, "Region 2", "Start 2", "Vodja 2"));
-        profileTours.add(new ProfileTourItem(R.drawable.baseline_south_black_18dp, "Region 3", "Start 3", "Vodja 3"));
-        profileTours.add(new ProfileTourItem(R.drawable.baseline_north_black_18dp, "Region 4", "Start 4", "Vodja 4"));
+//        profileTours.add(new ProfileTourItem(R.drawable.baseline_west_black_18dp, "Region 1", "Start 1", "Vodja 1"));
+//        profileTours.add(new ProfileTourItem(R.drawable.baseline_east_black_18dp, "Region 2", "Start 2", "Vodja 2"));
+//        profileTours.add(new ProfileTourItem(R.drawable.baseline_south_black_18dp, "Region 3", "Start 3", "Vodja 3"));
+//        profileTours.add(new ProfileTourItem(R.drawable.baseline_north_black_18dp, "Region 4", "Start 4", "Vodja 4"));
 
         toursAdapter = new ProfileTourAdapter((Activity) root.getContext(), profileTours);
         toursListView.setAdapter(toursAdapter);
@@ -161,10 +166,10 @@ public class HomeFragment extends Fragment {
     public void fillToursGuideList(final View root){
         toursGuideListView = root.findViewById(R.id.profile_home_tours_guide_list_view);
 
-        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 1 ", "Tura 1"));
-        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 2", "Tura 2"));
-        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 3", "Tura 3"));
-        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 4", "Tura 4"));
+//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 1 ", "Tura 1", ""));
+//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 2", "Tura 2", ""));
+//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 3", "Tura 3", ""));
+//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 4", "Tura 4", ""));
 
         toursGuideAdatpter = new ProfileTourGuideAdapter((Activity) root.getContext(), profileToursGuide);
         toursGuideListView.setAdapter(toursGuideAdatpter);
@@ -172,8 +177,10 @@ public class HomeFragment extends Fragment {
         toursGuideListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(rootView.getContext(), SettingsActivity.class);
+                startActivity(intent);
             }
         });
+
     }
 }
