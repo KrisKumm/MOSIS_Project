@@ -28,6 +28,7 @@ public class UserData {
     public GeoPoint location;
     public ArrayList<String> friends;
     public ArrayList<Notification> notifications;
+    public ArrayList<String> myTours;
     public User friend;
     public Bitmap friendPhoto;
     public Attraction attraction = null;

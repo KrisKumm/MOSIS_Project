@@ -2,6 +2,7 @@ package rs.elfak.mosis.kristijan.heavenguide.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,8 @@ public class ProfileTourAdapter extends BaseAdapter {
         TextView regionName = (TextView) itemView.findViewById(R.id.profile_home_tours_region_name_label);
         TextView startTime = (TextView) itemView.findViewById(R.id.profile_home_tours_start_time_label);
         ProfileTourItem profileTourItem = tours.get(i);
-        imageView.setImageResource(profileTourItem.getImageResource());
+        Bitmap image = profileTourItem.getImageResource();
+        imageView.setImageBitmap(Bitmap.createScaledBitmap(image,100, 100,false));
         guideName.setText(profileTourItem.getGuideName());
         regionName.setText(profileTourItem.getRegionName());
         startTime.setText(profileTourItem.getDateTime());

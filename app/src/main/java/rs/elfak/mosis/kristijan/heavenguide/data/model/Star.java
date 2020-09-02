@@ -4,6 +4,8 @@ import com.google.firebase.firestore.GeoPoint;
 
 public class Star {
 
+
+
     private String uid;
     private String comment;
     private String picture;
@@ -22,6 +24,7 @@ public class Star {
     public String getUid() {
         return uid;
     }
+    public void setUid(String uid) {this.uid = uid;}
 
     public String getComment() {
         return comment;

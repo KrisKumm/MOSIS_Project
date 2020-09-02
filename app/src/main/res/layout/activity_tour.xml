@@ -13,7 +13,7 @@
     <HorizontalScrollView
         android:id="@+id/scroll_view_tour_images"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:scrollbars="none">
