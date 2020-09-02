@@ -21,12 +21,10 @@ import androidx.lifecycle.ViewModelProviders;
 import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.OtherPersonActivity;
-import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
-import rs.elfak.mosis.kristijan.heavenguide.ProfileFriendsAdapter;
+import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileFriendsAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileFriendsItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
@@ -86,7 +84,7 @@ public class FriendsFragment extends Fragment {
                 public void onCallback(Object object) {
                     final User user = (User) object;
                     friendsUserData.add(user);
-                    StorageService.getInstance().downloadPhoto("tourist", user.getUId(), "cover", new FirebaseCallback() {
+                    StorageService.getInstance().downloadPhoto("tourist", user.getUid(), "cover", new FirebaseCallback() {
                         @Override
                         public void onCallback(Object object) {
                             friendPhotos.add((Bitmap) object);

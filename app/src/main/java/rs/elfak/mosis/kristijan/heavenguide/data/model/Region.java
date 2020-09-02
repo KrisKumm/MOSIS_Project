@@ -27,7 +27,7 @@ public class Region {
         this.attractions = attractionIDList;
     }
 
-    public String getUId() {
+    public String getUid() {
         return uid;
     }
 

@@ -1,6 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +12,15 @@ public class Manager{
     private String name;
     private String portrait;
     private ArrayList<String> tourGuides;
-    private ArrayList<DocumentReference> atractions;
-    private ArrayList<DocumentReference> tours;
+    private ArrayList<String> atractions;
+    private ArrayList<String> tours;
+    @Exclude
     public ArrayList<Notification> notifications;
 
 
     Manager(){}
 
-    Manager(String uId, String name, String portrait, ArrayList<String> tourGuides , ArrayList<DocumentReference> atractions, ArrayList<DocumentReference> tours){
+    Manager(String uId, String name, String portrait, ArrayList<String> tourGuides , ArrayList<String> atractions, ArrayList<String> tours){
         this.uId = uId;
         this.name = name;
         this.portrait = portrait;
@@ -27,7 +29,7 @@ public class Manager{
         this.tours = tours;
     }
 
-    public String getUId(){
+    public String getUid(){
         return this.uId;
     }
     public String getName(){
@@ -39,10 +41,10 @@ public class Manager{
     public ArrayList<String> getTourGuides() {
         return tourGuides;
     }
-    public ArrayList<DocumentReference> getAtractions(){
+    public ArrayList<String> getAtractions(){
         return this.atractions;
     }
-    public ArrayList<DocumentReference> getTours(){
+    public ArrayList<String> getTours(){
         return this.tours;
     }
 }

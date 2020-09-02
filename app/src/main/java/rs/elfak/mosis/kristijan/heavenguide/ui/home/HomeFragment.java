@@ -24,16 +24,13 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
-import rs.elfak.mosis.kristijan.heavenguide.ProfileFriendsAdapter;
-import rs.elfak.mosis.kristijan.heavenguide.ProfileTourAdapter;
-import rs.elfak.mosis.kristijan.heavenguide.ProfileTourGuideAdapter;
+import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourAdapter;
+import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourGuideAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileTourGuideItem;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileTourItem;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourGuideItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourItem;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;

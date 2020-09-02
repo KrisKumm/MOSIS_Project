@@ -1,4 +1,4 @@
-package rs.elfak.mosis.kristijan.heavenguide;
+package rs.elfak.mosis.kristijan.heavenguide.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,13 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileTourGuideItem;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileTourItem;
+import rs.elfak.mosis.kristijan.heavenguide.R;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourGuideItem;
 
 public class ProfileTourGuideAdapter extends BaseAdapter {
 

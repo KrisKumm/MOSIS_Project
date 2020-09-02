@@ -1,10 +1,9 @@
-package rs.elfak.mosis.kristijan.heavenguide;
+package rs.elfak.mosis.kristijan.heavenguide.adapters;
 
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -16,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import rs.elfak.mosis.kristijan.heavenguide.data.model.SearchRecyclerItem;
+import rs.elfak.mosis.kristijan.heavenguide.R;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.SearchRecyclerItem;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> implements Filterable {
 

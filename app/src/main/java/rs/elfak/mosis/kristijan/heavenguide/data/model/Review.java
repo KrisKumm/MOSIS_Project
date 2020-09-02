@@ -14,7 +14,7 @@ public class Review {
         this.comment = comment;
     }
 
-    public String getuId() {return uid;}
+    public String getUid() {return uid;}
 
     public void setUid(String id){ this.uid = id;}
 

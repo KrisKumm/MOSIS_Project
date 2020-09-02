@@ -1,6 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -12,7 +13,10 @@ public class User {
     protected String portrait;
     protected ArrayList<String> friends;
     protected GeoPoint location;
+    protected String myTourGroup;
+    @Exclude
     public ArrayList<Notification> notifications;
+
 
     public User(){
 
@@ -37,7 +41,7 @@ public class User {
         this.name = name;
     }
 
-    public String getUId(){
+    public String getUid(){
         return uid;
     }
 
@@ -54,6 +58,8 @@ public class User {
     public GeoPoint getLocation() {
         return location;
     }
+
+    public  String getMyTourGroup() {return  myTourGroup;}
 
     public void setLocation(GeoPoint location) {
         this.location = location;

@@ -1,4 +1,4 @@
-package rs.elfak.mosis.kristijan.heavenguide;
+package rs.elfak.mosis.kristijan.heavenguide.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileNotificationItem;
+import rs.elfak.mosis.kristijan.heavenguide.R;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileNotificationItem;
 
 public class ProfileNotificationAdapter extends BaseAdapter {
 

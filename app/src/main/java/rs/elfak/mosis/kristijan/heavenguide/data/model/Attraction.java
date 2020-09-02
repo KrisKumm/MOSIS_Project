@@ -2,6 +2,7 @@ package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Attraction {
     private GeoPoint location;
     private String myRegion;
     private ArrayList<Integer> stars;
+    @Exclude
     public ArrayList<Review> reviews;
 
     public Attraction(){}

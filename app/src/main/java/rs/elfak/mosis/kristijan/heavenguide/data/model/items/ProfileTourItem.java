@@ -1,4 +1,4 @@
-package rs.elfak.mosis.kristijan.heavenguide.data.model;
+package rs.elfak.mosis.kristijan.heavenguide.data.model.items;
 
 public class ProfileTourItem {
     private int mImageResource;

@@ -2,6 +2,7 @@ package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Tour{
     private ArrayList<String> tourGuides;
     private ArrayList<String> attractions;
     private ArrayList<String> pendingTourists;
+    @Exclude
     public ArrayList<Review> reviews;
 
     public Tour(){}
@@ -44,7 +46,7 @@ public class Tour{
         this.pendingTourists = pendingTourists;
     }
 
-    public String getUId(){
+    public String getUid(){
         return this.uid;
     }
 

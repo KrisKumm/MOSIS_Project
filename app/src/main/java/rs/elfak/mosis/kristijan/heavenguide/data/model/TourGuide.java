@@ -1,5 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
+import com.google.firebase.firestore.Exclude;
+
 import java.util.ArrayList;
 
 public class TourGuide extends User {
@@ -7,7 +9,7 @@ public class TourGuide extends User {
     private String description;
     private ArrayList<String> myTours;
     private String managerID;
-    public ArrayList<Notification> notifications;
+
 
     public  TourGuide(){}
 

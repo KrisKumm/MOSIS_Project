@@ -12,7 +12,7 @@ public class TourGroup {
     private boolean readyAll;
     private GeoPoint tourGuideLocation;
     private ArrayList<String> touristIDList;
-    private ArrayList<String> starLocationIdList;
+    private ArrayList<String> stars;
     // A DA TURIMO OVDE ONE ZVEZDICE NA MAPI, PA DA BUDU NA MAPI SAMO DOK TRAJE TURA??
 
     public  TourGroup(){}
@@ -24,11 +24,11 @@ public class TourGroup {
         this.readyAll = readyAll;
         this.tourGuideLocation = tourGuideLocation;
         this.touristIDList = touristIDList;
-        this.starLocationIdList = starLocationIdList;
+        this.stars = starLocationIdList;
     }
 
 
-    public String getUId() {
+    public String getUid() {
         return uid;
     }
 
@@ -51,7 +51,7 @@ public class TourGroup {
     }
 
     public ArrayList<String> getStarLocationIdList() {
-        return starLocationIdList;
+        return stars;
     }
 
     public GeoPoint getTourGuideLocation() {

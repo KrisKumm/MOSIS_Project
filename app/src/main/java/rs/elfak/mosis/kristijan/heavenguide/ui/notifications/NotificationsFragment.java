@@ -19,17 +19,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.firebase.firestore.DocumentReference;
-
 import java.util.ArrayList;
 
-import rs.elfak.mosis.kristijan.heavenguide.ProfileFriendsAdapter;
-import rs.elfak.mosis.kristijan.heavenguide.ProfileNotificationAdapter;
+import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileNotificationAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileNotificationItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileNotificationItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
@@ -123,7 +119,7 @@ public class NotificationsFragment extends Fragment {
         popUpOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUId());
+                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
                 dialog.dismiss();
             }
         });
@@ -143,7 +139,7 @@ public class NotificationsFragment extends Fragment {
             public void onClick(View view) {
                 Notification newNotification = new Notification(UserData.getInstance().uId, popUpReplyMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
                 DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(profileNotificationItem.getNotification().getSender().getId()), newNotification);
-                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUId());
+                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
                 dialog.dismiss();
             }
         });

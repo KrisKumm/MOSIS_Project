@@ -12,15 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Attr;
-
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileFriendsAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileNotificationItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileFriendsItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Review;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;

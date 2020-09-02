@@ -4,29 +4,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.core.view.MenuItemCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,19 +31,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.adapters.RecyclerViewAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.SearchRecyclerItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.items.SearchRecyclerItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
-import rs.elfak.mosis.kristijan.heavenguide.MyAppSingleton;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -299,7 +288,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onCallback(Object object) {
                 searchTours = (ArrayList<Tour>) object;
                 for(final Tour tour : searchTours){
-                    StorageService.getInstance().downloadPhoto("tour", tour.getUId(), "cover", new FirebaseCallback() {
+                    StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
                         @Override
                         public void onCallback(Object object) {
                             insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
@@ -316,7 +305,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onCallback(Object object) {
                 searchUsers = (ArrayList<User>) object;
                 for(final User user : searchUsers){
-                    StorageService.getInstance().downloadPhoto("tourist", user.getUId(), "cover", new FirebaseCallback() {
+                    StorageService.getInstance().downloadPhoto("tourist", user.getUid(), "cover", new FirebaseCallback() {
                         @Override
                         public void onCallback(Object object) {
                             insertItem(searchPictures.size(), (Bitmap) object, user.getName());

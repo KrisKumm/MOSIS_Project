@@ -1,4 +1,6 @@
-package rs.elfak.mosis.kristijan.heavenguide.data.model;
+package rs.elfak.mosis.kristijan.heavenguide.data.model.items;
+
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 
 public class ProfileNotificationItem {
     private int mImageResource;

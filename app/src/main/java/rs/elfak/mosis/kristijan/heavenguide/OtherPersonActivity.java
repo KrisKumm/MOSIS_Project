@@ -69,8 +69,8 @@ public class OtherPersonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String message = UserData.getInstance().name + " would like to add you as their friend. Shall I connect you two? You can accept below by clicking ACCEPT";
-                Notification newNotification = new Notification(otherUser.getUId(), message, UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 1);
-                DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUId()), newNotification);
+                Notification newNotification = new Notification(otherUser.getUid(), message, UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 1);
+                DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUid()), newNotification);
                 Toast.makeText(OtherPersonActivity.this, "Notification sent!", Toast.LENGTH_SHORT).show();
                 addFriendButton.setEnabled(false);
             }
@@ -79,7 +79,7 @@ public class OtherPersonActivity extends AppCompatActivity {
         removeFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserData.getInstance().friends.remove(otherUser.getUId());
+                UserData.getInstance().friends.remove(otherUser.getUid());
                 DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
 
                 otherUser.getFriends().remove(UserData.getInstance().uId);
@@ -102,8 +102,8 @@ public class OtherPersonActivity extends AppCompatActivity {
                 popUpSendButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Notification newNotification = new Notification(otherUser.getUId(), popUpMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
-                        DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUId()), newNotification);
+                        Notification newNotification = new Notification(otherUser.getUid(), popUpMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
+                        DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUid()), newNotification);
                         dialog.dismiss();
                     }
                 });
@@ -117,7 +117,7 @@ public class OtherPersonActivity extends AppCompatActivity {
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBService.getInstance().DeleteUser(otherUser.getUId());
+                DBService.getInstance().DeleteUser(otherUser.getUid());
                 finish();
             }
         });

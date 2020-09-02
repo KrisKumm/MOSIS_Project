@@ -150,11 +150,11 @@ public class DBService
     public void AddTourGroup(TourGroup tourGroup){
 
         DocumentReference documentReference;
-        if(tourGroup.getUId() == null){
+        if(tourGroup.getUid() == null){
             documentReference = fStore.collection("tour-groups").document();
             tourGroup.setUid(documentReference.getId());
         }else{
-            documentReference = fStore.collection("tour-groups").document(tourGroup.getUId());
+            documentReference = fStore.collection("tour-groups").document(tourGroup.getUid());
         }
         documentReference.set(tourGroup).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -209,11 +209,11 @@ public class DBService
     public void AddRegion(Region region){
 
         DocumentReference documentReference;
-        if(region.getUId() == null){
+        if(region.getUid() == null){
             documentReference = fStore.collection("regions").document();
             region.setUid(documentReference.getId());
         }else{
-            documentReference = fStore.collection("regions").document(region.getUId());
+            documentReference = fStore.collection("regions").document(region.getUid());
         }
         documentReference.set(region).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -300,11 +300,11 @@ public class DBService
     public void AddTour(Tour tour){
 
         DocumentReference documentReference;
-        if(tour.getUId() == null){
+        if(tour.getUid() == null){
             documentReference = fStore.collection("tours").document();
             tour.setUid(documentReference.getId());
         }else{
-            documentReference = fStore.collection("tours").document(tour.getUId());
+            documentReference = fStore.collection("tours").document(tour.getUid());
         }
         documentReference.set(tour).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -318,8 +318,8 @@ public class DBService
                         //Log.w(TAG, "Error adding document", e);
                     }
                 });
-        if(tour.getUId() == null){
-            fStore.collection("managers").document(tour.getUId())
+        if(tour.getUid() == null){
+            fStore.collection("managers").document(tour.getUid())
                     .update( "tours" , FieldValue.arrayUnion( documentReference ))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -331,7 +331,7 @@ public class DBService
     }
 
     public void AddUser(User user){
-        DocumentReference documentReference = fStore.collection("users").document(user.getUId());
+        DocumentReference documentReference = fStore.collection("users").document(user.getUid());
 
         documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -392,7 +392,7 @@ public class DBService
     }
 
     public void AddManager(Manager manager){
-        DocumentReference documentReference = fStore.collection("managers").document(manager.getUId());
+        DocumentReference documentReference = fStore.collection("managers").document(manager.getUid());
 
         documentReference.set(manager).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -431,7 +431,7 @@ public class DBService
     }
 
     public void AddGuide(TourGuide guide){
-        DocumentReference documentReference = fStore.collection("guides").document(guide.getUId());
+        DocumentReference documentReference = fStore.collection("guides").document(guide.getUid());
 
         documentReference.set(guide).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
