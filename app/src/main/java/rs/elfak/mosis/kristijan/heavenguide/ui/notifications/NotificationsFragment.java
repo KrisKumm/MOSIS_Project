@@ -16,8 +16,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 
@@ -64,6 +67,8 @@ public class NotificationsFragment extends Fragment {
 
         return root;
     }
+
+
 
     public void fillNotificationsList(final View root){
         notificationListView = root.findViewById(R.id.profile_notification_list_view);

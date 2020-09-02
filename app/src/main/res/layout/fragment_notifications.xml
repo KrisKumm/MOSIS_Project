@@ -40,6 +40,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_notifications"/>
 
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

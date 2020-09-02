@@ -42,16 +42,23 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.collect.Maps;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
+import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
@@ -67,27 +74,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //Global marker for my location
     public Marker meMarker;
+    //Global marker for my guide of current tour
+    public Marker guideMarker;
+    //Global marker list of markers for my friends
+    public ArrayList<Marker> friendsMarker;
 
-    Switch sw_locationsupdates, sw_gps;
+    //Global attraction list for the ones in my radius
+    public ArrayList<Attraction> attractionsAroundMe;
+    public ArrayList<Marker> attractionsAroundMeMarkers;
+
+    private Switch sw_locationsupdates, sw_gps;
 
     // variable to remember if we are tracking location or not
     boolean updateOn = false;
 
     // current location
     Location currentLocation;
-
-
     // list of saved locations
     List<Location> savedLocations;
-
     // Location request is a config file for all settings related to FusedLocationProviderClient
     LocationRequest locationRequest;
-
     LocationCallback locationCallBack;
-
     // Google's API fot location services. The Majority of the app functions using this class.
     FusedLocationProviderClient fusedLocationProviderClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +113,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //tourServiceIO();
     }
 
-
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -120,72 +126,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //mMap.setOnMarkerClickListener((OnMarkerClickListener) this);
-
-//         //Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
         LatLng start = new LatLng(43.3209, 21.8958);
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(start));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 14f));
-
         mMap.setBuildingsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
         mMap.getUiSettings().setRotateGesturesEnabled(true);
-
-//        for(Location location: savedLocations){
-//            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//            MarkerOptions markerOptions = new MarkerOptions();
-//            markerOptions.position(latLng);
-//            markerOptions.title("Lat:" + location.getLatitude() + " Long:" + location.getLongitude());
-//            mMap.addMarker(markerOptions);
-//        }
-
-        LatLng home = new LatLng(43.320922, 21.894367);
-        mMap.addMarker(
-                new MarkerOptions()
-                        .position(home)
-                        .title("Kris")
-                        .snippet("It me")
-                        //.icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round))
-        );
-        mMap.addCircle(
-                new CircleOptions()
-                        .center(home)
-                        .radius(10.0)
-                        .strokeWidth(2f)
-                        .strokeColor(Color.BLACK)
-                        .fillColor(Color.argb(70, 200, 80, 80))
-        );
-
-        LatLng tvrdjavaCentar = new LatLng(43.325864, 21.895371);
-        LatLng tvrdjava1 = new LatLng(43.3236536, 21.8959328);
-        LatLng tvrdjava2 = new LatLng(43.325232, 21.892303);
-        LatLng tvrdjava3 = new LatLng(43.326616, 21.892664);
-        LatLng tvrdjava4 = new LatLng(43.327764, 21.895554);
-        LatLng tvrdjava5 = new LatLng(43.326924, 21.898051);
-        LatLng tvrdjava6 = new LatLng(43.325790, 21.898403);
-        mMap.addMarker(
-                new MarkerOptions()
-                        .position(tvrdjavaCentar)
-                        .title("Tvrdjava")
-                        .snippet("Centralna tacka tvrdjave")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        );
-        mMap.addPolygon(
-                new PolygonOptions()
-                        .add(tvrdjava1, tvrdjava2, tvrdjava3, tvrdjava4, tvrdjava5, tvrdjava6, tvrdjava1)
-                        .strokeWidth(5f)
-                        .strokeColor(Color.BLACK)
-                        .fillColor(Color.argb(70, 80, 80, 200))
-        );
-
-        sw_locationsupdates = findViewById(R.id.sw_locationsupdates);
-        sw_gps = findViewById(R.id.sw_gps);
 
         //set all properties of LocationRequest
         locationRequest = new LocationRequest();
@@ -193,24 +141,97 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationRequest.setInterval(1000 * DEFAULT_UPDATE_INTERVAL);
         //how often does the location check occur when set to the most frequent update?
         locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
-
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
         //event that is triggered whenever the update interval is met.
         locationCallBack = new LocationCallback(){
-
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-
                 // save the location
                 if(meMarker!=null){
                     meMarker.remove();
                 }
                 updateGPS();
+                //getAttractions();
             }
         };
 
+        mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if(marker.equals(meMarker)){
+                    Intent i = new Intent(MapsActivity.this, ProfileActivity.class);
+                    //i.putExtra("ATTRACTION","yyDEErmCMJvZPJov00NT");
+                    startActivity(i);
+                    //finish();
+                    return true;
+                }
+                if(marker.getSnippet().equals("Attraction")){
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                    marker.showInfoWindow();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                if(marker.getSnippet().equals("Attraction")){
+                    for (Attraction attraction: attractionsAroundMe) {
+                        if(attraction.getName().equals(marker.getTitle()))
+                        {
+                            UserData.getInstance().attraction = attraction;
+                            UserData.getInstance().attractionPhoto = null;
+                            Intent i = new Intent(MapsActivity.this, AttractionActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                }
+            }
+        });
+
+        createMeMarks();
+        createRegions();
+        setSwitches();
+        updateGPS();
+    }
+
+    private void getAttractions() {
+        GeoPoint topLeft = new GeoPoint(meMarker.getPosition().latitude + 0.1, meMarker.getPosition().longitude - 0.1);
+        GeoPoint bottomRight = new GeoPoint(meMarker.getPosition().latitude - 0.1, meMarker.getPosition().longitude + 0.1);
+        DBService.getInstance().GetAttractionsByLocation(topLeft, bottomRight, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                attractionsAroundMe = (ArrayList<Attraction>) object;
+                drawAttractionsMarker();
+            }
+        });
+    }
+
+    private void drawAttractionsMarker() {
+        for(Attraction attraction: attractionsAroundMe){
+            LatLng latLng = new LatLng(attraction.getLocation().getLatitude(), attraction.getLocation().getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(attraction.getName());
+            markerOptions.snippet("Attraction");
+            //Marker mark =
+            mMap.addMarker(markerOptions);
+            //attractionsAroundMeMarkers.add(mark);
+        }
+    }
+
+    private void setSwitches() {
+        sw_locationsupdates = findViewById(R.id.sw_locationsupdates);
+        sw_gps = findViewById(R.id.sw_gps);
+        sw_gps.setChecked(true);
+        sw_locationsupdates.setChecked(true);
+//        sw_gps.setVisibility(View.INVISIBLE);
+//        sw_locationsupdates.setVisibility(View.INVISIBLE);
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        startLocationUpdates();
         sw_gps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,22 +258,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+    }
 
-        updateGPS();
+    private void createRegions() {
+        LatLng tvrdjavaCentar = new LatLng(43.325864, 21.895371);
+        LatLng tvrdjava1 = new LatLng(43.3236536, 21.8959328);
+        LatLng tvrdjava2 = new LatLng(43.325232, 21.892303);
+        LatLng tvrdjava3 = new LatLng(43.326616, 21.892664);
+        LatLng tvrdjava4 = new LatLng(43.327764, 21.895554);
+        LatLng tvrdjava5 = new LatLng(43.326924, 21.898051);
+        LatLng tvrdjava6 = new LatLng(43.325790, 21.898403);
 
-        mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                if(marker.equals(meMarker)){
-                    Intent i = new Intent(MapsActivity.this, AttractionActivity.class);
-                    i.putExtra("ATTRACTION","fA2Pk8nEl7QEE0bN4H8j");
-                    startActivity(i);
-                    finish();
-                    return true;
-                }
-                return false;
-            }
-        });
+        mMap.addMarker(
+                new MarkerOptions()
+                        .position(tvrdjavaCentar)
+                        .title("Tvrdjava")
+                        .snippet("Centralna tacka tvrdjave")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        );
+        mMap.addPolygon(
+                new PolygonOptions()
+                        .add(tvrdjava1, tvrdjava2, tvrdjava3, tvrdjava4, tvrdjava5, tvrdjava6, tvrdjava1)
+                        .strokeWidth(5f)
+                        .strokeColor(Color.BLACK)
+                        .fillColor(Color.argb(70, 80, 80, 200))
+        );
+    }
+
+    private void createMeMarks() {
+        LatLng home = new LatLng(43.320922, 21.894367);
+        mMap.addMarker(
+                new MarkerOptions()
+                        .position(home)
+                        .title("Kris")
+                        .snippet("It me")
+                //.icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round))
+        );
+        mMap.addCircle(
+                new CircleOptions()
+                        .center(home)
+                        .radius(10.0)
+                        .strokeWidth(2f)
+                        .strokeColor(Color.BLACK)
+                        .fillColor(Color.argb(70, 200, 80, 80))
+        );
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
@@ -294,23 +343,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // get permissions from the user to track GPS
         // get the current location from the fused client
         // update the UI - i.e. set all properties in their associated text view items.
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             // user provided the permisssion
-
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
                     // we got permissions. Put the values of location. XXX into the UI components.
-
                     currentLocation = location;
-
                     if(meMarker!=null){
                         meMarker.remove();
                     }
-
                     LatLng meLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                     meMarker = mMap.addMarker(
                             new MarkerOptions()
@@ -319,12 +362,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     .snippet("It me")
                                     .icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round))
                     );
+                    getAttractions();
                 }
             });
         }
         else {
             // permissions not granted yet.
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
             }
