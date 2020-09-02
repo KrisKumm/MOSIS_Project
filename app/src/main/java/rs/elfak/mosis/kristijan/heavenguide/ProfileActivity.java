@@ -40,6 +40,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
+import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
 public class ProfileActivity extends AppCompatActivity {

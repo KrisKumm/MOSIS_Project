@@ -1,6 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide.ui.home;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourItem;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
+import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 
 public class HomeFragment extends Fragment {
 
@@ -95,14 +97,7 @@ public class HomeFragment extends Fragment {
         favTours.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBService.getInstance().GetAttractionsByLocation(new GeoPoint(5, 5),
-                        new GeoPoint(-5, -5), new FirebaseCallback() {
-                            @Override
-                            public void onCallback(Object object) {
-                                ArrayList<Attraction> attractions = (ArrayList<Attraction>) object;
-                                Toast.makeText( getContext() , object.toString(), Toast.LENGTH_LONG);
-                            }
-                        });
+
             }
         });
 

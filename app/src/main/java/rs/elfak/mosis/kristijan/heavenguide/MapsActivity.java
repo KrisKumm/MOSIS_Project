@@ -50,7 +50,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.List;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
+import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -59,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final int FAST_UPDATE_INTERVAL = 2;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private boolean tourBegun;
 
     private GoogleMap mMap;
 
@@ -72,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // current location
     Location currentLocation;
+
 
     // list of saved locations
     List<Location> savedLocations;
@@ -96,8 +100,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //        MyAppSingleton myApplication = (MyAppSingleton)getApplicationContext();
 //        savedLocations = myApplication.getMyLocations();
-
+        tourBegunCheck();
+        //tourServiceIO();
     }
+
+
+
 
     /**
      * Manipulates the map once available.
@@ -322,7 +330,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+    private void tourBegunCheck() {
+        if(UserData.getInstance().tourGroupId != null)
+            tourBegun = true;
+        else
+            tourBegun = false;
+    }
+    private void tourServiceIO() {
+        if(tourBegun){
+            Intent service = new Intent(this, TourService.class);
+            service.getExtras().putString("TOUR_GROUP", UserData.getInstance().tourGroupId);
+            startService(service);
+        }
+        else{
+            stopService(new Intent(this, TourService.class));
+        }
 
+    }
     public void onGroupUpdate(String id){
         final DocumentReference docRef = fStore.collection("tour-groups").document(id);
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {

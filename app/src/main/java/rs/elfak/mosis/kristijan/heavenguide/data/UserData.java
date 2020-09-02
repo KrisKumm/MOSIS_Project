@@ -34,6 +34,7 @@ public class UserData {
     public Bitmap attractionPhoto;
     public Tour tour;
     public Bitmap tourPhoto;
+    public String tourGroupId;
 
     public User itsMeT;
     public TourGuide itsMeG;

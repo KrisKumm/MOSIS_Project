@@ -8,9 +8,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -178,6 +182,16 @@ public class DBService
                 firebaseCallback.onCallback(documentSnapshot.toObject(TourGroup.class));
             }
         });
+    }
+    public ListenerRegistration OnTourGroupUpdate(String id, final FirebaseCallback firebaseCallback){
+        DocumentReference docRef = fStore.collection("tour-groups").document(id);
+        ListenerRegistration subscription = docRef.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot snapshot, FirebaseFirestoreException e) {
+                firebaseCallback.onCallback(snapshot.toObject(TourGroup.class));
+            }
+        });
+        return subscription;
     }
     public void DeleteTourGroup(String id){
         final DocumentReference documentReference = fStore.collection("tour-groups").document(id);

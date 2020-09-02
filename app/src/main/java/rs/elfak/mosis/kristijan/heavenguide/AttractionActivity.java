@@ -32,7 +32,7 @@ public class AttractionActivity extends AppCompatActivity {
     private TextView attractionDescription;
     private ListView reviewList;
 
-    //ReviewListAdapter & ReviewListItem & ReviewListItemArray
+//    ReviewListAdapter & ReviewListItem & ReviewListItemArray
 //    private RecyclerViewAdapter mAdapter;
 //    private ArrayList<SearchRecyclerItem> searchRecyclerItemArrayList;
 
@@ -89,12 +89,6 @@ public class AttractionActivity extends AppCompatActivity {
        setCoverPhoto();
        setReviewsInfo();
 
-       userTypeCheck();
-       //PROMENI uId da pise uid za sve i dodaj da zadaja id kada pravi sve
-    }
-
-    private void userTypeCheck(){
-        //TODO ukloni ili dodaj dugmice za managera ili vodica ili turistu
     }
 
     private void setCoverPhoto(){

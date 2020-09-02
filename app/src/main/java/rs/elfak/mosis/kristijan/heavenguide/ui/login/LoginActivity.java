@@ -188,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                                         UserData.getInstance().userType = userType.guide;
                                         UserData.getInstance().friends = usr.getFriends();
                                         UserData.getInstance().notifications = usr.notifications;
+                                        UserData.getInstance().tourGroupId = usr.getMyTourGroup();
                                         UserData.getInstance().itsMeG = usr;
                                         startActivity(i);
                                         LoginActivity.this.finish();
@@ -210,6 +211,7 @@ public class LoginActivity extends AppCompatActivity {
                                         UserData.getInstance().userType = userType.tourist;
                                         UserData.getInstance().friends = usr.getFriends();
                                         UserData.getInstance().notifications = usr.notifications;
+                                        UserData.getInstance().tourGroupId = usr.getMyTourGroup();
                                         UserData.getInstance().itsMeT = usr;
                                         startActivity(i);
                                         LoginActivity.this.finish();
