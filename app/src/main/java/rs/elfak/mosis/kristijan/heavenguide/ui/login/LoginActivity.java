@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +38,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
@@ -45,6 +47,7 @@ import rs.elfak.mosis.kristijan.heavenguide.RegisterActivity;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
@@ -172,6 +175,10 @@ public class LoginActivity extends AppCompatActivity {
 ////
 ////                            DBService.getInstance().AddAttraction(new Attraction(null , "Cegar", "stace mi opis", null,
 ////                                    new GeoPoint( 0,0) , stars ,"okle mi"), "sadas");
+//                            DBService.getInstance().AddTour(new Tour( null, "", "", "Turaa", "eve ga", null, new GeoPoint(0,0)
+//                                    ,new Timestamp(new Date(2020, 9, 10 , 13,30))
+//                                    ,new Timestamp(new Date(2020, 9, 10 , 18,30)),
+//                                    "",new ArrayList<String>() , new ArrayList<String>(),new ArrayList<String>() ));
                             if(tourGuideRB.isChecked()){
                                 DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
                                     @Override

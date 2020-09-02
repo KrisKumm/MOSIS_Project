@@ -63,14 +63,7 @@ public class AttractionActivity extends AppCompatActivity {
             }
         });
 
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                myAttraction.getStars().set((int)v , myAttraction.getStars().get((int) v) + 1 );
-                DBService.getInstance().AddAttraction(myAttraction, "");
-                ratingBar.setEnabled(false);
-            }
-        });
+
         getAttraction();
     }
 
@@ -131,6 +124,15 @@ public class AttractionActivity extends AppCompatActivity {
             i++;
         }
         ratingBar.setRating(rating/sum);
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                myAttraction.getStars().set((int)v - 1 , myAttraction.getStars().get((int) v - 1 ) + 1 );
+                DBService.getInstance().AddAttraction(myAttraction, "");
+                ratingBar.setEnabled(false);
+            }
+        });
         //TODO jos nismo odlucili kako ce da racunamo ocenu za bilo sta
     }
 }

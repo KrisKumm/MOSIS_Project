@@ -16,6 +16,7 @@ import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.ProfileFriendsItem;
@@ -79,19 +80,27 @@ public class TourActivity extends AppCompatActivity {
         });
 
 
-        getTour(getIntent().getExtras().getString("TOUR"));
+        getTour();
     }
 
-    public void getTour(final String id){
-        DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                Tour tour = (Tour) object;
-                myTour = tour;
-                setTourInfo();
-                userTypeCheck();
-            }
-        });
+    public void getTour(){
+
+        if(UserData.getInstance().tour != null){
+            myTour = UserData.getInstance().tour;
+            setTourInfo();
+        }
+        else{
+            String id = getIntent().getExtras().getString("TOUR");
+            DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    Tour tour = (Tour) object;
+                    myTour = tour;
+                    setTourInfo();
+                    userTypeCheck();
+                }
+            });
+        }
     }
 
     public void setTourInfo(){

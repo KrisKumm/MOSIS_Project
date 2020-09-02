@@ -24,9 +24,9 @@ public class Tour{
     private ArrayList<String> pendingTourists;
     public ArrayList<Review> reviews;
 
-    Tour(){}
+    public Tour(){}
 
-    Tour(String uId, String managerId, String guideId, String name, String description, String portrait, GeoPoint location,
+    public Tour(String uId, String managerId, String guideId, String name, String description, String portrait, GeoPoint location,
          Timestamp startsAt, Timestamp endsAt, String myRegion, ArrayList<String> tourGuides, ArrayList<String> attractions,
          ArrayList<String> pendingTourists){
         this.uid = uId;
