@@ -26,6 +26,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Region;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Review;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Star;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
@@ -65,7 +66,7 @@ public class DBService
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 final Attraction attraction = documentSnapshot.toObject(Attraction.class);
-                firebaseCallback.onCallback(attraction);
+
                 getReviews(documentReference, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {
@@ -365,7 +366,8 @@ public class DBService
                getNotifications(documentReference, new FirebaseCallback() {
                    @Override
                    public void onCallback(Object object) {
-                       user.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                       if(user != null)
+                            user.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
                        firebaseCallback.onCallback(user);
                    }
                });
@@ -404,6 +406,9 @@ public class DBService
     public DocumentReference GetUserReference(String id){
         return fStore.collection("users").document(id);
     }
+    public DocumentReference GetTourGroupRefrence(String id){
+        return fStore.collection("tour-groups").document(id);
+    }
 
     public void AddManager(Manager manager){
         DocumentReference documentReference = fStore.collection("managers").document(manager.getUid());
@@ -426,7 +431,8 @@ public class DBService
                 getNotifications(documentReference, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {
-                        manager.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                        if(manager != null)
+                            manager.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
                         firebaseCallback.onCallback(manager);
                     }
                 });
@@ -465,7 +471,8 @@ public class DBService
                 getNotifications(documentReference, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {
-                        guide.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                        if(guide != null)
+                            guide.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
                         firebaseCallback.onCallback(guide);
                     }
                 });
@@ -543,6 +550,55 @@ public class DBService
                 firebaseCallback.onCallback(notifications);
             }
         });
+    }
+
+    public void AddStar(DocumentReference documentReference, Star star){
+        // treba da se doda kod za ostali tip notifikacija
+        DocumentReference df = documentReference.collection("stars").document();
+        star.setUid(df.getId());
+        df.set(star).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //DODAJ TOST AKO OCES
+            }
+        });
+    }
+    public void DeleteStar(DocumentReference documentReference, String id){
+
+        documentReference.collection("stars").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // URADI NESTO AKO OCES
+            }
+        });
+    }
+    public void getStars(DocumentReference documentReference, final FirebaseCallback firebaseCallback){
+
+        final ArrayList<Star> stars = new ArrayList<Star>();
+        documentReference.collection("stars").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for (DocumentSnapshot doc: queryDocumentSnapshots) {
+                    stars.add(doc.toObject(Star.class));
+                }
+                firebaseCallback.onCallback(stars);
+            }
+        });
+    }
+    public ListenerRegistration OnStarsUpdate(DocumentReference df, String id, final FirebaseCallback firebaseCallback){
+        Query query = df.collection("stars");
+        ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
+                ArrayList<Star> stars = new ArrayList<Star>();
+                for(DocumentSnapshot ds : snapshot){
+                    stars.add(ds.toObject(Star.class));
+                }
+                firebaseCallback.onCallback(stars);
+            }
+        });
+        return subscription;
     }
 
 }

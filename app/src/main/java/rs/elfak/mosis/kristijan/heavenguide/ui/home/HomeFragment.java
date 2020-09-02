@@ -27,11 +27,14 @@ import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.SettingsActivity;
+import rs.elfak.mosis.kristijan.heavenguide.TourActivity;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourGuideAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourGuideItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourItem;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
@@ -64,7 +67,7 @@ public class HomeFragment extends Fragment {
     private ProfileTourAdapter toursAdapter;
 
     private ListView toursGuideListView;
-    //private ArrayList<Tour> tourGuideUserData;
+    private ArrayList<Tour> myTours = new ArrayList<Tour>();
     private ArrayList<ProfileTourGuideItem> profileToursGuide = new ArrayList<>();
     private ProfileTourGuideAdapter toursGuideAdatpter;
 
@@ -88,7 +91,7 @@ public class HomeFragment extends Fragment {
         StorageService.getInstance().downloadPhoto(UserData.getInstance().userType.toString(), UserData.getInstance().uId, "cover", new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
-                avatar.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  avatar.getWidth(), avatar.getHeight(),false));
+                avatar.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  avatar.getWidth(), avatar.getHeight(), false));
             }
         });
 
@@ -147,18 +150,38 @@ public class HomeFragment extends Fragment {
     public void fillToursList(final View root){
         toursListView = root.findViewById(R.id.profile_home_tours_list_view);
 
-//        profileTours.add(new ProfileTourItem(R.drawable.baseline_west_black_18dp, "Region 1", "Start 1", "Vodja 1"));
-//        profileTours.add(new ProfileTourItem(R.drawable.baseline_east_black_18dp, "Region 2", "Start 2", "Vodja 2"));
-//        profileTours.add(new ProfileTourItem(R.drawable.baseline_south_black_18dp, "Region 3", "Start 3", "Vodja 3"));
-//        profileTours.add(new ProfileTourItem(R.drawable.baseline_north_black_18dp, "Region 4", "Start 4", "Vodja 4"));
-
         toursAdapter = new ProfileTourAdapter((Activity) root.getContext(), profileTours);
         toursListView.setAdapter(toursAdapter);
+
+        getMyTours(new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                final Tour tura = (Tour) object;
+                DBService.getInstance().GetGuide(tura.getGuideId(), new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        final TourGuide guide = (TourGuide) object;
+                        StorageService.getInstance().downloadPhoto("guide", ((TourGuide) object).getUid(), "cover", new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                profileTours.add(new ProfileTourItem((Bitmap) object, "Nis", tura.getStartsAt(), guide.getName() , tura));
+                                toursAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                    }
+                });
+
+            }
+        });
 
         toursListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(rootView.getContext(), TourActivity.class);
+                UserData.getInstance().tour = myTours.get(i);
+                UserData.getInstance().tourPhoto = null;
+                startActivity(intent);
             }
         });
     }
@@ -166,21 +189,40 @@ public class HomeFragment extends Fragment {
     public void fillToursGuideList(final View root){
         toursGuideListView = root.findViewById(R.id.profile_home_tours_guide_list_view);
 
-//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 1 ", "Tura 1", ""));
-//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 2", "Tura 2", ""));
-//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 3", "Tura 3", ""));
-//        profileToursGuide.add(new ProfileTourGuideItem("Danas - Sutra 4", "Tura 4", ""));
-
         toursGuideAdatpter = new ProfileTourGuideAdapter((Activity) root.getContext(), profileToursGuide);
         toursGuideListView.setAdapter(toursGuideAdatpter);
+
+        getMyTours(new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                Tour tura = (Tour) object;
+                profileToursGuide.add(new ProfileTourGuideItem(tura.getStartsAt() + " - " + tura.getEndsAt(), tura.getName(), tura));
+                toursGuideAdatpter.notifyDataSetChanged();
+            }
+        });
 
         toursGuideListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(rootView.getContext(), SettingsActivity.class);
+                Intent intent = new Intent(rootView.getContext(), TourActivity.class);
+                UserData.getInstance().tour = myTours.get(i);
+                UserData.getInstance().tourPhoto = null;
                 startActivity(intent);
             }
         });
 
+    }
+    public void getMyTours(final FirebaseCallback firebaseCallback){
+        myTours = new ArrayList<Tour>();
+        for(String tourId : UserData.getInstance().myTours){
+            DBService.getInstance().GetTour(tourId, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    Tour tour = (Tour) object;
+                    myTours.add(tour);
+                    firebaseCallback.onCallback(tour);
+                }
+            });
+        }
     }
 }

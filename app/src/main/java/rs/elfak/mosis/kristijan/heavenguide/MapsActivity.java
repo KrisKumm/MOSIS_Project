@@ -1,8 +1,10 @@
 package rs.elfak.mosis.kristijan.heavenguide;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
@@ -50,6 +52,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -348,6 +351,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // get permissions from the user to track GPS
         // get the current location from the fused client
         // update the UI - i.e. set all properties in their associated text view items.
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             // user provided the permisssion

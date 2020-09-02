@@ -1,12 +1,10 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tour{
 
@@ -17,8 +15,8 @@ public class Tour{
     private String description;
     private String portrait;
     private GeoPoint location;
-    private Timestamp startsAt;
-    private Timestamp endsAt;
+    private String startsAt;
+    private String endsAt;
     private String myRegion;
     private ArrayList<String> tourGuides;
     private ArrayList<String> attractions;
@@ -29,7 +27,7 @@ public class Tour{
     public Tour(){}
 
     public Tour(String uId, String managerId, String guideId, String name, String description, String portrait, GeoPoint location,
-         Timestamp startsAt, Timestamp endsAt, String myRegion, ArrayList<String> tourGuides, ArrayList<String> attractions,
+                String startsAt, String endsAt, String myRegion, ArrayList<String> tourGuides, ArrayList<String> attractions,
          ArrayList<String> pendingTourists){
         this.uid = uId;
         this.managerId = managerId;
@@ -76,11 +74,11 @@ public class Tour{
         return this.location;
     }
 
-    public Timestamp getStartsAt(){
+    public String getStartsAt(){
         return this.startsAt;
     }
 
-    public Timestamp getEndsAt(){
+    public String getEndsAt(){
         return this.endsAt;
     }
 

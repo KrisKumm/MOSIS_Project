@@ -24,7 +24,7 @@ public class StorageService {
 
     private ProgressDialog mProgressDialog;
     private StorageReference mStorageRef;
-    private int picSize;
+    private long picSize;
     private static StorageService instance = null;
     private StorageService(){
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -68,18 +68,18 @@ public class StorageService {
         islandRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
             @Override
             public void onSuccess(StorageMetadata storageMetadata) {
-                picSize = (int) storageMetadata.getSizeBytes();
+                picSize = (long) storageMetadata.getSizeBytes();
                 islandRef.getBytes(picSize).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
-                        Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, picSize);
+                        Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, (int) bytes.length);
                         firebaseCallback.onCallback(b);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(Exception exception) {
                         // Handle any errors
-                        firebaseCallback.onCallback(null);
+                        //firebaseCallback.onCallback(null);
                     }
                 });
             }

@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,6 +34,7 @@ public class TourActivity extends AppCompatActivity {
     private Tour myTour;
     private TourGuide myGuide;
     private ArrayList<Attraction> myAttractions = new ArrayList<Attraction>();
+    private ArrayList<Bitmap> attractionPhotos = new ArrayList<Bitmap>();
     private ArrayList<ProfileFriendsItem> atractionItems = new ArrayList<ProfileFriendsItem>();
     private ProfileFriendsAdapter attractionsAdapter;
 
@@ -75,7 +80,15 @@ public class TourActivity extends AppCompatActivity {
 
             }
         });
-
+        tourAttractionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent( (Activity) TourActivity.this, AttractionActivity.class);
+                UserData.getInstance().attraction = myAttractions.get(i);
+                UserData.getInstance().attractionPhoto = attractionPhotos.get(i);
+                startActivity(intent);
+            }
+        });
 
         getTour();
     }
@@ -88,13 +101,13 @@ public class TourActivity extends AppCompatActivity {
         }
         else{
             String id = getIntent().getExtras().getString("TOUR");
-            DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
+            DBService.getInstance().GetTour(id, new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
                     Tour tour = (Tour) object;
                     myTour = tour;
                     setTourInfo();
-                    userTypeCheck();
+
                 }
             });
         }
@@ -129,6 +142,10 @@ public class TourActivity extends AppCompatActivity {
     }
 
     private void getAttractions(ArrayList<String> attractionIds){
+        attractionsAdapter = new ProfileFriendsAdapter((Activity) context , atractionItems);
+        tourAttractionsListView.setAdapter(attractionsAdapter);
+        myAttractions.clear();
+        attractionPhotos.clear();
         for (String id : attractionIds){
             DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
                 @Override
@@ -142,21 +159,29 @@ public class TourActivity extends AppCompatActivity {
         }
     }
     private void setAttractionInfo(final Attraction attraction){
+        final LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
                 atractionItems.add(new ProfileFriendsItem((Bitmap) object, attraction.getName()));
-
-                attractionsAdapter = new ProfileFriendsAdapter((Activity) context , atractionItems);
-                tourAttractionsListView.setAdapter(attractionsAdapter);
+                attractionPhotos.add((Bitmap) object);
+                addImageView(layoutInflater, (Bitmap) object);
+                attractionsAdapter.notifyDataSetChanged();
             }
         });
 
 
-        //setAttractionListClickHandler();
+
         //TODO nzm kako radi ovaj ListView
     }
+    public void addImageView(LayoutInflater layoutInflater, Bitmap image){
 
+        View view = layoutInflater.inflate(R.layout.region_images_layout, linearLayoutTourImages, false);
+        ImageView imageView = view.findViewById(R.id.single_region_image_view);
+
+        imageView.setImageBitmap(Bitmap.createScaledBitmap(image,  650, 400, false));
+        linearLayoutTourImages.addView(view);
+    }
     private void setReviewInfo(ArrayList<Review> reviews){
         //TODO jos nismo odlucili kako ce da racunamo ocenu za bilo sta
     }

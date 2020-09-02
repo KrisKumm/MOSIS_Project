@@ -118,6 +118,7 @@ public class TourService extends Service {
     public void onDestroy() {
         listener.remove();
         //TODO prekinuti rad servisa
+        // isprazni niz pending tourists
         super.onDestroy();
     }
 
