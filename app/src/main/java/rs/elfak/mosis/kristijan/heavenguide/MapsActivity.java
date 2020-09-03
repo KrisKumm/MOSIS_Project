@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -57,6 +58,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.security.Permission;
 import java.util.ArrayList;
@@ -74,11 +76,17 @@ import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "tourist";
+    public String profileP;
+
     public static final int DEFAULT_UPDATE_INTERVAL = 6;
     public static final int FAST_UPDATE_INTERVAL = 3;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private boolean tourBegun;
+    private TourGroup tourGroup = null;
+    private ArrayList<Star> stars;
 
     private GoogleMap mMap;
 
@@ -97,18 +105,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public ArrayList<Star> starsCurrentTour  = new ArrayList<Star>();;
     public ArrayList<Marker> starsMarkersCurrentTour  = new ArrayList<Marker>();;
 
-    private Switch sw_locationsupdates, sw_gps;
+    public ListenerRegistration groupListener = null;
+    public ListenerRegistration starsListener = null;
 
-    private ImageButton addNewStarButton;
-    private AlertDialog dialog;
-    private AlertDialog.Builder dialogBuilder;
-    private EditText popUpStarSnippet;
-    private ImageButton popUpStarImageButton;
-    private Button popUpStarCreateButton;
-    private static final int CAMERA_REQUEST = 1888;
-    private ImageView popUpStarImageCamera;
-    private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    private static final int CAMERA_IMAGE_CAPTURE = 0;
+    private Switch sw_locationsupdates, sw_gps;
 
     private ImageButton addNewStarButton;
     private AlertDialog dialog;
@@ -142,6 +142,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        profileP = sharedPreferences.getString(PROFILE, "");
 
 //        MyAppSingleton myApplication = (MyAppSingleton)getApplicationContext();
 //        savedLocations = myApplication.getMyLocations();
@@ -227,7 +230,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
-
 
         createMeMarks();
         createRegions();
@@ -324,48 +326,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(cameraIntent, CAMERA_REQUEST);
 //                        }
-                    }
-                });
-                popUpStarCreateButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        LatLng starLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        markerOptions.position(starLocation);
-                        markerOptions.title("Star");
-                        markerOptions.snippet(popUpStarSnippet.toString());
-                        Marker mark = mMap.addMarker(markerOptions);
-                        dialog.dismiss();
-                    }
-                });
-                dialogBuilder.setView(createStarPopUp);
-                dialog = dialogBuilder.create();
-                dialog.show();
-            }
-        });
-    }
-
-    private void setStarButton(){
-        addNewStarButton = findViewById(R.id.add_new_star_button);
-        addNewStarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogBuilder = new AlertDialog.Builder(MapsActivity.this);
-                final View createStarPopUp = getLayoutInflater().inflate(R.layout.popup_new_star, null);
-                popUpStarSnippet = createStarPopUp.findViewById(R.id.popup_new_star_snippet);
-                popUpStarImageButton = createStarPopUp.findViewById(R.id.popup_new_star_image_button);
-                popUpStarCreateButton = createStarPopUp.findViewById(R.id.popup_new_star_create_button);
-                popUpStarImageButton.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public void onClick(View view) {
-                        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                        }
-                        else {
-                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                        }
                     }
                 });
                 popUpStarCreateButton.setOnClickListener(new View.OnClickListener() {
@@ -500,14 +460,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(meMarker!=null){
                         meMarker.remove();
                     }
+                    if(tourBegun) {
+                        DBService.getInstance().UpdateGuideLocation(UserData.getInstance().tourGroupId,
+                                new GeoPoint(location.getLatitude(), location.getLongitude()));
+                    }
                     LatLng meLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                     meMarker = mMap.addMarker(
                             new MarkerOptions()
                                     .position(meLatLng)
                                     .title("Kris")
                                     .snippet("It me")
-                                    .icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round))
-                    );
+                                    .icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(UserData.getInstance().portrait,  100, 100, false))));
+
+
                     if(!attractionsAroundMeMarkers.isEmpty()){
                         removeAttractionsMarker();
                     }
@@ -539,24 +504,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
+    public void startTour(){
+        onGroupUpdate(UserData.getInstance().tourGroupId);
+        onGroupStarsUpdate(UserData.getInstance().tourGroupId);
+    }
     public void onGroupUpdate(String id){
-        final DocumentReference docRef = fStore.collection("tour-groups").document(id);
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(DocumentSnapshot snapshot, FirebaseFirestoreException e) {
-                if (e != null) {
-                    return;
-                }
+        DocumentReference documentReference = DBService.getInstance().GetTourGroupRefrence(id);
 
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("TAG", "Current data: " + snapshot.toObject(TourGroup.class));
-                    TourGroup tgUpdate =  snapshot.toObject(TourGroup.class);
-                    // U TOUR GROUP SE NALAZI LOKACIJA VODICA I KAD SE PROMENI OVO SE POZIVA
-                    // ILI KAD SE PROMENI OVO readyAll
-                    // TAKO DA MOZEMO DA TURIMO ONE ZVEZDICE I BILO KAD KAD SE DODA NEKA NOVA DA SAMO PRIKAZEMO NA MAPI
-                } else {
-                    Log.d("TAG", "Current data: null");
+        groupListener = DBService.getInstance().OnTourGroupUpdate(id, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                tourGroup = (TourGroup) object;
+                LatLng meLatLng = new LatLng(tourGroup.getTourGuideLocation().getLatitude(), tourGroup.getTourGuideLocation().getLongitude());
+                if(profileP.equals("tourist")){
+                    guideMarker.remove();
+                    guideMarker = mMap.addMarker(
+                            new MarkerOptions()
+                                    .position(meLatLng)
+                                    .title("Kris")
+                                    .snippet("It me")
+                                    .icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round)));
                 }
+            }
+        });
+    }
+    public void onGroupStarsUpdate(String id){
+
+        DocumentReference documentReference = DBService.getInstance().GetTourGroupRefrence(id);
+
+        starsListener = DBService.getInstance().OnStarsUpdate(documentReference, id, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                stars = (ArrayList<Star>) object;
             }
         });
     }

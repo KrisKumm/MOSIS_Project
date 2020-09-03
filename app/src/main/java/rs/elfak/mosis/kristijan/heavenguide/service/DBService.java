@@ -78,7 +78,7 @@ public class DBService
         });
 
     }
-    public void AddAttraction(Attraction attraction, String managerId){
+    public String AddAttraction(Attraction attraction, String managerId){
 
         DocumentReference documentReference;
         if(attraction.getUid() == null){
@@ -101,7 +101,7 @@ public class DBService
                 });
         if(attraction.getUid() == null){
             fStore.collection("managers").document(managerId)
-                    .update( "attractions" , FieldValue.arrayUnion( documentReference ))
+                    .update( "attractions" , FieldValue.arrayUnion( attraction ))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -109,6 +109,7 @@ public class DBService
                         }
                     });
         }
+        return attraction.getUid();
     }
     public void GetAttractionsByName(String name, final  FirebaseCallback firebaseCallback){
 
@@ -312,7 +313,7 @@ public class DBService
             }
         });
     }
-    public void AddTour(Tour tour){
+    public void AddTour(Tour tour, String managerId){
 
         DocumentReference documentReference;
         if(tour.getUid() == null){
@@ -334,8 +335,8 @@ public class DBService
                     }
                 });
         if(tour.getUid() == null){
-            fStore.collection("managers").document(tour.getUid())
-                    .update( "tours" , FieldValue.arrayUnion( documentReference ))
+            fStore.collection("managers").document(managerId)
+                    .update( "tours" , FieldValue.arrayUnion( tour ))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -479,6 +480,21 @@ public class DBService
             }
         });
 
+    }
+    public void GetGuideByName(String name, final FirebaseCallback firebaseCallback){
+        final Query query = fStore.collection("guides").whereEqualTo("name" , name);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                firebaseCallback.onCallback(querySnapshot.getDocuments().get(0).toObject(TourGuide.class));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                firebaseCallback.onCallback(null);
+            }
+        });
     }
     public void DeleteGuide(String id){
         final DocumentReference documentReference = fStore.collection("guides").document(id);

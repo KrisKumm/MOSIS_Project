@@ -24,7 +24,7 @@ public class UserData {
     public String password;
     public String gmail;
     public userType userType;
-    public String portrait;
+    public Bitmap portrait;
     public GeoPoint location;
     public ArrayList<String> friends;
     public ArrayList<Notification> notifications;
