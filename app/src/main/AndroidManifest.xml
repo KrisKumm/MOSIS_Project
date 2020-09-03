@@ -26,7 +26,6 @@
         <activity android:name=".ManagerNewAttractionActivity" />
         <activity android:name=".ManagerNewTourActivity" />
         <activity android:name=".TourActivity" />
-        <activity android:name=".RegionActivity" />
         <activity android:name=".AttractionActivity" />
         <activity android:name=".OtherPersonActivity" />
         <activity

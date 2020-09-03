@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
@@ -31,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -63,14 +65,17 @@ import com.google.firebase.firestore.ListenerRegistration;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Star;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
+import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
@@ -86,7 +91,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private boolean tourBegun;
     private TourGroup tourGroup = null;
-    private ArrayList<Star> stars;
 
     private GoogleMap mMap;
 
@@ -95,20 +99,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Global marker for my guide of current tour
     public Marker guideMarker;
     //Global marker list of markers for my friends
-    public ArrayList<Marker> friendsMarker = new ArrayList<Marker>();;
+    public ArrayList<Marker> friendsMarker = new ArrayList<Marker>();
 
     //Global attraction list for the ones in my radius
-    public ArrayList<Attraction> attractionsAroundMe = new ArrayList<Attraction>();;
+    public ArrayList<Attraction> attractionsAroundMe = new ArrayList<Attraction>();
     public ArrayList<Marker> attractionsAroundMeMarkers = new ArrayList<Marker>();
 
     //Global stars list for star markers in current tour
-    public ArrayList<Star> starsCurrentTour  = new ArrayList<Star>();;
-    public ArrayList<Marker> starsMarkersCurrentTour  = new ArrayList<Marker>();;
-
-    public ListenerRegistration groupListener = null;
-    public ListenerRegistration starsListener = null;
-
-    private Switch sw_locationsupdates, sw_gps;
+    public ArrayList<Star> starsCurrentTour  = new ArrayList<Star>();
+    public ArrayList<Marker> starsMarkersCurrentTour  = new ArrayList<Marker>();
 
     private ImageButton addNewStarButton;
     private AlertDialog dialog;
@@ -116,6 +115,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText popUpStarSnippet;
     private ImageButton popUpStarImageButton;
     private Button popUpStarCreateButton;
+    private TextView popUpShowStarSnippet;
+    private ImageView popUpShowStarImage;
+
+    public ListenerRegistration groupListener = null;
+    public ListenerRegistration starsListener = null;
+
+    private Switch sw_locationsupdates, sw_gps;
+
     private static final int CAMERA_REQUEST = 1888;
     private ImageView popUpStarImageCamera;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
@@ -228,6 +235,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 }
+                if(marker.getTitle().equals("Star")){
+                    dialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+                    final View showStarPopUp = getLayoutInflater().inflate(R.layout.popup_star_view, null);
+                    popUpShowStarSnippet = showStarPopUp.findViewById(R.id.popup_star_view_snippet);
+                    popUpShowStarImage = showStarPopUp.findViewById(R.id.popup_star_view_image);
+                    popUpShowStarSnippet.setText(marker.getSnippet());
+                    StorageService.getInstance().downloadPhoto("tour-group", UserData.getInstance().tourGroupId, marker.getTag().toString(), new FirebaseCallback() {
+                        @Override
+                        public void onCallback(Object object) {
+                            popUpShowStarImage.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object, 200, 200, false));
+                        }
+                    });
+                    dialogBuilder.setView(showStarPopUp);
+                    dialog = dialogBuilder.create();
+                    dialog.show();
+                }
             }
         });
 
@@ -319,24 +342,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View view) {
-//                        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-//                        }
-//                        else {
-                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
-//                        }
+                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
                     }
                 });
                 popUpStarCreateButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        LatLng starLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        markerOptions.position(starLocation);
-                        markerOptions.title("Star");
-                        markerOptions.snippet(popUpStarSnippet.toString());
-                        Marker mark = mMap.addMarker(markerOptions);
+                        GeoPoint starGeoPoint = new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        String randNumber = getRandomNumber();
+                        Star newStar = new Star(null, popUpStarSnippet.getText().toString(), randNumber, starGeoPoint, randNumber);
+                        DBService.getInstance().AddStar(DBService.getInstance().GetTourGroupReference(UserData.getInstance().tourGroupId), newStar);
+                        BitmapDrawable drawable = (BitmapDrawable) popUpStarImageCamera.getDrawable();
+                        Bitmap bitmapStar = drawable.getBitmap();
+                        StorageService.getInstance().uploadPhoto("tour-group", UserData.getInstance().tourGroupId, randNumber, bitmapStar, MapsActivity.this);
                         dialog.dismiss();
                     }
                 });
@@ -509,7 +528,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         onGroupStarsUpdate(UserData.getInstance().tourGroupId);
     }
     public void onGroupUpdate(String id){
-        DocumentReference documentReference = DBService.getInstance().GetTourGroupRefrence(id);
+        DocumentReference documentReference = DBService.getInstance().GetTourGroupReference(id);
 
         groupListener = DBService.getInstance().OnTourGroupUpdate(id, new FirebaseCallback() {
             @Override
@@ -530,13 +549,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void onGroupStarsUpdate(String id){
 
-        DocumentReference documentReference = DBService.getInstance().GetTourGroupRefrence(id);
+        DocumentReference documentReference = DBService.getInstance().GetTourGroupReference(id);
 
         starsListener = DBService.getInstance().OnStarsUpdate(documentReference, id, new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
-                stars = (ArrayList<Star>) object;
+                if(!starsMarkersCurrentTour.isEmpty()){
+                    for(Marker marker: starsMarkersCurrentTour){
+                        marker.remove();
+                    }
+                }
+                starsCurrentTour = (ArrayList<Star>) object;
+                for(Star star: starsCurrentTour){
+                    LatLng latLng = new LatLng(star.getLocation().getLatitude(), star.getLocation().getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title("Star");
+                    markerOptions.snippet(star.getComment());
+                    markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(),R.drawable.ic_round_star_24));
+                    Marker mark = mMap.addMarker(markerOptions);
+                    mark.setTag(star.getTag());
+                    starsMarkersCurrentTour.add(mark);
+                }
             }
         });
+    }
+
+    public String getRandomNumber(){
+        Random rand = new Random();
+        int upperbound = 1000000;
+        int int_random = rand.nextInt(upperbound);
+        return String.valueOf(int_random);
     }
 }

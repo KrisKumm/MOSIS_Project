@@ -407,7 +407,7 @@ public class DBService
     public DocumentReference GetUserReference(String id){
         return fStore.collection("users").document(id);
     }
-    public DocumentReference GetTourGroupRefrence(String id){
+    public DocumentReference GetTourGroupReference(String id){
         return fStore.collection("tour-groups").document(id);
     }
 
