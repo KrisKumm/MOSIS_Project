@@ -83,7 +83,12 @@ public class OtherPersonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 UserData.getInstance().friends.remove(otherUser.getUid());
-                DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
+                if(profileP.equals("tourist")){
+                    DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
+                }
+                if(profileP.equals("guide")){
+                    DBService.getInstance().AddUser(UserData.getInstance().itsMeG);
+                }
 
                 otherUser.getFriends().remove(UserData.getInstance().uId);
                 DBService.getInstance().AddUser(otherUser);
