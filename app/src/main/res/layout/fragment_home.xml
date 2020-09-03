@@ -74,41 +74,31 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewAvatar"/>
 
     <Button
-        android:id="@+id/favorite_tours_button"
+        android:id="@+id/profile_home_manager_tour_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_home"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
-        android:text="Fav Tours"/>
+        android:text="NEW TOUR"/>
 
     <Button
-        android:id="@+id/favorite_guides_button"
+        android:id="@+id/profile_home_manager_attraction_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_home"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:text="Fav Guides"/>
-
-    <View
-        android:id="@+id/divider_home_1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favorite_tours_button"/>
+        android:text="NEW ATTRACTION"/>
 
     <TextView
         android:id="@+id/upcoming_tours_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_home_1"
+        app:layout_constraintTop_toBottomOf="@+id/divider_home"
         android:text="Upcoming tours.."
         android:textSize="20sp"
         android:textStyle="italic"/>

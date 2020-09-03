@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,6 +32,10 @@ import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 
 public class TourActivity extends AppCompatActivity {
 
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "profile";
+    public String profileP;
+
     private Tour myTour;
     private TourGuide myGuide;
     private ArrayList<Attraction> myAttractions = new ArrayList<Attraction>();
@@ -48,6 +53,7 @@ public class TourActivity extends AppCompatActivity {
     private ListView tourAttractionsListView;
     private Button tourStartButton;
     private Button tourDeleteButton;
+    private Button tourJoinButton;
 
     private Context context = this;
 
@@ -56,30 +62,43 @@ public class TourActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tour);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        profileP = sharedPreferences.getString(PROFILE, "");
+
         linearLayoutTourImages = findViewById(R.id.linear_layout_tour_images);
         tourName = findViewById(R.id.tour_name_label);
         tourGuideName = findViewById(R.id.tour_guide_label);
         tourStartEndTime = findViewById(R.id.tour_start_end_label);
         tourRatingGrade = findViewById(R.id.tour_rating_grade_label);
         tourDescription = findViewById(R.id.description_tour_label);
-        tourTouristsListView = findViewById(R.id.tour_tourists_list_view);
         tourAttractionsListView = findViewById(R.id.tour_attractions_list_view);
         tourStartButton = findViewById(R.id.tour_start_button);
         tourDeleteButton = findViewById(R.id.tour_delete_button);
+        tourJoinButton = findViewById(R.id.tour_join_button);
+
+        getTour();
 
         tourStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //Start tour
             }
         });
 
         tourDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                DBService.getInstance().DeleteTour(myTour.getUid());
             }
         });
+
+        tourJoinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Join tour
+            }
+        });
+
         tourAttractionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -90,7 +109,25 @@ public class TourActivity extends AppCompatActivity {
             }
         });
 
-        getTour();
+        if(profileP.equals("tourist")){
+            tourDeleteButton.setEnabled(false);
+            tourDeleteButton.setVisibility(View.INVISIBLE);
+            tourStartButton.setEnabled(false);
+            tourStartButton.setVisibility(View.INVISIBLE);
+        }
+        if(profileP.equals("guide")){
+            tourDeleteButton.setEnabled(false);
+            tourDeleteButton.setVisibility(View.INVISIBLE);
+            tourJoinButton.setEnabled(false);
+            tourJoinButton.setVisibility(View.INVISIBLE);
+        }
+        if(profileP.equals("manager")){
+            tourStartButton.setEnabled(false);
+            tourStartButton.setVisibility(View.INVISIBLE);
+            tourJoinButton.setEnabled(false);
+            tourJoinButton.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     public void getTour(){
@@ -107,7 +144,6 @@ public class TourActivity extends AppCompatActivity {
                     Tour tour = (Tour) object;
                     myTour = tour;
                     setTourInfo();
-
                 }
             });
         }
@@ -135,7 +171,6 @@ public class TourActivity extends AppCompatActivity {
                 setGuideInfo();
             }
         });
-
     }
     private void setGuideInfo(){
         tourGuideName.setText(myGuide.getName());
@@ -155,7 +190,6 @@ public class TourActivity extends AppCompatActivity {
                     setAttractionInfo(attraction);
                 }
             });
-
         }
     }
     private void setAttractionInfo(final Attraction attraction){
@@ -169,9 +203,6 @@ public class TourActivity extends AppCompatActivity {
                 attractionsAdapter.notifyDataSetChanged();
             }
         });
-
-
-
         //TODO nzm kako radi ovaj ListView
     }
     public void addImageView(LayoutInflater layoutInflater, Bitmap image){

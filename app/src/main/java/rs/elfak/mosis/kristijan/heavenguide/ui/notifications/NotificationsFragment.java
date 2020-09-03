@@ -2,6 +2,7 @@ package rs.elfak.mosis.kristijan.heavenguide.ui.notifications;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,12 @@ import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 
 public class NotificationsFragment extends Fragment {
 
+    public View rootView;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "profile";
+    public String profileP;
+
     private NotificationsViewModel notificationsViewModel;
 
     private ListView notificationListView;
@@ -62,13 +69,14 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, getContext().MODE_PRIVATE);
+        profileP = sharedPreferences.getString(PROFILE, "");
+
         notificationsUserData = UserData.getInstance().notifications;
         fillNotificationsList(root);
 
         return root;
     }
-
-
 
     public void fillNotificationsList(final View root){
         notificationListView = root.findViewById(R.id.profile_notification_list_view);

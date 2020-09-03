@@ -1,59 +1,42 @@
 package rs.elfak.mosis.kristijan.heavenguide;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceFragmentCompat;
+import android.widget.EditText;
+import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private Button addNewTour;
-    private Button addNewAttraction;
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "tourist";
+    public String profileP;
+
+    private EditText settingsNewName;
+    private Switch settingsGPS, settingsTheme;
+    private Button settingsMakeChangesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.settings, new SettingsFragment())
-                .commit();
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        setContentView(R.layout.activity_settings);
 
-        addNewTour = findViewById(R.id.add_new_tour_button);
-        addNewAttraction = findViewById(R.id.add_new_attraction_button);
-        //if manager, show!
-//        addNewTour.setEnabled(false);
-//        addNewTour.setVisibility(View.INVISIBLE);
-//        addNewAttraction.setEnabled(false);
-//        addNewAttraction.setVisibility(View.INVISIBLE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        profileP = sharedPreferences.getString(PROFILE, "");
 
-        addNewTour.setOnClickListener(new View.OnClickListener() {
+        settingsNewName = findViewById(R.id.settings_edit_name);
+        settingsGPS = findViewById(R.id.settings_gps_sw);
+        settingsTheme = findViewById(R.id.settings_theme_sw);
+        settingsMakeChangesButton = findViewById(R.id.settings_change_button);
+
+        settingsMakeChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
-
-        addNewAttraction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-    }
-
-    public static class SettingsFragment extends PreferenceFragmentCompat {
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey);
-        }
     }
 }

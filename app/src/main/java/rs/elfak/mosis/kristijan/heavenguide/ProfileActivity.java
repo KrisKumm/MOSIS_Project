@@ -77,6 +77,9 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        profileP = sharedPreferences.getString(PROFILE, "");
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -114,14 +117,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        profileP = sharedPreferences.getString(PROFILE, "");
-
         relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
         buildRecyclerView();
         relativeLayoutSearch.setEnabled(false);
         relativeLayoutSearch.setVisibility(View.INVISIBLE);
-
     }
 
     @Override

@@ -65,6 +65,9 @@ public class OtherPersonActivity extends AppCompatActivity {
         deleteAccountButton = findViewById(R.id.delete_account_button);
         deleteAccountLabel = findViewById(R.id.delete_account_label);
 
+        getUser();
+        setOtherUserInfo();
+
         addFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,12 +130,24 @@ public class OtherPersonActivity extends AppCompatActivity {
             deleteAccountButton.setVisibility(View.INVISIBLE);
             deleteAccountLabel.setEnabled(false);
             deleteAccountLabel.setVisibility(View.INVISIBLE);
+            if(UserData.getInstance().friends.contains(otherUser.getUid())){
+                addFriendButton.setEnabled(false);
+                addFriendButton.setVisibility(View.INVISIBLE);
+                addFriendLabel.setEnabled(false);
+                addFriendLabel.setVisibility(View.INVISIBLE);
+            }
         }
         if(profileP.equals("guide")){
             deleteAccountButton.setEnabled(false);
             deleteAccountButton.setVisibility(View.INVISIBLE);
             deleteAccountLabel.setEnabled(false);
             deleteAccountLabel.setVisibility(View.INVISIBLE);
+            if(UserData.getInstance().friends.contains(otherUser.getUid())){
+                addFriendButton.setEnabled(false);
+                addFriendButton.setVisibility(View.INVISIBLE);
+                addFriendLabel.setEnabled(false);
+                addFriendLabel.setVisibility(View.INVISIBLE);
+            }
         }
         if(profileP.equals("manager")){
             addFriendButton.setEnabled(false);
@@ -144,9 +159,6 @@ public class OtherPersonActivity extends AppCompatActivity {
             removeFriendLabel.setEnabled(false);
             removeFriendLabel.setVisibility(View.INVISIBLE);
         }
-
-        getUser();
-        setOtherUserInfo();
     }
 
     private void getUser(){

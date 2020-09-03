@@ -2,6 +2,7 @@ package rs.elfak.mosis.kristijan.heavenguide.ui.friends;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,6 +33,12 @@ import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 
 public class FriendsFragment extends Fragment {
 
+    public View rootView;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String PROFILE = "profile";
+    public String profileP;
+
     private FriendsViewModel friendsViewModel;
 
     private ListView friendsListView;
@@ -53,11 +60,22 @@ public class FriendsFragment extends Fragment {
             }
         });
 
-        friendsListView = root.findViewById(R.id.profile_friends_list_view);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, getContext().MODE_PRIVATE);
+        profileP = sharedPreferences.getString(PROFILE, "");
 
-        setListClickHandler(root);
-        getFriends(root);
-        fillFriendsList(root);
+        TextView textView1 = root.findViewById(R.id.text_friends1);
+
+        if(profileP.equals("manager")){
+            friendsListView.setVisibility(View.GONE);
+            textView1.setText("YOU HAVE NO FRIENDS");
+        }
+        else{
+            friendsListView = root.findViewById(R.id.profile_friends_list_view);
+            textView1.setVisibility(View.GONE);
+            setListClickHandler(root);
+            getFriends(root);
+            fillFriendsList(root);
+        }
         return root;
     }
 

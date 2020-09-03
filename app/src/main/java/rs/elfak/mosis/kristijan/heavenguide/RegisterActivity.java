@@ -96,12 +96,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 UserData.getInstance().userType = userType.tourist;
                                 StorageService.getInstance().uploadPhoto("tourist", UserData.getInstance().uId , "cover", picture, RegisterActivity.this);
                             }
-                            Toast.makeText(RegisterActivity.this, "Upisaja si se", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "You have been registered!", Toast.LENGTH_SHORT).show();
 
+                            RegisterActivity.this.finish();
                             Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(i);
-
-                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(RegisterActivity.this, "Register failed.", Toast.LENGTH_SHORT).show();
