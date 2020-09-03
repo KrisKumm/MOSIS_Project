@@ -81,6 +81,7 @@ public class HomeFragment extends Fragment {
         avatar = root.findViewById(R.id.imageViewAvatar);
         usernameLabel = root.findViewById(R.id.Username_label);
         roleLabel = root.findViewById(R.id.Role_label);
+        upcomingTours = root.findViewById(R.id.upcoming_tours_text);
         managerNewTourButton = root.findViewById(R.id.profile_home_manager_tour_button);
         managerNewAttractionButton = root.findViewById(R.id.profile_home_manager_attraction_button);
 
@@ -99,7 +100,7 @@ public class HomeFragment extends Fragment {
             roleLabel.setText("Tour Guide");
         }
         if(UserData.getInstance().userType.toString().equals("manager")){
-            roleLabel.setText("Manager - The Boss");
+            roleLabel.setText("Manager");
         }
 
         toursListView = root.findViewById(R.id.profile_home_tours_list_view);
@@ -144,6 +145,7 @@ public class HomeFragment extends Fragment {
             toursListView.setVisibility(View.INVISIBLE);
             toursGuideListView.setEnabled(false);
             toursGuideListView.setVisibility(View.INVISIBLE);
+            upcomingTours.setVisibility(View.GONE);
         }
 
         rootView = root;
