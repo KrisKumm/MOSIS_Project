@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+
 public class SettingsActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -32,10 +35,20 @@ public class SettingsActivity extends AppCompatActivity {
         settingsTheme = findViewById(R.id.settings_theme_sw);
         settingsMakeChangesButton = findViewById(R.id.settings_change_button);
 
+        if(profileP.equals("manager")){
+            settingsNewName.setVisibility(View.GONE);
+        }
+
         settingsMakeChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                UserData.getInstance().name = settingsNewName.getText().toString();
+                if(profileP.equals("tourist")){
+                    DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
+                }
+                if(profileP.equals("guide")){
+                    DBService.getInstance().AddUser(UserData.getInstance().itsMeG);
+                }
             }
         });
     }
