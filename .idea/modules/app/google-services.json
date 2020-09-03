@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "758065918094",
+    "firebase_url": "https://heavenguide-2bae9.firebaseio.com",
+    "project_id": "heavenguide-2bae9",
+    "storage_bucket": "heavenguide-2bae9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758065918094:android:fe4401319f6759b15659df",
+        "android_client_info": {
+          "package_name": "rs.elfak.mosis.kristijan.heavenguide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758065918094-gd50rh19v24mi0u7k51f8d86f1i76h5m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rs.elfak.mosis.kristijan.heavenguide",
+            "certificate_hash": "71d5c575a6d0e95ca877052c6ee545acf4c01e14"
+          }
+        },
+        {
+          "client_id": "758065918094-sj875t7aq2e5r1nen78avcpl21jc3bpd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR36-iHe3e-YuRY3qn9WK0KMUKt8T6-aI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758065918094-sj875t7aq2e5r1nen78avcpl21jc3bpd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
