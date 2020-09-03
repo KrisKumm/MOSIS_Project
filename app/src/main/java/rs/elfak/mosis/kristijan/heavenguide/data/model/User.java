@@ -61,8 +61,7 @@ public class User {
     }
 
     public  String getMyTourGroup() {return  myTourGroup;}
-    public  void setMyTourGroup(String id) {this.myTourGroup = id;}
-
+    public void setMyTourGroup(String id){ this.myTourGroup = id;}
     public ArrayList<String> getMyTours() {
         return myTours;
     }

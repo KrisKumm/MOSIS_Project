@@ -125,9 +125,24 @@ public class TourActivity extends AppCompatActivity {
         tourEndButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                DBService.getInstance().DeleteTourGroup("ID");
+                myGuide.setMyTourGroup(null);
+                DBService.getInstance().AddGuide(myGuide);
+                for(String id: myTour.getPendingTourists()){
+                    DBService.getInstance().GetUser(id, new FirebaseCallback() {
+                        @Override
+                        public void onCallback(Object object) {
+                            User user = (User) object;
+                            user.setMyTourGroup(null);
+                            DBService.getInstance().AddUser(user);
+                        }
+                    });
+                }
+                myTour.getPendingTourists().clear();
+                DBService.getInstance().AddTour(myTour, "");
             }
         });
+
 
         tourAttractionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
