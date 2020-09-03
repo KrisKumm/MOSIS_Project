@@ -94,7 +94,7 @@ public class TourActivity extends AppCompatActivity {
                 DBService.getInstance().AddGuide(myGuide);
 
                 for(String id: myTour.getPendingTourists()){
-                    DBService.getInstance().UpdateUserTourGroup(id);
+                    DBService.getInstance().UpdateUserTourGroup(id, uidGrupe);
                 }
             }
         });
@@ -125,7 +125,7 @@ public class TourActivity extends AppCompatActivity {
         tourEndButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBService.getInstance().DeleteTourGroup("ID");
+                DBService.getInstance().DeleteTourGroup(myGuide.getMyTourGroup());
                 myGuide.setMyTourGroup(null);
                 DBService.getInstance().AddGuide(myGuide);
                 for(String id: myTour.getPendingTourists()){

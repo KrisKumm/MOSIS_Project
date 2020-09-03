@@ -269,8 +269,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void getAttractions(String name){
         attractions.clear();
-        if(UserData.getInstance().userType == userType.manager && UserData.getInstance().itsMeM.getAtractions() != null){
-            for (String id : UserData.getInstance().itsMeM.getAtractions()){
+        if(UserData.getInstance().userType == userType.manager && UserData.getInstance().itsMeM.getAttractions().size() > 0){
+            for (String id : UserData.getInstance().itsMeM.getAttractions()){
                 DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {

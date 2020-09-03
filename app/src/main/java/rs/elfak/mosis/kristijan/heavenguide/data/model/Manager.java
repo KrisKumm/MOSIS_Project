@@ -41,7 +41,7 @@ public class Manager{
     public ArrayList<String> getTourGuides() {
         return tourGuides;
     }
-    public ArrayList<String> getAtractions(){
+    public ArrayList<String> getAttractions(){
         return this.attractions;
     }
     public ArrayList<String> getTours(){

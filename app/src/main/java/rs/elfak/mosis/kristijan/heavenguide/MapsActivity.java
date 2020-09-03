@@ -22,8 +22,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -73,6 +75,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Star;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
@@ -91,7 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private boolean tourBegun;
     private TourGroup tourGroup = null;
-
+    private Bitmap guidePhoto;
     private GoogleMap mMap;
 
     //Global marker for my location
@@ -127,6 +130,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView popUpStarImageCamera;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_IMAGE_CAPTURE = 0;
+
+    private static final int RESULT_LOAD_IMAGE = 1; // Za gallery
+    public Bitmap picture;
+    public Context context;
+    public int activity = 4;
 
     // variable to remember if we are tracking location or not
     boolean updateOn = false;
@@ -342,8 +350,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View view) {
-                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+//                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
                     }
                 });
                 popUpStarCreateButton.setOnClickListener(new View.OnClickListener() {
@@ -442,24 +452,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(this, "This app requires permission to be granted in order to work properly!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
-            case MY_CAMERA_PERMISSION_CODE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                }
-                else {
-                    Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-                }
+//            case MY_CAMERA_PERMISSION_CODE:
+//                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+//                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+//                }
+//                else {
+//                    Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+//                }
         }
     }
 
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+//            Bitmap photo = (Bitmap) data.getExtras().get("data");
+//            popUpStarImageCamera.setImageBitmap(photo);
+//        }
+//    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 3){
+            finish();
+            startActivity(getIntent());
+        }
+        if (requestCode == activity) {
+            //popuniPolja();
+        }
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            popUpStarImageCamera.setImageBitmap(photo);
+        if(requestCode == RESULT_LOAD_IMAGE  && resultCode == RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            popUpStarImageCamera.setImageURI(selectedImageUri);
+            try {
+                picture = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -475,22 +508,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onSuccess(Location location) {
                     // we got permissions. Put the values of location. XXX into the UI components.
+
                     currentLocation = location;
+
                     if(meMarker!=null){
                         meMarker.remove();
                     }
-                    if(tourBegun) {
+                    if(tourBegun && UserData.getInstance().userType == userType.guide) {
                         DBService.getInstance().UpdateGuideLocation(UserData.getInstance().tourGroupId,
                                 new GeoPoint(location.getLatitude(), location.getLongitude()));
                     }
-                    LatLng meLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    LatLng meLatLng;
+                    if(currentLocation != null)
+                        meLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    else
+                        meLatLng = new LatLng(0, 0);
                     meMarker = mMap.addMarker(
                             new MarkerOptions()
                                     .position(meLatLng)
                                     .title("Kris")
                                     .snippet("It me")
                                     .icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(UserData.getInstance().portrait,  100, 100, false))));
-
 
                     if(!attractionsAroundMeMarkers.isEmpty()){
                         removeAttractionsMarker();
@@ -508,7 +546,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     private void tourBegunCheck() {
         if(UserData.getInstance().tourGroupId != null)
+        {
+            startTour();
             tourBegun = true;
+        }
         else
             tourBegun = false;
     }
@@ -529,20 +570,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void onGroupUpdate(String id){
         DocumentReference documentReference = DBService.getInstance().GetTourGroupReference(id);
-
+//        StorageService.getInstance().downloadPhoto("guide", tourGroup.getTourGuide(), "cover", new FirebaseCallback() {
+//            @Override
+//            public void onCallback(Object object) {
+//                guidePhoto = (Bitmap) object;
+//            }
+//        });
         groupListener = DBService.getInstance().OnTourGroupUpdate(id, new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
                 tourGroup = (TourGroup) object;
+
+
                 LatLng meLatLng = new LatLng(tourGroup.getTourGuideLocation().getLatitude(), tourGroup.getTourGuideLocation().getLongitude());
-                if(profileP.equals("tourist")){
-                    guideMarker.remove();
+                if(UserData.getInstance().userType == userType.tourist){
+                    if(guideMarker != null)
+                        guideMarker.remove();
                     guideMarker = mMap.addMarker(
                             new MarkerOptions()
                                     .position(meLatLng)
                                     .title("Kris")
                                     .snippet("It me")
-                                    .icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round)));
+                                    .icon(bitmapDescriptorFromVector(getApplicationContext(), R.mipmap.ic_me_icon2_round)));
                 }
             }
         });
@@ -566,7 +615,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     markerOptions.position(latLng);
                     markerOptions.title("Star");
                     markerOptions.snippet(star.getComment());
-                    markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(),R.drawable.ic_round_star_24));
+                    markerOptions.icon(bitmapDescriptorFromVector(getApplicationContext(),R.drawable.ic_round_star_50));
                     Marker mark = mMap.addMarker(markerOptions);
                     mark.setTag(star.getTag());
                     starsMarkersCurrentTour.add(mark);

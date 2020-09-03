@@ -76,7 +76,9 @@ public class ManagerNewTourActivity extends AppCompatActivity {
                             Tour newTour = new Tour(null, UserData.getInstance().uId, guide.getUid(), newTourName.getText().toString(), newTourDescription.getText().toString(),
                                     newTourStartTime.getText().toString(), newTourEndTime.getText().toString(), newTourRegionName.getText().toString(),
                                     new ArrayList<String>(), new ArrayList<String>());
-                            DBService.getInstance().AddTour(newTour, UserData.getInstance().uId);
+                            String tourUid = DBService.getInstance().AddTour(newTour, UserData.getInstance().uId);
+                            guide.getMyTours().add(tourUid);
+                            DBService.getInstance().AddGuide(guide);
                             Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
                             startActivity(i);

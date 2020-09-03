@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -127,10 +128,11 @@ public class RegisterActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RESULT_LOAD_IMAGE  && resultCode == RESULT_OK && data != null)
         {
+
             Uri selectedImageUri = data.getData();
             avatar.setImageURI(selectedImageUri);
             try {
-                picture = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                picture = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);;
 
             }
             catch(Exception e){

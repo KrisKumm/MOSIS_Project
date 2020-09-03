@@ -84,7 +84,7 @@ public class DBService
         if(attraction.getUid() == null){
             documentReference = fStore.collection("attractions").document();
             fStore.collection("managers").document(managerId)
-                    .update( "attractions" , FieldValue.arrayUnion( attraction ))
+                    .update( "attractions" , FieldValue.arrayUnion( documentReference.getId()))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -312,13 +312,13 @@ public class DBService
             }
         });
     }
-    public void AddTour(Tour tour, String managerId){
+    public String AddTour(Tour tour, String managerId){
 
         DocumentReference documentReference;
         if(tour.getUid() == null){
             documentReference = fStore.collection("tours").document();
             fStore.collection("managers").document(managerId)
-                    .update( "tours" , FieldValue.arrayUnion( tour ))
+                    .update( "tours" , FieldValue.arrayUnion( documentReference.getId() ))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -341,6 +341,7 @@ public class DBService
                         //Log.w(TAG, "Error adding document", e);
                     }
                 });
+        return tour.getUid();
     }
 
     public void AddUser(User user){
@@ -391,10 +392,10 @@ public class DBService
             }
         });
     }
-    public void UpdateUserTourGroup(String id){
+    public void UpdateUserTourGroup(String id , String uidGroup){
         final DocumentReference documentReference = fStore.collection("users").document(id);
         documentReference
-                .update("myTourGroup", id)
+                .update("myTourGroup", uidGroup)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
