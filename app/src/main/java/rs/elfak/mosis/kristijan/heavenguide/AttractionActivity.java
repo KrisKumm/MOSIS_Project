@@ -74,7 +74,7 @@ public class AttractionActivity extends AppCompatActivity {
     private void setAttractionInfo(){
         attractionName.setText(myAttraction.getName());
         attractionDescription.setText((myAttraction.getDescription()));
-
+        attractionRegionName.setText(myAttraction.getMyRegion());
         setCoverPhoto();
         setReviewsInfo();
     }
@@ -100,8 +100,10 @@ public class AttractionActivity extends AppCompatActivity {
             sum += star;
             i++;
         }
-        ratingBar.setRating(rating/sum);
-
+        if(sum != 0)
+            ratingBar.setRating(rating/sum);
+        else
+            ratingBar.setRating(0);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {

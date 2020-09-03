@@ -14,8 +14,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.ArrayList;
+
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 
 public class ManagerNewTourActivity extends AppCompatActivity {
 
@@ -60,11 +68,25 @@ public class ManagerNewTourActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 /* TODO CHECK IF ALL THE FIELDS ARE NOT EMPTY */
-                Tour newTour = new Tour(/* TODO ENTER ALL THE SHIT THAT IS NEEDED */);
-                DBService.getInstance().AddTour(newTour);
-                Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
-                startActivity(i);
+                DBService.getInstance().GetGuideByName(newTourGuideName.getText().toString(), new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        TourGuide guide = (TourGuide) object;
+                        if(guide != null){
+                            Tour newTour = new Tour(null, UserData.getInstance().uId, guide.getUid(), newTourName.getText().toString(), newTourDescription.getText().toString(),
+                                    newTourStartTime.getText().toString(), newTourEndTime.getText().toString(), newTourRegionName.getText().toString(),
+                                    new ArrayList<String>(), new ArrayList<String>());
+                            DBService.getInstance().AddTour(newTour, UserData.getInstance().uId);
+                            Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
+                            startActivity(i);
+                        }
+                        else{
+                            Toast.makeText(ManagerNewTourActivity.this, "Guide with that name doesen't exist", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
         });
     }

@@ -12,7 +12,7 @@ public class Manager{
     private String name;
     private String portrait;
     private ArrayList<String> tourGuides;
-    private ArrayList<String> atractions;
+    private ArrayList<String> attractions;
     private ArrayList<String> tours;
     @Exclude
     public ArrayList<Notification> notifications;
@@ -20,12 +20,12 @@ public class Manager{
 
     Manager(){}
 
-    Manager(String uId, String name, String portrait, ArrayList<String> tourGuides , ArrayList<String> atractions, ArrayList<String> tours){
+    Manager(String uId, String name, String portrait, ArrayList<String> tourGuides , ArrayList<String> attractions, ArrayList<String> tours){
         this.uId = uId;
         this.name = name;
         this.portrait = portrait;
         this.tourGuides = tourGuides;
-        this.atractions = atractions;
+        this.attractions = attractions;
         this.tours = tours;
     }
 
@@ -42,7 +42,7 @@ public class Manager{
         return tourGuides;
     }
     public ArrayList<String> getAtractions(){
-        return this.atractions;
+        return this.attractions;
     }
     public ArrayList<String> getTours(){
         return this.tours;

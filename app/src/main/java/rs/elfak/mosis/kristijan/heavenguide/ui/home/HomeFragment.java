@@ -88,6 +88,7 @@ public class HomeFragment extends Fragment {
         StorageService.getInstance().downloadPhoto(UserData.getInstance().userType.toString(), UserData.getInstance().uId, "cover", new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
+                UserData.getInstance().portrait = (Bitmap) object;
                 avatar.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  avatar.getWidth(), avatar.getHeight(), false));
             }
         });

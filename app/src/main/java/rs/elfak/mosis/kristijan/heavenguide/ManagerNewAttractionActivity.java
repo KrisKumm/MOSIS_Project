@@ -14,10 +14,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
+import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 
 public class ManagerNewAttractionActivity extends AppCompatActivity {
 
@@ -57,11 +63,20 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 /* TODO CHECK IF ALL THE FIELDS ARE NOT EMPTY */
-                Attraction newAttraction = new Attraction(/* TODO ENTER ALL THE SHIT THAT IS NEEDED */);
-                DBService.getInstance().AddAttraction(newAttraction, UserData.getInstance().uId);
-                Toast.makeText(ManagerNewAttractionActivity.this, "A new attraction has been created", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(ManagerNewAttractionActivity.this, ProfileActivity.class);
-                startActivity(i);
+
+                if(picture != null){
+                    ArrayList stars = new ArrayList(Arrays.asList(0, 0, 0 , 0, 0));
+                    Attraction newAttraction = new Attraction( null, newAttractionName.getText().toString(),newAttractionDescription.getText().toString(),new ArrayList<String>(),
+                            new GeoPoint(Double.parseDouble(newAttractionLatitude.getText().toString()),Double.parseDouble(newAttractionLongitude.getText().toString())),
+                            stars, newAttractionRegionName.getText().toString());
+                    String uid = DBService.getInstance().AddAttraction(newAttraction, UserData.getInstance().uId);
+                    StorageService.getInstance().uploadPhoto("attraction", uid, "cover", picture, ManagerNewAttractionActivity.this);
+                    Toast.makeText(ManagerNewAttractionActivity.this, "A new attraction has been created", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(ManagerNewAttractionActivity.this, ProfileActivity.class);
+                    startActivity(i);
+                }
+
+
             }
         });
     }
