@@ -83,6 +83,14 @@ public class DBService
         DocumentReference documentReference;
         if(attraction.getUid() == null){
             documentReference = fStore.collection("attractions").document();
+            fStore.collection("managers").document(managerId)
+                    .update( "attractions" , FieldValue.arrayUnion( attraction ))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    });
             attraction.setUid(documentReference.getId());
         }else {
             documentReference = fStore.collection("attractions").document(attraction.getUid());
@@ -93,22 +101,12 @@ public class DBService
                 //Log.d(TAG, "DocumentSnapshot successfully updated!");
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //Log.w(TAG, "Error adding document", e);
-                    }
-                });
-        if(attraction.getUid() == null){
-            fStore.collection("managers").document(managerId)
-                    .update( "attractions" , FieldValue.arrayUnion( attraction ))
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-
-                        }
-                    });
-        }
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //Log.w(TAG, "Error adding document", e);
+            }
+        });
         return attraction.getUid();
     }
     public void GetAttractionsByName(String name, final  FirebaseCallback firebaseCallback){
@@ -153,7 +151,7 @@ public class DBService
         });
     }
 
-    public void AddTourGroup(TourGroup tourGroup){
+    public String AddTourGroup(TourGroup tourGroup){
 
         DocumentReference documentReference;
         if(tourGroup.getUid() == null){
@@ -174,6 +172,7 @@ public class DBService
                 //Log.w(TAG, "Error adding document", e);
             }
         });
+        return tourGroup.getUid();
     }
     public void GetTourGroup(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("tour-groups").document(id);
@@ -318,6 +317,14 @@ public class DBService
         DocumentReference documentReference;
         if(tour.getUid() == null){
             documentReference = fStore.collection("tours").document();
+            fStore.collection("managers").document(managerId)
+                    .update( "tours" , FieldValue.arrayUnion( tour ))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    });
             tour.setUid(documentReference.getId());
         }else{
             documentReference = fStore.collection("tours").document(tour.getUid());
@@ -334,16 +341,6 @@ public class DBService
                         //Log.w(TAG, "Error adding document", e);
                     }
                 });
-        if(tour.getUid() == null){
-            fStore.collection("managers").document(managerId)
-                    .update( "tours" , FieldValue.arrayUnion( tour ))
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-
-                        }
-                    });
-        }
     }
 
     public void AddUser(User user){
@@ -393,6 +390,22 @@ public class DBService
                 firebaseCallback.onCallback(users);
             }
         });
+    }
+    public void UpdateUserTourGroup(String id){
+        final DocumentReference documentReference = fStore.collection("users").document(id);
+        documentReference
+                .update("myTourGroup", id)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
     public void DeleteUser(String id){
         final DocumentReference documentReference = fStore.collection("users").document(id);

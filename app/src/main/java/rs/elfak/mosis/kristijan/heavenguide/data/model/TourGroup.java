@@ -19,14 +19,13 @@ public class TourGroup {
 
     public  TourGroup(){}
 
-    public TourGroup(String uId, String tourId, String tourGuide, boolean readyAll, GeoPoint tourGuideLocation, ArrayList<String> touristIDList, ArrayList<Star> starLocationIdList){
+    public TourGroup(String uId, String tourId, String tourGuide, boolean readyAll, GeoPoint tourGuideLocation, ArrayList<String> touristIDList){
         this.uid = uId;
         this.tourId = tourId;
         this.tourGuide = tourGuide;
         this.readyAll = readyAll;
         this.tourGuideLocation = tourGuideLocation;
         this.touristIDList = touristIDList;
-        this.stars = starLocationIdList;
     }
 
 

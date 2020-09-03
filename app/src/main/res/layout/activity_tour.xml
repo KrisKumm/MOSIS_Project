@@ -133,6 +133,16 @@
         android:layout_marginEnd="10dp"
         android:text="Delete"/>
 
+        <Button
+            android:id="@+id/tour_end_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_tour"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:text="End"/>
+
     <Button
         android:id="@+id/tour_join_button"
         android:layout_width="wrap_content"
