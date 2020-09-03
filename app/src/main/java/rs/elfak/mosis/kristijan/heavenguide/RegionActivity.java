@@ -48,8 +48,6 @@ public class RegionActivity extends AppCompatActivity {
         });
 
         getRegion(getIntent().getExtras().getString("REGION"));
-
-
     }
 
     public void getRegion(final String id){

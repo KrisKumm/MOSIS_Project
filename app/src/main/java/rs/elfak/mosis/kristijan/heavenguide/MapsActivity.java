@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +24,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -59,6 +65,7 @@ import java.util.List;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Star;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
@@ -67,8 +74,8 @@ import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    public static final int DEFAULT_UPDATE_INTERVAL = 4;
-    public static final int FAST_UPDATE_INTERVAL = 2;
+    public static final int DEFAULT_UPDATE_INTERVAL = 6;
+    public static final int FAST_UPDATE_INTERVAL = 3;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private boolean tourBegun;
@@ -80,13 +87,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Global marker for my guide of current tour
     public Marker guideMarker;
     //Global marker list of markers for my friends
-    public ArrayList<Marker> friendsMarker;
+    public ArrayList<Marker> friendsMarker = new ArrayList<Marker>();;
 
     //Global attraction list for the ones in my radius
-    public ArrayList<Attraction> attractionsAroundMe;
+    public ArrayList<Attraction> attractionsAroundMe = new ArrayList<Attraction>();;
     public ArrayList<Marker> attractionsAroundMeMarkers = new ArrayList<Marker>();
 
+    //Global stars list for star markers in current tour
+    public ArrayList<Star> starsCurrentTour  = new ArrayList<Star>();;
+    public ArrayList<Marker> starsMarkersCurrentTour  = new ArrayList<Marker>();;
+
     private Switch sw_locationsupdates, sw_gps;
+
+    private ImageButton addNewStarButton;
+    private AlertDialog dialog;
+    private AlertDialog.Builder dialogBuilder;
+    private EditText popUpStarSnippet;
+    private ImageButton popUpStarImageButton;
+    private Button popUpStarCreateButton;
+    private static final int CAMERA_REQUEST = 1888;
+    private ImageView popUpStarImageCamera;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private static final int CAMERA_IMAGE_CAPTURE = 0;
+
+    private ImageButton addNewStarButton;
+    private AlertDialog dialog;
+    private AlertDialog.Builder dialogBuilder;
+    private EditText popUpStarSnippet;
+    private ImageButton popUpStarImageButton;
+    private Button popUpStarCreateButton;
+    private static final int CAMERA_REQUEST = 1888;
+    private ImageView popUpStarImageCamera;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private static final int CAMERA_IMAGE_CAPTURE = 0;
 
     // variable to remember if we are tracking location or not
     boolean updateOn = false;
@@ -195,9 +228,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
         createMeMarks();
         createRegions();
         setSwitches();
+        setStarButton();
         updateGPS();
     }
 
@@ -264,6 +299,90 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // turn off tracking
                     stopLocationUpdates();
                 }
+            }
+        });
+    }
+
+    private void setStarButton(){
+        addNewStarButton = findViewById(R.id.add_new_star_button);
+        addNewStarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+                final View createStarPopUp = getLayoutInflater().inflate(R.layout.popup_new_star, null);
+                popUpStarSnippet = createStarPopUp.findViewById(R.id.popup_new_star_snippet);
+                popUpStarImageButton = createStarPopUp.findViewById(R.id.popup_new_star_image_button);
+                popUpStarCreateButton = createStarPopUp.findViewById(R.id.popup_new_star_create_button);
+                popUpStarImageButton.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void onClick(View view) {
+//                        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+//                        }
+//                        else {
+                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+//                        }
+                    }
+                });
+                popUpStarCreateButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LatLng starLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(starLocation);
+                        markerOptions.title("Star");
+                        markerOptions.snippet(popUpStarSnippet.toString());
+                        Marker mark = mMap.addMarker(markerOptions);
+                        dialog.dismiss();
+                    }
+                });
+                dialogBuilder.setView(createStarPopUp);
+                dialog = dialogBuilder.create();
+                dialog.show();
+            }
+        });
+    }
+
+    private void setStarButton(){
+        addNewStarButton = findViewById(R.id.add_new_star_button);
+        addNewStarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+                final View createStarPopUp = getLayoutInflater().inflate(R.layout.popup_new_star, null);
+                popUpStarSnippet = createStarPopUp.findViewById(R.id.popup_new_star_snippet);
+                popUpStarImageButton = createStarPopUp.findViewById(R.id.popup_new_star_image_button);
+                popUpStarCreateButton = createStarPopUp.findViewById(R.id.popup_new_star_create_button);
+                popUpStarImageButton.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void onClick(View view) {
+                        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+                        }
+                        else {
+                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                        }
+                    }
+                });
+                popUpStarCreateButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LatLng starLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(starLocation);
+                        markerOptions.title("Star");
+                        markerOptions.snippet(popUpStarSnippet.toString());
+                        Marker mark = mMap.addMarker(markerOptions);
+                        dialog.dismiss();
+                    }
+                });
+                dialogBuilder.setView(createStarPopUp);
+                dialog = dialogBuilder.create();
+                dialog.show();
             }
         });
     }
@@ -344,6 +463,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(this, "This app requires permission to be granted in order to work properly!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
+            case MY_CAMERA_PERMISSION_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                }
+                else {
+                    Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+                }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            popUpStarImageCamera.setImageBitmap(photo);
         }
     }
 
