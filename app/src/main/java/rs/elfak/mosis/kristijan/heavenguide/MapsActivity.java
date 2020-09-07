@@ -163,8 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //        MyAppSingleton myApplication = (MyAppSingleton)getApplicationContext();
 //        savedLocations = myApplication.getMyLocations();
-        tourBegunCheck();
-        //tourServiceIO();
+         tourBegunCheck();
     }
 
     /**
@@ -346,6 +345,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 popUpStarSnippet = createStarPopUp.findViewById(R.id.popup_new_star_snippet);
                 popUpStarImageButton = createStarPopUp.findViewById(R.id.popup_new_star_image_button);
                 popUpStarCreateButton = createStarPopUp.findViewById(R.id.popup_new_star_create_button);
+                popUpStarImageCamera = new ImageView(MapsActivity.this);
                 popUpStarImageButton.setOnClickListener(new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
@@ -547,16 +547,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void tourBegunCheck() {
         if(UserData.getInstance().tourGroupId != null)
         {
-            startTour();
             tourBegun = true;
+            tourServiceIO();
         }
-        else
+        else {
             tourBegun = false;
+            tourServiceIO();
+        }
     }
     private void tourServiceIO() {
         if(tourBegun){
+            startTour();
             Intent service = new Intent(this, TourService.class);
-            service.getExtras().putString("TOUR_GROUP", UserData.getInstance().tourGroupId);
+            service.putExtra("TOUR_GROUP", UserData.getInstance().tourGroupId);
+            service.putExtra("MY_UID", UserData.getInstance().uId);
             startService(service);
         }
         else{
@@ -582,8 +586,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 tourGroup = (TourGroup) object;
 
 
-                LatLng meLatLng = new LatLng(tourGroup.getTourGuideLocation().getLatitude(), tourGroup.getTourGuideLocation().getLongitude());
-                if(UserData.getInstance().userType == userType.tourist){
+                if(UserData.getInstance().userType == userType.tourist && tourGroup != null){
+                    LatLng meLatLng = new LatLng(tourGroup.getTourGuideLocation().getLatitude(), tourGroup.getTourGuideLocation().getLongitude());
                     if(guideMarker != null)
                         guideMarker.remove();
                     guideMarker = mMap.addMarker(
@@ -600,7 +604,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         DocumentReference documentReference = DBService.getInstance().GetTourGroupReference(id);
 
-        starsListener = DBService.getInstance().OnStarsUpdate(documentReference, id, new FirebaseCallback() {
+        starsListener = DBService.getInstance().OnStarsUpdate(documentReference, new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
                 if(!starsMarkersCurrentTour.isEmpty()){
@@ -608,6 +612,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         marker.remove();
                     }
                 }
+
                 starsCurrentTour = (ArrayList<Star>) object;
                 for(Star star: starsCurrentTour){
                     LatLng latLng = new LatLng(star.getLocation().getLatitude(), star.getLocation().getLongitude());

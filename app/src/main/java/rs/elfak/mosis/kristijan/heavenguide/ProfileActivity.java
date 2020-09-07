@@ -18,6 +18,7 @@ import android.widget.SearchView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.RecyclerViewAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.SearchRecyclerItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
@@ -41,6 +43,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
+import rs.elfak.mosis.kristijan.heavenguide.service.NotificationService;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
@@ -49,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String PROFILE = "tourist";
+    ListenerRegistration listener;
     public String profileP;
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -111,6 +115,8 @@ public class ProfileActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.nav_logout_button).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                listener.remove();
+                stopService(new Intent( ProfileActivity.this, NotificationService.class));
                 drawer.closeDrawers();
                 finish();
                 Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
@@ -118,6 +124,8 @@ public class ProfileActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        setNotificationsUpdateHandler();
 
         relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
         buildRecyclerView();
@@ -429,5 +437,17 @@ public class ProfileActivity extends AppCompatActivity {
 //        }
 //        mAdapter.filterList(filteredList);
 //    }
-
+    private void setNotificationsUpdateHandler(){
+        Intent service = new Intent(this, NotificationService.class);
+        service.putExtra("MY_UID", UserData.getInstance().uId);
+        startService(service);
+        if(listener == null){
+            listener = DBService.getInstance().OnNotificationsUpdate(DBService.getInstance().GetUserReference(UserData.getInstance().uId), new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    UserData.getInstance().notifications = (ArrayList<Notification>) object;
+                }
+            });
+    }
+}
 }

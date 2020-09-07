@@ -54,13 +54,24 @@ public class NotificationsFragment extends Fragment {
     private TextView popUpSender, popUpMessage;
     private EditText popUpReplyMessage;
     private Button popUpReplyButton, popUpOkButton, popUpSendButton, popUpDeclineButton, popUpAcceptButton;
+    View root = null;
 
+    @Override
+    public void onResume() {
+        notificationsUserData = UserData.getInstance().notifications;
+        if(root != null)
+        {
+            profileNotifications.clear();
+            fillNotificationsList(root);
+        }
+        super.onResume();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         notificationsViewModel =
                 ViewModelProviders.of(this).get(NotificationsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_notifications, container, false);
+        root = inflater.inflate(R.layout.fragment_notifications, container, false);
         final TextView textView = root.findViewById(R.id.text_notifications);
         notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -184,7 +195,7 @@ public class NotificationsFragment extends Fragment {
         popUpAcceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserData.getInstance().friends.add(profileNotificationItem.getNotification().getSender().getId());
+                UserData.getInstance().itsMeT.getFriends().add(profileNotificationItem.getNotification().getSender().getId());
                 DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
 
                 DBService.getInstance().GetUser(profileNotificationItem.getNotification().getSender().getId(), new FirebaseCallback() {

@@ -105,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
         loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult loginResult) {
@@ -167,87 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser curUser = mAuth.getCurrentUser();
-                            UserData.getInstance().uId = curUser.getUid();
-                            UserData.getInstance().gmail = curUser.getEmail();
-
-                            final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
-//                            ArrayList stars = new ArrayList(Arrays.asList(0, 0,5, 0, 0));
-////
-////                            DBService.getInstance().AddAttraction(new Attraction(null , "Cegar", "stace mi opis", null,
-////                                    new GeoPoint( 0,0) , stars ,"okle mi"), "sadas");
-//                            DBService.getInstance().AddTour(new Tour( null, "", "", "Turaa", "eve ga", null, new GeoPoint(0,0)
-//                                    ,new Timestamp(new Date(2020, 9, 10 , 13,30))
-//                                    ,new Timestamp(new Date(2020, 9, 10 , 18,30)),
-//                                    "",new ArrayList<String>() , new ArrayList<String>(),new ArrayList<String>() ));
-                            if(tourGuideRB.isChecked()){
-                                DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
-                                    @Override
-                                    public void onCallback(Object object) {
-                                        TourGuide usr = (TourGuide) object;
-                                        UserData.getInstance().name = usr.getName();
-                                        UserData.getInstance().userType = userType.guide;
-                                        UserData.getInstance().friends = usr.getFriends();
-                                        UserData.getInstance().notifications = usr.notifications;
-                                        UserData.getInstance().tourGroupId = usr.getMyTourGroup();
-                                        UserData.getInstance().myTours = usr.getMyTours();
-                                        UserData.getInstance().itsMeG = usr;
-                                        startActivity(i);
-                                        LoginActivity.this.finish();
-                                    }
-                                });
-
-                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString(PROFILE, "guide");
-                                editor.apply();
-                                Toast.makeText(LoginActivity.this, "Guide has logged in", Toast.LENGTH_SHORT).show();
-
-                            }
-                            else if(touristRB.isChecked()){
-                                DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
-                                    @Override
-                                    public void onCallback(Object object) {
-                                        User usr = (User) object;
-                                        UserData.getInstance().name = usr.getName();
-                                        UserData.getInstance().userType = userType.tourist;
-                                        UserData.getInstance().friends = usr.getFriends();
-                                        UserData.getInstance().notifications = usr.notifications;
-                                        UserData.getInstance().tourGroupId = usr.getMyTourGroup();
-                                        UserData.getInstance().myTours = usr.getMyTours();
-                                        UserData.getInstance().itsMeT = usr;
-                                        startActivity(i);
-                                        LoginActivity.this.finish();
-                                    }
-                                });
-
-                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString(PROFILE, "tourist");
-                                editor.apply();
-                                Toast.makeText(LoginActivity.this, "Tourist has logged in", Toast.LENGTH_SHORT).show();
-
-                            }
-                            else{
-                                DBService.getInstance().GetManager(UserData.getInstance().uId, new FirebaseCallback() {
-                                    @Override
-                                    public void onCallback(Object object) {
-                                        Manager usr = (Manager) object;
-                                        UserData.getInstance().name = usr.getName();
-                                        UserData.getInstance().userType = userType.manager;
-                                        UserData.getInstance().notifications = usr.notifications;
-                                        UserData.getInstance().itsMeM = usr;
-                                        startActivity(i);
-                                        LoginActivity.this.finish();
-                                    }
-                                });
-
-                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString(PROFILE, "manager");
-                                editor.apply();
-                                Toast.makeText(LoginActivity.this, "Manager has logged in", Toast.LENGTH_SHORT).show();
-
-                            }
+                            getLoggedInUserData(curUser);
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -262,6 +183,106 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         setRegisterBtnHandler(registerButton, loadingProgressBar);
+
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                FirebaseUser curUser = mAuth.getCurrentUser();
+                if(curUser != null)
+                    getLoggedInUserData(curUser);
+            }
+        });
+
+    }
+    private void getLoggedInUserData(FirebaseUser curUser){
+
+        UserData.getInstance().uId = curUser.getUid();
+        UserData.getInstance().gmail = curUser.getEmail();
+
+        final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
+//                            ArrayList stars = new ArrayList(Arrays.asList(0, 0,5, 0, 0));
+////
+////                            DBService.getInstance().AddAttraction(new Attraction(null , "Cegar", "stace mi opis", null,
+////                                    new GeoPoint( 0,0) , stars ,"okle mi"), "sadas");
+//                            DBService.getInstance().AddTour(new Tour( null, "", "", "Turaa", "eve ga", null, new GeoPoint(0,0)
+//                                    ,new Timestamp(new Date(2020, 9, 10 , 13,30))
+//                                    ,new Timestamp(new Date(2020, 9, 10 , 18,30)),
+//                                    "",new ArrayList<String>() , new ArrayList<String>(),new ArrayList<String>() ));
+        if(tourGuideRB.isChecked()){
+            DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    TourGuide usr = (TourGuide) object;
+                    if(usr != null) {
+                        UserData.getInstance().name = usr.getName();
+                        UserData.getInstance().userType = userType.guide;
+                        UserData.getInstance().friends = usr.getFriends();
+                        UserData.getInstance().notifications = usr.notifications;
+                        UserData.getInstance().tourGroupId = usr.getMyTourGroup();
+                        UserData.getInstance().myTours = usr.getMyTours();
+                        UserData.getInstance().itsMeG = usr;
+                        startActivity(i);
+                        LoginActivity.this.finish();
+                    }
+                }
+            });
+
+            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(PROFILE, "guide");
+            editor.apply();
+            Toast.makeText(LoginActivity.this, "Guide has logged in", Toast.LENGTH_SHORT).show();
+
+        }
+        else if(touristRB.isChecked()){
+            DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    User usr = (User) object;
+                    if(usr != null) {
+                        UserData.getInstance().name = usr.getName();
+                        UserData.getInstance().userType = userType.tourist;
+                        UserData.getInstance().friends = usr.getFriends();
+                        UserData.getInstance().notifications = usr.notifications;
+                        UserData.getInstance().tourGroupId = usr.getMyTourGroup();
+                        UserData.getInstance().myTours = usr.getMyTours();
+                        UserData.getInstance().itsMeT = usr;
+                        startActivity(i);
+                        LoginActivity.this.finish();
+                    }
+                }
+            });
+
+            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(PROFILE, "tourist");
+            editor.apply();
+            Toast.makeText(LoginActivity.this, "Tourist has logged in", Toast.LENGTH_SHORT).show();
+
+        }
+        else{
+            DBService.getInstance().GetManager(UserData.getInstance().uId, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    Manager usr = (Manager) object;
+                    if(usr != null){
+                        UserData.getInstance().name = usr.getName();
+                        UserData.getInstance().userType = userType.manager;
+                        UserData.getInstance().notifications = usr.notifications;
+                        UserData.getInstance().itsMeM = usr;
+                        startActivity(i);
+                        LoginActivity.this.finish();
+                    }
+                }
+            });
+
+            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(PROFILE, "manager");
+            editor.apply();
+            Toast.makeText(LoginActivity.this, "Manager has logged in", Toast.LENGTH_SHORT).show();
+
+        }
     }
     private void setRegisterBtnHandler(Button registerButton, final ProgressBar loadingProgressBar ){
         registerButton.setOnClickListener(new View.OnClickListener() {

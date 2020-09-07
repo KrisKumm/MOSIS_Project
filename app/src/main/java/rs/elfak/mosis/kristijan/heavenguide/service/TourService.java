@@ -40,23 +40,21 @@ public class TourService extends Service {
     Location currentLocation;
     TourGroup tourGroup;
     ListenerRegistration listener;
-    ArrayList<Notification> notifications = null;
+    String myuid;
+
 
     @Override
     public void onCreate() {
         listener = null;
-        DBService.getInstance().getNotifications(DBService.getInstance().GetUserReference(UserData.getInstance().uId), new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                notifications = (ArrayList<Notification>) object;
-            }
-        });
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         String groupId = intent.getExtras().getString("TOUR_GROUP");
+        myuid = intent.getExtras().getString("MY_UID");
+
+
         getGroup(groupId);
         setOnGroupUpdateHandler(groupId);
 
@@ -65,7 +63,7 @@ public class TourService extends Service {
     @SuppressLint("MissingPermission")
     private void updateGPS(){
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-    fusedLocationProviderClient.getLastLocation().addOnSuccessListener((Executor) this, new OnSuccessListener<Location>() {
+    fusedLocationProviderClient.getLastLocation().addOnSuccessListener( new OnSuccessListener<Location>() {
         @Override
         public void onSuccess(Location location) {
         currentLocation = location;
@@ -98,15 +96,9 @@ public class TourService extends Service {
                 public void onCallback(Object object) {
                     tourGroup = (TourGroup) object;
                     updateGPS();
-                    DBService.getInstance().getNotifications(DBService.getInstance().GetUserReference(UserData.getInstance().uId), new FirebaseCallback() {
-                        @Override
-                        public void onCallback(Object object) {
-                            if(notifications.size() < ((ArrayList<Notification>) object).size())
-                                makeNotification("New Notification", ProfileActivity.class);
-                        }
-                    });
                     //TODO ovde se proverava dal se poklapaju lokacije i salje se notifikacija ako se ne poklapaju
-                    if(Math.abs(tourGroup.getTourGuideLocation().getLatitude() - currentLocation.getLatitude()) < 0.1 && Math.abs(tourGroup.getTourGuideLocation().getLongitude() - currentLocation.getLongitude())< 0.1){
+
+                    if(currentLocation != null && Math.abs(tourGroup.getTourGuideLocation().getLatitude() - currentLocation.getLatitude()) < 0.1 && Math.abs(tourGroup.getTourGuideLocation().getLongitude() - currentLocation.getLongitude())< 0.1){
                         makeNotification("Izgubija si se", MapsActivity.class);
                     }
                 }
@@ -122,6 +114,7 @@ public class TourService extends Service {
             }
         });
     }
+
     @Override
     public void onDestroy() {
         listener.remove();

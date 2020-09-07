@@ -56,6 +56,7 @@
         </activity>
 
         <service android:name=".service.TourService" />
+        <service android:name=".service.NotificationService" />
     </application>
 
 </manifest>

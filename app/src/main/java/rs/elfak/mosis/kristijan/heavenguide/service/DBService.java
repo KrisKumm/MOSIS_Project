@@ -548,7 +548,7 @@ public class DBService
     }
 
     public void AddNotification(DocumentReference documentReference, Notification notification){
-        // treba da se doda kod za ostali tip notifikacija
+
         DocumentReference df = documentReference.collection("notifications").document();
         notification.setUid(df.getId());
         df.set(notification).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -580,6 +580,20 @@ public class DBService
                 firebaseCallback.onCallback(notifications);
             }
         });
+    }
+    public ListenerRegistration OnNotificationsUpdate(DocumentReference df, final FirebaseCallback firebaseCallback){
+        Query query = df.collection("notifications");
+        ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
+                ArrayList<Notification> notifications = new ArrayList<Notification>();
+                for(DocumentSnapshot ds : snapshot){
+                    notifications.add(ds.toObject(Notification.class));
+                }
+                firebaseCallback.onCallback(notifications);
+            }
+        });
+        return subscription;
     }
 
     public void AddStar(DocumentReference documentReference, Star star){
@@ -616,7 +630,7 @@ public class DBService
             }
         });
     }
-    public ListenerRegistration OnStarsUpdate(DocumentReference df, String id, final FirebaseCallback firebaseCallback){
+    public ListenerRegistration OnStarsUpdate(DocumentReference df, final FirebaseCallback firebaseCallback){
         Query query = df.collection("stars");
         ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
             @Override
