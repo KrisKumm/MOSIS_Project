@@ -2,7 +2,6 @@ package rs.elfak.mosis.kristijan.heavenguide.ui.login;
 
 import android.app.Activity;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -29,32 +28,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.GeoPoint;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-
-import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
 import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.RegisterActivity;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
-import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
-import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModel;
-import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginViewModelFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -172,6 +159,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         } else {
                             // If sign in fails, display a message to the user.
+                            loadingProgressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
 
@@ -200,14 +188,6 @@ public class LoginActivity extends AppCompatActivity {
         UserData.getInstance().gmail = curUser.getEmail();
 
         final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
-//                            ArrayList stars = new ArrayList(Arrays.asList(0, 0,5, 0, 0));
-////
-////                            DBService.getInstance().AddAttraction(new Attraction(null , "Cegar", "stace mi opis", null,
-////                                    new GeoPoint( 0,0) , stars ,"okle mi"), "sadas");
-//                            DBService.getInstance().AddTour(new Tour( null, "", "", "Turaa", "eve ga", null, new GeoPoint(0,0)
-//                                    ,new Timestamp(new Date(2020, 9, 10 , 13,30))
-//                                    ,new Timestamp(new Date(2020, 9, 10 , 18,30)),
-//                                    "",new ArrayList<String>() , new ArrayList<String>(),new ArrayList<String>() ));
         if(tourGuideRB.isChecked()){
             DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
                 @Override
@@ -221,17 +201,14 @@ public class LoginActivity extends AppCompatActivity {
                         UserData.getInstance().tourGroupId = usr.getMyTourGroup();
                         UserData.getInstance().myTours = usr.getMyTours();
                         UserData.getInstance().itsMeG = usr;
+                        setSharedPreference("guide");
                         startActivity(i);
                         LoginActivity.this.finish();
                     }
                 }
             });
 
-            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(PROFILE, "guide");
-            editor.apply();
-            Toast.makeText(LoginActivity.this, "Guide has logged in", Toast.LENGTH_SHORT).show();
+
 
         }
         else if(touristRB.isChecked()){
@@ -247,18 +224,12 @@ public class LoginActivity extends AppCompatActivity {
                         UserData.getInstance().tourGroupId = usr.getMyTourGroup();
                         UserData.getInstance().myTours = usr.getMyTours();
                         UserData.getInstance().itsMeT = usr;
+                        setSharedPreference("tourist");
                         startActivity(i);
                         LoginActivity.this.finish();
                     }
                 }
             });
-
-            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(PROFILE, "tourist");
-            editor.apply();
-            Toast.makeText(LoginActivity.this, "Tourist has logged in", Toast.LENGTH_SHORT).show();
-
         }
         else{
             DBService.getInstance().GetManager(UserData.getInstance().uId, new FirebaseCallback() {
@@ -270,20 +241,23 @@ public class LoginActivity extends AppCompatActivity {
                         UserData.getInstance().userType = userType.manager;
                         UserData.getInstance().notifications = usr.notifications;
                         UserData.getInstance().itsMeM = usr;
+                        setSharedPreference("manager");
                         startActivity(i);
                         LoginActivity.this.finish();
                     }
                 }
             });
-
-            SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(PROFILE, "manager");
-            editor.apply();
-            Toast.makeText(LoginActivity.this, "Manager has logged in", Toast.LENGTH_SHORT).show();
-
         }
     }
+
+    private void setSharedPreference(String userType) {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PROFILE, userType);
+        editor.apply();
+        Toast.makeText(LoginActivity.this, userType+ " has logged in", Toast.LENGTH_SHORT).show();
+    }
+
     private void setRegisterBtnHandler(Button registerButton, final ProgressBar loadingProgressBar ){
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override

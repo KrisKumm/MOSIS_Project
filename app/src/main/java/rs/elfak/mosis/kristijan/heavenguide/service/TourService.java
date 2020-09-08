@@ -3,6 +3,7 @@ package rs.elfak.mosis.kristijan.heavenguide.service;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -36,6 +37,7 @@ import static java.lang.Thread.sleep;
 
 public class TourService extends Service {
 
+    private static String CHANNEL_ID = "tour_notifications";
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
     TourGroup tourGroup;
@@ -72,20 +74,30 @@ public class TourService extends Service {
     }
 
     private void makeNotification(String message,final Class kuda) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.baseline_message_black_18dp)
-                .setContentTitle("new Tour Notification")
-                .setContentText(message)
-                .setAutoCancel(true);
-
-        Intent i = new Intent(this, kuda);
+        NotificationChannel notificationChannel = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "tour-service";
+            notificationChannel = new NotificationChannel("tour_notifications", name, NotificationManager.IMPORTANCE_DEFAULT  );
+            CHANNEL_ID = notificationChannel.getId();
+        }
+        Intent i = new Intent(this, ProfileActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 , builder.build());
+        android.app.Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.baseline_message_black_18dp)
+                .setContentTitle("New Notification")
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setChannelId(CHANNEL_ID).build();
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mNotificationManager.createNotificationChannel(notificationChannel);
+        }
+        mNotificationManager.notify(1 , notification);
+        getSystemService(Context.NOTIFICATION_SERVICE);
 
     }
 
