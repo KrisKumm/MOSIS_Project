@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -96,12 +97,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 UserData.getInstance().userType = userType.tourist;
                                 StorageService.getInstance().uploadPhoto("tourist", UserData.getInstance().uId , "cover", picture, RegisterActivity.this);
                             }
-                            Toast.makeText(RegisterActivity.this, "Upisaja si se", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "You have been registered!", Toast.LENGTH_SHORT).show();
 
+                            RegisterActivity.this.finish();
                             Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(i);
-
-                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(RegisterActivity.this, "Register failed.", Toast.LENGTH_SHORT).show();
@@ -128,10 +128,11 @@ public class RegisterActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RESULT_LOAD_IMAGE  && resultCode == RESULT_OK && data != null)
         {
+
             Uri selectedImageUri = data.getData();
             avatar.setImageURI(selectedImageUri);
             try {
-                picture = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                picture = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);;
 
             }
             catch(Exception e){

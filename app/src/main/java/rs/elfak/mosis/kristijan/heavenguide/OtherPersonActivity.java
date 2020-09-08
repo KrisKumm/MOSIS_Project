@@ -1,8 +1,13 @@
 package rs.elfak.mosis.kristijan.heavenguide;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -65,6 +70,9 @@ public class OtherPersonActivity extends AppCompatActivity {
         deleteAccountButton = findViewById(R.id.delete_account_button);
         deleteAccountLabel = findViewById(R.id.delete_account_label);
 
+        getUser();
+        setOtherUserInfo();
+
         addFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +88,12 @@ public class OtherPersonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 UserData.getInstance().friends.remove(otherUser.getUid());
-                DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
+                if(profileP.equals("tourist")){
+                    DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
+                }
+                if(profileP.equals("guide")){
+                    DBService.getInstance().AddUser(UserData.getInstance().itsMeG);
+                }
 
                 otherUser.getFriends().remove(UserData.getInstance().uId);
                 DBService.getInstance().AddUser(otherUser);
@@ -127,12 +140,24 @@ public class OtherPersonActivity extends AppCompatActivity {
             deleteAccountButton.setVisibility(View.INVISIBLE);
             deleteAccountLabel.setEnabled(false);
             deleteAccountLabel.setVisibility(View.INVISIBLE);
+            if(UserData.getInstance().friends.contains(otherUser.getUid())){
+                addFriendButton.setEnabled(false);
+                addFriendButton.setVisibility(View.INVISIBLE);
+                addFriendLabel.setEnabled(false);
+                addFriendLabel.setVisibility(View.INVISIBLE);
+            }
         }
         if(profileP.equals("guide")){
             deleteAccountButton.setEnabled(false);
             deleteAccountButton.setVisibility(View.INVISIBLE);
             deleteAccountLabel.setEnabled(false);
             deleteAccountLabel.setVisibility(View.INVISIBLE);
+            if(UserData.getInstance().friends.contains(otherUser.getUid())){
+                addFriendButton.setEnabled(false);
+                addFriendButton.setVisibility(View.INVISIBLE);
+                addFriendLabel.setEnabled(false);
+                addFriendLabel.setVisibility(View.INVISIBLE);
+            }
         }
         if(profileP.equals("manager")){
             addFriendButton.setEnabled(false);
@@ -144,9 +169,6 @@ public class OtherPersonActivity extends AppCompatActivity {
             removeFriendLabel.setEnabled(false);
             removeFriendLabel.setVisibility(View.INVISIBLE);
         }
-
-        getUser();
-        setOtherUserInfo();
     }
 
     private void getUser(){
@@ -158,4 +180,5 @@ public class OtherPersonActivity extends AppCompatActivity {
         avatar.setImageBitmap(Bitmap.createScaledBitmap(picture,  100, 100,false));
         otherUsernameLabel.setText(otherUser.getName());
     }
+
 }

@@ -26,6 +26,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Region;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Review;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Star;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
@@ -65,7 +66,7 @@ public class DBService
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 final Attraction attraction = documentSnapshot.toObject(Attraction.class);
-                firebaseCallback.onCallback(attraction);
+
                 getReviews(documentReference, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {
@@ -77,11 +78,19 @@ public class DBService
         });
 
     }
-    public void AddAttraction(Attraction attraction, String managerId){
+    public String AddAttraction(Attraction attraction, String managerId){
 
         DocumentReference documentReference;
         if(attraction.getUid() == null){
             documentReference = fStore.collection("attractions").document();
+            fStore.collection("managers").document(managerId)
+                    .update( "attractions" , FieldValue.arrayUnion( documentReference.getId()))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    });
             attraction.setUid(documentReference.getId());
         }else {
             documentReference = fStore.collection("attractions").document(attraction.getUid());
@@ -92,22 +101,13 @@ public class DBService
                 //Log.d(TAG, "DocumentSnapshot successfully updated!");
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //Log.w(TAG, "Error adding document", e);
-                    }
-                });
-        if(attraction.getUid() == null){
-            fStore.collection("managers").document(managerId)
-                    .update( "attractions" , FieldValue.arrayUnion( documentReference ))
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-
-                        }
-                    });
-        }
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //Log.w(TAG, "Error adding document", e);
+            }
+        });
+        return attraction.getUid();
     }
     public void GetAttractionsByName(String name, final  FirebaseCallback firebaseCallback){
 
@@ -151,7 +151,7 @@ public class DBService
         });
     }
 
-    public void AddTourGroup(TourGroup tourGroup){
+    public String AddTourGroup(TourGroup tourGroup){
 
         DocumentReference documentReference;
         if(tourGroup.getUid() == null){
@@ -172,6 +172,7 @@ public class DBService
                 //Log.w(TAG, "Error adding document", e);
             }
         });
+        return tourGroup.getUid();
     }
     public void GetTourGroup(String id, final FirebaseCallback firebaseCallback){
         final DocumentReference documentReference = fStore.collection("tour-groups").document(id);
@@ -311,11 +312,19 @@ public class DBService
             }
         });
     }
-    public void AddTour(Tour tour){
+    public String AddTour(Tour tour, String managerId){
 
         DocumentReference documentReference;
         if(tour.getUid() == null){
             documentReference = fStore.collection("tours").document();
+            fStore.collection("managers").document(managerId)
+                    .update( "tours" , FieldValue.arrayUnion( documentReference.getId() ))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    });
             tour.setUid(documentReference.getId());
         }else{
             documentReference = fStore.collection("tours").document(tour.getUid());
@@ -332,16 +341,7 @@ public class DBService
                         //Log.w(TAG, "Error adding document", e);
                     }
                 });
-        if(tour.getUid() == null){
-            fStore.collection("managers").document(tour.getUid())
-                    .update( "tours" , FieldValue.arrayUnion( documentReference ))
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-
-                        }
-                    });
-        }
+        return tour.getUid();
     }
 
     public void AddUser(User user){
@@ -365,7 +365,8 @@ public class DBService
                getNotifications(documentReference, new FirebaseCallback() {
                    @Override
                    public void onCallback(Object object) {
-                       user.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                       if(user != null)
+                            user.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
                        firebaseCallback.onCallback(user);
                    }
                });
@@ -391,6 +392,22 @@ public class DBService
             }
         });
     }
+    public void UpdateUserTourGroup(String id , String uidGroup){
+        final DocumentReference documentReference = fStore.collection("users").document(id);
+        documentReference
+                .update("myTourGroup", uidGroup)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
     public void DeleteUser(String id){
         final DocumentReference documentReference = fStore.collection("users").document(id);
         documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -403,6 +420,9 @@ public class DBService
 
     public DocumentReference GetUserReference(String id){
         return fStore.collection("users").document(id);
+    }
+    public DocumentReference GetTourGroupReference(String id){
+        return fStore.collection("tour-groups").document(id);
     }
 
     public void AddManager(Manager manager){
@@ -426,7 +446,8 @@ public class DBService
                 getNotifications(documentReference, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {
-                        manager.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                        if(manager != null)
+                            manager.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
                         firebaseCallback.onCallback(manager);
                     }
                 });
@@ -465,13 +486,29 @@ public class DBService
                 getNotifications(documentReference, new FirebaseCallback() {
                     @Override
                     public void onCallback(Object object) {
-                        guide.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
+                        if(guide != null)
+                            guide.notifications = new ArrayList<Notification>((ArrayList<Notification>) object);
                         firebaseCallback.onCallback(guide);
                     }
                 });
             }
         });
 
+    }
+    public void GetGuideByName(String name, final FirebaseCallback firebaseCallback){
+        final Query query = fStore.collection("guides").whereEqualTo("name" , name);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                firebaseCallback.onCallback(querySnapshot.getDocuments().get(0).toObject(TourGuide.class));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                firebaseCallback.onCallback(null);
+            }
+        });
     }
     public void DeleteGuide(String id){
         final DocumentReference documentReference = fStore.collection("guides").document(id);
@@ -511,7 +548,7 @@ public class DBService
     }
 
     public void AddNotification(DocumentReference documentReference, Notification notification){
-        // treba da se doda kod za ostali tip notifikacija
+
         DocumentReference df = documentReference.collection("notifications").document();
         notification.setUid(df.getId());
         df.set(notification).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -543,6 +580,69 @@ public class DBService
                 firebaseCallback.onCallback(notifications);
             }
         });
+    }
+    public ListenerRegistration OnNotificationsUpdate(DocumentReference df, final FirebaseCallback firebaseCallback){
+        Query query = df.collection("notifications");
+        ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
+                ArrayList<Notification> notifications = new ArrayList<Notification>();
+                for(DocumentSnapshot ds : snapshot){
+                    notifications.add(ds.toObject(Notification.class));
+                }
+                firebaseCallback.onCallback(notifications);
+            }
+        });
+        return subscription;
+    }
+
+    public void AddStar(DocumentReference documentReference, Star star){
+        // treba da se doda kod za ostali tip notifikacija
+        DocumentReference df = documentReference.collection("stars").document();
+        star.setUid(df.getId());
+        df.set(star).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //DODAJ TOST AKO OCES
+            }
+        });
+    }
+    public void DeleteStar(DocumentReference documentReference, String id){
+
+        documentReference.collection("stars").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // URADI NESTO AKO OCES
+            }
+        });
+    }
+    public void getStars(DocumentReference documentReference, final FirebaseCallback firebaseCallback){
+
+        final ArrayList<Star> stars = new ArrayList<Star>();
+        documentReference.collection("stars").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for (DocumentSnapshot doc: queryDocumentSnapshots) {
+                    stars.add(doc.toObject(Star.class));
+                }
+                firebaseCallback.onCallback(stars);
+            }
+        });
+    }
+    public ListenerRegistration OnStarsUpdate(DocumentReference df, final FirebaseCallback firebaseCallback){
+        Query query = df.collection("stars");
+        ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
+                ArrayList<Star> stars = new ArrayList<Star>();
+                for(DocumentSnapshot ds : snapshot){
+                    stars.add(ds.toObject(Star.class));
+                }
+                firebaseCallback.onCallback(stars);
+            }
+        });
+        return subscription;
     }
 
 }

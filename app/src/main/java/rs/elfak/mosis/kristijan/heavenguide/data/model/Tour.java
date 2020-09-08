@@ -1,12 +1,10 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tour{
 
@@ -15,12 +13,12 @@ public class Tour{
     private String guideId;
     private String name;
     private String description;
-    private String portrait;
-    private GeoPoint location;
-    private Timestamp startsAt;
-    private Timestamp endsAt;
+    //private String portrait;
+    //private GeoPoint location;
+    private String startsAt;
+    private String endsAt;
     private String myRegion;
-    private ArrayList<String> tourGuides;
+    //private ArrayList<String> tourGuides;
     private ArrayList<String> attractions;
     private ArrayList<String> pendingTourists;
     @Exclude
@@ -28,20 +26,16 @@ public class Tour{
 
     public Tour(){}
 
-    public Tour(String uId, String managerId, String guideId, String name, String description, String portrait, GeoPoint location,
-         Timestamp startsAt, Timestamp endsAt, String myRegion, ArrayList<String> tourGuides, ArrayList<String> attractions,
-         ArrayList<String> pendingTourists){
+    public Tour(String uId, String managerId, String guideId, String name, String description,String startsAt, String endsAt,
+                String myRegion, ArrayList<String> attractions, ArrayList<String> pendingTourists){
         this.uid = uId;
         this.managerId = managerId;
         this.guideId = guideId;
         this.name = name;
         this.description = description;
-        this.portrait = portrait;
-        this.location = location;
         this.startsAt = startsAt;
         this.endsAt = endsAt;
         this.myRegion = myRegion;
-        this.tourGuides = tourGuides;
         this.attractions = attractions;
         this.pendingTourists = pendingTourists;
     }
@@ -68,19 +62,12 @@ public class Tour{
         return this.description;
     }
 
-    public String getPortrait(){
-        return this.portrait;
-    }
 
-    public GeoPoint getLocation(){
-        return this.location;
-    }
-
-    public Timestamp getStartsAt(){
+    public String getStartsAt(){
         return this.startsAt;
     }
 
-    public Timestamp getEndsAt(){
+    public String getEndsAt(){
         return this.endsAt;
     }
 
@@ -96,9 +83,6 @@ public class Tour{
         return this.pendingTourists;
     }
 
-    public ArrayList<String> getTourGuides() {
-        return tourGuides;
-    }
 
     public ArrayList<Review> getReviews() {return reviews;}
 }

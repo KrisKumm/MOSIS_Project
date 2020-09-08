@@ -18,6 +18,7 @@ import android.widget.SearchView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -34,11 +35,15 @@ import java.util.ArrayList;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.RecyclerViewAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.SearchRecyclerItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
+import rs.elfak.mosis.kristijan.heavenguide.service.NotificationService;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 import rs.elfak.mosis.kristijan.heavenguide.ui.login.LoginActivity;
@@ -47,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String PROFILE = "tourist";
+    ListenerRegistration listener;
     public String profileP;
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -77,6 +83,9 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        profileP = sharedPreferences.getString(PROFILE, "");
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -106,6 +115,8 @@ public class ProfileActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.nav_logout_button).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                listener.remove();
+                stopService(new Intent( ProfileActivity.this, NotificationService.class));
                 drawer.closeDrawers();
                 finish();
                 Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
@@ -114,14 +125,12 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        profileP = sharedPreferences.getString(PROFILE, "");
+        setNotificationsUpdateHandler();
 
         relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
         buildRecyclerView();
         relativeLayoutSearch.setEnabled(false);
         relativeLayoutSearch.setVisibility(View.INVISIBLE);
-
     }
 
     @Override
@@ -267,55 +276,120 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void getAttractions(String name){
-        DBService.getInstance().GetAttractionsByName(name, new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                attractions = (ArrayList<Attraction>) object;
-                for(final Attraction attraction : attractions){
-                    StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
-                        @Override
-                        public void onCallback(Object object) {
-                            insertItem(searchPictures.size(), (Bitmap) object, attraction.getName());
-                            searchPictures.add((Bitmap) object);
-                        }
-                    });
-                }
+        attractions.clear();
+        if(UserData.getInstance().userType == userType.manager && UserData.getInstance().itsMeM.getAttractions().size() > 0){
+            for (String id : UserData.getInstance().itsMeM.getAttractions()){
+                DBService.getInstance().GetAttraction(id, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        attractions.add((Attraction) object);
+                        final Attraction attraction = (Attraction) object;
+                        StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                insertItem(searchPictures.size(), (Bitmap) object, attraction.getName());
+                                searchPictures.add((Bitmap) object);
+                            }
+                        });
+                    }
+                });
             }
-        });
+        }
+        else{
+            DBService.getInstance().GetAttractionsByName(name, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    attractions = (ArrayList<Attraction>) object;
+                    for(final Attraction attraction : attractions){
+                        StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                insertItem(searchPictures.size(), (Bitmap) object, attraction.getName());
+                                searchPictures.add((Bitmap) object);
+                            }
+                        });
+                    }
+                }
+            });
+
+        }
     }
     public void getTours(String name){
-        DBService.getInstance().GetToursByName(name, new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                searchTours = (ArrayList<Tour>) object;
-                for(final Tour tour : searchTours){
-                    StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
-                        @Override
-                        public void onCallback(Object object) {
-                            insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
-                            searchPictures.add((Bitmap) object);
-                        }
-                    });
-                }
+        searchTours.clear();
+        if(UserData.getInstance().userType == userType.manager && UserData.getInstance().itsMeM.getTours() != null){
+            for (String id : UserData.getInstance().itsMeM.getTours()){
+                DBService.getInstance().GetTour(id, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        searchTours.add((Tour) object);
+                        final Tour tour = (Tour) object;
+                        StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
+                                searchPictures.add((Bitmap) object);
+                            }
+                        });
+                    }
+                });
             }
-        });
+        }
+        else{
+            DBService.getInstance().GetToursByName(name, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    searchTours = (ArrayList<Tour>) object;
+                    for(final Tour tour : searchTours){
+                        StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
+                                searchPictures.add((Bitmap) object);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
     }
     public void getUsers(String name){
-        DBService.getInstance().GetUsersByName(name, new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                searchUsers = (ArrayList<User>) object;
-                for(final User user : searchUsers){
-                    StorageService.getInstance().downloadPhoto("tourist", user.getUid(), "cover", new FirebaseCallback() {
-                        @Override
-                        public void onCallback(Object object) {
-                            insertItem(searchPictures.size(), (Bitmap) object, user.getName());
-                            searchPictures.add((Bitmap) object);
-                        }
-                    });
-                }
+        searchUsers.clear();
+        if(UserData.getInstance().userType == userType.manager && UserData.getInstance().itsMeM.getTourGuides() != null){
+            for (String id : UserData.getInstance().itsMeM.getTourGuides()){
+                DBService.getInstance().GetGuide(id, new FirebaseCallback() {
+                    @Override
+                    public void onCallback(Object object) {
+                        searchUsers.add((User) object);
+                        final TourGuide user = (TourGuide) object;
+                        StorageService.getInstance().downloadPhoto("guide", user.getUid(), "cover", new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                insertItem(searchPictures.size(), (Bitmap) object, user.getName());
+                                searchPictures.add((Bitmap) object);
+                            }
+                        });
+                    }
+                });
             }
-        });
+        }
+        else{
+            DBService.getInstance().GetUsersByName(name, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    searchUsers = (ArrayList<User>) object;
+                    for(final User user : searchUsers){
+                        StorageService.getInstance().downloadPhoto("tourist", user.getUid(), "cover", new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                insertItem(searchPictures.size(), (Bitmap) object, user.getName());
+                                searchPictures.add((Bitmap) object);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 //    public void setButtons(){
 //        buttonInsert = findViewById(R.id.button_insert);
@@ -363,5 +437,17 @@ public class ProfileActivity extends AppCompatActivity {
 //        }
 //        mAdapter.filterList(filteredList);
 //    }
-
+    private void setNotificationsUpdateHandler(){
+        Intent service = new Intent(this, NotificationService.class);
+        service.putExtra("MY_UID", UserData.getInstance().uId);
+        startService(service);
+        if(listener == null){
+            listener = DBService.getInstance().OnNotificationsUpdate(DBService.getInstance().GetUserReference(UserData.getInstance().uId), new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    UserData.getInstance().notifications = (ArrayList<Notification>) object;
+                }
+            });
+    }
+}
 }

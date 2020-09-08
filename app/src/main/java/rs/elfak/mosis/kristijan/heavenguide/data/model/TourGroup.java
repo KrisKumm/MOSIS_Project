@@ -1,5 +1,6 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -12,19 +13,19 @@ public class TourGroup {
     private boolean readyAll;
     private GeoPoint tourGuideLocation;
     private ArrayList<String> touristIDList;
-    private ArrayList<String> stars;
+    @Exclude
+    private ArrayList<Star> stars;
     // A DA TURIMO OVDE ONE ZVEZDICE NA MAPI, PA DA BUDU NA MAPI SAMO DOK TRAJE TURA??
 
     public  TourGroup(){}
 
-    public TourGroup(String uId, String tourId, String tourGuide, boolean readyAll, GeoPoint tourGuideLocation, ArrayList<String> touristIDList, ArrayList<String> starLocationIdList){
+    public TourGroup(String uId, String tourId, String tourGuide, boolean readyAll, GeoPoint tourGuideLocation, ArrayList<String> touristIDList){
         this.uid = uId;
         this.tourId = tourId;
         this.tourGuide = tourGuide;
         this.readyAll = readyAll;
         this.tourGuideLocation = tourGuideLocation;
         this.touristIDList = touristIDList;
-        this.stars = starLocationIdList;
     }
 
 
@@ -50,7 +51,7 @@ public class TourGroup {
         return touristIDList;
     }
 
-    public ArrayList<String> getStarLocationIdList() {
+    public ArrayList<Star> getStars() {
         return stars;
     }
 

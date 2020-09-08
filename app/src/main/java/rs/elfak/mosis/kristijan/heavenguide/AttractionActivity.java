@@ -25,7 +25,6 @@ public class AttractionActivity extends AppCompatActivity {
     private ImageView attractionImageView;
     private TextView attractionName;
     private TextView attractionRegionName;
-    private Button editManagerButton;
     private TextView ratingLabel;
     private RatingBar ratingBar;
     private TextView ratingBarGradeLabel;
@@ -44,20 +43,11 @@ public class AttractionActivity extends AppCompatActivity {
         attractionImageView = findViewById(R.id.imageViewAttraction);
         attractionName = findViewById(R.id.attraction_name_label);
         attractionRegionName = findViewById(R.id.attraction_region_label);
-        editManagerButton = findViewById(R.id.edit_attraction_button);
         ratingLabel = findViewById(R.id.rating_bar_label);
         ratingBar = findViewById(R.id.rating_bar_attraction);
         ratingBarGradeLabel = findViewById(R.id.rating_bar_grade_label);
         attractionDescription = findViewById(R.id.description_attraction_label);
         reviewList = findViewById(R.id.attraction_reviews_list);
-
-        editManagerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
 
         getAttraction();
     }
@@ -84,11 +74,9 @@ public class AttractionActivity extends AppCompatActivity {
     private void setAttractionInfo(){
         attractionName.setText(myAttraction.getName());
         attractionDescription.setText((myAttraction.getDescription()));
-
-
-       setCoverPhoto();
-       setReviewsInfo();
-
+        attractionRegionName.setText(myAttraction.getMyRegion());
+        setCoverPhoto();
+        setReviewsInfo();
     }
 
     private void setCoverPhoto(){
@@ -112,8 +100,10 @@ public class AttractionActivity extends AppCompatActivity {
             sum += star;
             i++;
         }
-        ratingBar.setRating(rating/sum);
-
+        if(sum != 0)
+            ratingBar.setRating(rating/sum);
+        else
+            ratingBar.setRating(0);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {

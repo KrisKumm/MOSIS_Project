@@ -14,6 +14,7 @@ public class User {
     protected ArrayList<String> friends;
     protected GeoPoint location;
     protected String myTourGroup;
+    private ArrayList<String> myTours;
     @Exclude
     public ArrayList<Notification> notifications;
 
@@ -60,6 +61,10 @@ public class User {
     }
 
     public  String getMyTourGroup() {return  myTourGroup;}
+    public void setMyTourGroup(String id){ this.myTourGroup = id;}
+    public ArrayList<String> getMyTours() {
+        return myTours;
+    }
 
     public void setLocation(GeoPoint location) {
         this.location = location;

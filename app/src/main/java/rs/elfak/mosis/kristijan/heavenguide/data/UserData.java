@@ -1,12 +1,20 @@
 package rs.elfak.mosis.kristijan.heavenguide.data;
 
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.MapsActivity;
+import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
@@ -24,10 +32,11 @@ public class UserData {
     public String password;
     public String gmail;
     public userType userType;
-    public String portrait;
+    public Bitmap portrait;
     public GeoPoint location;
     public ArrayList<String> friends;
     public ArrayList<Notification> notifications;
+    public ArrayList<String> myTours;
     public User friend;
     public Bitmap friendPhoto;
     public Attraction attraction = null;
@@ -53,6 +62,5 @@ public class UserData {
 
         return instance;
     }
-
 
 }

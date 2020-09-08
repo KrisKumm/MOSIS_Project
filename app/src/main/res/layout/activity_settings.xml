@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/settings_edit_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Edit your profile"
+            android:textColor="@color/ic_me_icon2_background"
+            android:textStyle="italic"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:id="@+id/settings_edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:hint="New name..."
+            android:selectAllOnFocus="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_edit_profile"/>
+
+        <View
+            android:id="@+id/divider_settings"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/ic_me_icon2_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_edit_name"/>
+
+        <TextView
+            android:id="@+id/settings_configure_gps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_settings"
+            android:text="Configure GPS"
+            android:textColor="@color/ic_me_icon2_background"
+            android:textStyle="italic"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+
+        <Switch
+            android:id="@+id/settings_gps_sw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_configure_gps"
+            android:layout_marginTop="10dp"
+            android:text="Turn on/off GPS"
+            android:textColor="@color/ic_me_icon2_background"
+            android:textSize="20sp" />
+
+        <View
+            android:id="@+id/divider_settings1"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/ic_me_icon2_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_gps_sw"/>
+
+        <TextView
+            android:id="@+id/settings_set_theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_settings1"
+            android:text="Set theme mode"
+            android:textColor="@color/ic_me_icon2_background"
+            android:textStyle="italic"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+
+        <Switch
+            android:id="@+id/settings_theme_sw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_set_theme"
+            android:layout_marginTop="10dp"
+            android:text="Dark/Light theme"
+            android:textColor="@color/ic_me_icon2_background"
+            android:textSize="20sp" />
+
+        <View
+            android:id="@+id/divider_settings2"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/ic_me_icon2_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_theme_sw"/>
+
+        <Button
+            android:id="@+id/settings_change_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Make Changes"
+            android:layout_marginTop="30dp"
+            android:selectAllOnFocus="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_settings2"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
