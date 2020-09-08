@@ -445,7 +445,7 @@ public class ProfileActivity extends AppCompatActivity {
             listener = DBService.getInstance().OnNotificationsUpdate(DBService.getInstance().GetUserReference(UserData.getInstance().uId), new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
-                    UserData.getInstance().notifications = (ArrayList<Notification>) object;
+                   UserData.getInstance().notifications = (ArrayList<Notification>) object;
                 }
             });
     }

@@ -20,7 +20,6 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 
 public class NotificationService extends Service {
 
-    ArrayList<Notification> notifications = null;
     ListenerRegistration listener;
     String myuid;
     @Override
@@ -42,16 +41,11 @@ public class NotificationService extends Service {
     }
     private void setNotificationsUpdateHandler(){
         if(listener == null){
-            listener = DBService.getInstance().OnNotificationsUpdate(DBService.getInstance().GetUserReference(myuid), new FirebaseCallback() {
+            listener = DBService.getInstance().OnNotificationUpdate(DBService.getInstance().GetUserReference(myuid), new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
-                    ArrayList<Notification> newNotifications = (ArrayList<Notification>) object;
-                    if(notifications != null && newNotifications != null && notifications.size() < newNotifications.size()){
-                        notifications = newNotifications;
-                        makeNotification(notifications.get(0).getMessage());
-                    }
-                    else
-                        notifications = newNotifications;
+                   Notification newNotification = (Notification) object;
+                        makeNotification(newNotification.getMessage());
                 }
             });
         }

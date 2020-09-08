@@ -188,6 +188,7 @@ public class NotificationsFragment extends Fragment {
         popUpDeclineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
                 dialog.dismiss();
             }
         });
@@ -206,6 +207,8 @@ public class NotificationsFragment extends Fragment {
                         DBService.getInstance().AddUser(user);
                     }
                 });
+                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
+
                 dialog.dismiss();
             }
         });

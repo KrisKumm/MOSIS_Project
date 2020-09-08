@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -581,14 +582,37 @@ public class DBService
             }
         });
     }
+    public ListenerRegistration OnNotificationUpdate(DocumentReference df, final FirebaseCallback firebaseCallback){
+        Query query = df.collection("notifications");
+        ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
+
+                for (DocumentChange dc : snapshot.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            firebaseCallback.onCallback(dc.getDocument().toObject(Notification.class));
+                            break;
+//                        case MODIFIED:
+//
+//                            break;
+//                        case REMOVED:
+//
+//                            break;
+                    }
+                }
+            }
+        });
+        return subscription;
+    }
     public ListenerRegistration OnNotificationsUpdate(DocumentReference df, final FirebaseCallback firebaseCallback){
         Query query = df.collection("notifications");
         ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
                 ArrayList<Notification> notifications = new ArrayList<Notification>();
-                for(DocumentSnapshot ds : snapshot){
-                    notifications.add(ds.toObject(Notification.class));
+                for (DocumentSnapshot dc : snapshot) {
+                        notifications.add(dc.toObject(Notification.class));
                 }
                 firebaseCallback.onCallback(notifications);
             }
