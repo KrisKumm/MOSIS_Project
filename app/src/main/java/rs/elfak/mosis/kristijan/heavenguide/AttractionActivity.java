@@ -100,10 +100,14 @@ public class AttractionActivity extends AppCompatActivity {
             sum += star;
             i++;
         }
-        if(sum != 0)
-            ratingBar.setRating(rating/sum);
-        else
+        if(sum != 0) {
+            ratingBarGradeLabel.setText(rating / sum);
+            ratingBar.setRating(rating / sum);
+        }
+        else{
             ratingBar.setRating(0);
+            ratingBarGradeLabel.setText("0");
+        }
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {

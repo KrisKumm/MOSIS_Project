@@ -25,6 +25,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 
+import rs.elfak.mosis.kristijan.heavenguide.ManagerNewTourActivity;
+import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileNotificationAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
@@ -161,10 +163,15 @@ public class NotificationsFragment extends Fragment {
         popUpSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Notification newNotification = new Notification(UserData.getInstance().uId, popUpReplyMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
-                DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(profileNotificationItem.getNotification().getSender().getId()), newNotification);
-                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
-                dialog.dismiss();
+                if(!popUpReplyMessage.getText().toString().isEmpty()){
+                    Notification newNotification = new Notification(UserData.getInstance().uId, popUpReplyMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
+                    DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(profileNotificationItem.getNotification().getSender().getId()), newNotification);
+                    DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
+                    dialog.dismiss();
+                }
+                else{
+                   // Toast.makeText(ProfileActivity.class, "message is empty", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

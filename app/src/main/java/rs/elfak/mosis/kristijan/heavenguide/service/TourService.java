@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
@@ -32,7 +33,9 @@ import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGroup;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
 public class TourService extends Service {
@@ -43,6 +46,7 @@ public class TourService extends Service {
     TourGroup tourGroup;
     ListenerRegistration listener;
     String myuid;
+    String userType;
 
 
     @Override
@@ -55,13 +59,22 @@ public class TourService extends Service {
 
         String groupId = intent.getExtras().getString("TOUR_GROUP");
         myuid = intent.getExtras().getString("MY_UID");
-
+        userType = intent.getExtras().getString("USER_TYPE");
 
         getGroup(groupId);
         setOnGroupUpdateHandler(groupId);
-
+        setGuideLocation();
         return START_STICKY;
     }
+
+    private void setGuideLocation() {
+        updateGPS();
+        if(userType == "guide" && currentLocation != null) {
+            DBService.getInstance().UpdateGuideLocation(UserData.getInstance().tourGroupId,
+                    new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude()));
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private void updateGPS(){
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -108,11 +121,19 @@ public class TourService extends Service {
                 public void onCallback(Object object) {
                     tourGroup = (TourGroup) object;
                     updateGPS();
-                    //TODO ovde se proverava dal se poklapaju lokacije i salje se notifikacija ako se ne poklapaju
+                    if(userType == "tourist")
+                        if(currentLocation != null && Math.abs(tourGroup.getTourGuideLocation().getLatitude() - currentLocation.getLatitude()) < 0.1 && Math.abs(tourGroup.getTourGuideLocation().getLongitude() - currentLocation.getLongitude())< 0.1){
+                            makeNotification("Izgubija si se", MapsActivity.class);
+                        }
+                    else{
+                            try {
+                                currentThread().wait(4000, 2000);
+                                setGuideLocation();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                    if(currentLocation != null && Math.abs(tourGroup.getTourGuideLocation().getLatitude() - currentLocation.getLatitude()) < 0.1 && Math.abs(tourGroup.getTourGuideLocation().getLongitude() - currentLocation.getLongitude())< 0.1){
-                        makeNotification("Izgubija si se", MapsActivity.class);
-                    }
                 }
             });
         }

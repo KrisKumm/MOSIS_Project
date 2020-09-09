@@ -62,9 +62,8 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
         newAttractionAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* TODO CHECK IF ALL THE FIELDS ARE NOT EMPTY */
-
-                if(picture != null){
+                if(picture != null && !newAttractionName.getText().toString().isEmpty() && !newAttractionDescription.getText().toString().isEmpty()
+                        && !newAttractionLatitude.getText().toString().isEmpty() && !newAttractionLongitude.getText().toString().isEmpty()){
                     ArrayList stars = new ArrayList(Arrays.asList(0, 0, 0 , 0, 0));
                     Attraction newAttraction = new Attraction( null, newAttractionName.getText().toString(),newAttractionDescription.getText().toString(),new ArrayList<String>(),
                             new GeoPoint(Double.parseDouble(newAttractionLatitude.getText().toString()),Double.parseDouble(newAttractionLongitude.getText().toString())),
@@ -75,7 +74,9 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
                     Intent i = new Intent(ManagerNewAttractionActivity.this, ProfileActivity.class);
                     startActivity(i);
                 }
-
+                else{
+                    Toast.makeText(ManagerNewAttractionActivity.this, "Some field is empty", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

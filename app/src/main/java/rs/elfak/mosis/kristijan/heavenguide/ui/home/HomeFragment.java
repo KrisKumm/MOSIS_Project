@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment {
 
         toursAdapter = new ProfileTourAdapter((Activity) root.getContext(), profileTours);
         toursListView.setAdapter(toursAdapter);
-
+        profileToursGuide.clear();
         getMyTours(new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
@@ -195,7 +195,7 @@ public class HomeFragment extends Fragment {
 
         toursGuideAdapter = new ProfileTourGuideAdapter((Activity) root.getContext(), profileToursGuide);
         toursGuideListView.setAdapter(toursGuideAdapter);
-
+        profileToursGuide.clear();
         getMyTours(new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {

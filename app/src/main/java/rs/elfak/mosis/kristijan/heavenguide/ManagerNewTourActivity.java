@@ -24,6 +24,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
+import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
 
 public class ManagerNewTourActivity extends AppCompatActivity {
 
@@ -67,27 +68,32 @@ public class ManagerNewTourActivity extends AppCompatActivity {
         newTourAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* TODO CHECK IF ALL THE FIELDS ARE NOT EMPTY */
-                DBService.getInstance().GetGuideByName(newTourGuideName.getText().toString(), new FirebaseCallback() {
-                    @Override
-                    public void onCallback(Object object) {
-                        TourGuide guide = (TourGuide) object;
-                        if(guide != null){
-                            Tour newTour = new Tour(null, UserData.getInstance().uId, guide.getUid(), newTourName.getText().toString(), newTourDescription.getText().toString(),
-                                    newTourStartTime.getText().toString(), newTourEndTime.getText().toString(), newTourRegionName.getText().toString(),
-                                    new ArrayList<String>(), new ArrayList<String>());
-                            String tourUid = DBService.getInstance().AddTour(newTour, UserData.getInstance().uId);
-                            guide.getMyTours().add(tourUid);
-                            DBService.getInstance().AddGuide(guide);
-                            Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
-                            startActivity(i);
+                if(!newTourName.getText().toString().isEmpty() && !newTourDescription.getText().toString().isEmpty() && !newTourStartTime.getText().toString().isEmpty()
+                && !newTourEndTime.getText().toString().isEmpty() && !newTourRegionName.getText().toString().isEmpty() && picture != null) {
+                    DBService.getInstance().GetGuideByName(newTourGuideName.getText().toString(), new FirebaseCallback() {
+                        @Override
+                        public void onCallback(Object object) {
+                            TourGuide guide = (TourGuide) object;
+                            if (guide != null) {
+                                Tour newTour = new Tour(null, UserData.getInstance().uId, guide.getUid(), newTourName.getText().toString(), newTourDescription.getText().toString(),
+                                        newTourStartTime.getText().toString(), newTourEndTime.getText().toString(), newTourRegionName.getText().toString(),
+                                        new ArrayList<String>(), new ArrayList<String>());
+                                String tourUid = DBService.getInstance().AddTour(newTour, UserData.getInstance().uId);
+                                guide.getMyTours().add(tourUid);
+                                DBService.getInstance().AddGuide(guide);
+                                StorageService.getInstance().uploadPhoto("tour", tourUid, "cover", picture, ManagerNewTourActivity.this);
+                                Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
+                                startActivity(i);
+                            } else {
+                                Toast.makeText(ManagerNewTourActivity.this, "Guide with that name doesen't exist", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else{
-                            Toast.makeText(ManagerNewTourActivity.this, "Guide with that name doesen't exist", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                    });
+                }
+                else{
+                    Toast.makeText(ManagerNewTourActivity.this, "Some field is empty", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

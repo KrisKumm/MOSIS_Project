@@ -359,14 +359,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 popUpStarCreateButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        GeoPoint starGeoPoint = new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        String randNumber = getRandomNumber();
-                        Star newStar = new Star(null, popUpStarSnippet.getText().toString(), randNumber, starGeoPoint, randNumber);
-                        DBService.getInstance().AddStar(DBService.getInstance().GetTourGroupReference(UserData.getInstance().tourGroupId), newStar);
                         BitmapDrawable drawable = (BitmapDrawable) popUpStarImageCamera.getDrawable();
                         Bitmap bitmapStar = drawable.getBitmap();
-                        StorageService.getInstance().uploadPhoto("tour-group", UserData.getInstance().tourGroupId, randNumber, bitmapStar, MapsActivity.this);
-                        dialog.dismiss();
+                        if (currentLocation != null && !popUpStarSnippet.getText().toString().isEmpty() && bitmapStar != null) {
+                            GeoPoint starGeoPoint = new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            String randNumber = getRandomNumber();
+                            Star newStar = new Star(null, popUpStarSnippet.getText().toString(), randNumber, starGeoPoint, randNumber);
+                            DBService.getInstance().AddStar(DBService.getInstance().GetTourGroupReference(UserData.getInstance().tourGroupId), newStar);
+                            StorageService.getInstance().uploadPhoto("tour-group", UserData.getInstance().tourGroupId, randNumber, bitmapStar, MapsActivity.this);
+                            dialog.dismiss();
+                        }
+                        else{
+                            Toast.makeText(MapsActivity.this, "Some field is empty or your location is off", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 dialogBuilder.setView(createStarPopUp);
@@ -514,10 +519,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(meMarker!=null){
                         meMarker.remove();
                     }
-                    if(tourBegun && UserData.getInstance().userType == userType.guide) {
-                        DBService.getInstance().UpdateGuideLocation(UserData.getInstance().tourGroupId,
-                                new GeoPoint(location.getLatitude(), location.getLongitude()));
-                    }
+
                     LatLng meLatLng;
                     if(currentLocation != null)
                         meLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -548,12 +550,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(UserData.getInstance().tourGroupId != null)
         {
             tourBegun = true;
-            tourServiceIO();
         }
         else {
             tourBegun = false;
-            tourServiceIO();
         }
+        tourServiceIO();
     }
     private void tourServiceIO() {
         if(tourBegun){
@@ -561,6 +562,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Intent service = new Intent(this, TourService.class);
             service.putExtra("TOUR_GROUP", UserData.getInstance().tourGroupId);
             service.putExtra("MY_UID", UserData.getInstance().uId);
+            service.putExtra("USER_TYPE", UserData.getInstance().userType.toString());
             startService(service);
         }
         else{
