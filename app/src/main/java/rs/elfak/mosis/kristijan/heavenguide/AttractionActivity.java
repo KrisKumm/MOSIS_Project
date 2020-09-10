@@ -87,7 +87,8 @@ public class AttractionActivity extends AppCompatActivity {
             StorageService.getInstance().downloadPhoto("attraction",myAttraction.getUid(), "cover", new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
-                    attractionImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  200, 200,false));
+                    //attractionImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) object,  attractionImageView.getWidth(), attractionImageView.getHeight(),false));
+                    attractionImageView.setImageBitmap((Bitmap) object);
                 }
             });
         }
@@ -101,7 +102,7 @@ public class AttractionActivity extends AppCompatActivity {
             i++;
         }
         if(sum != 0) {
-            ratingBarGradeLabel.setText(rating / sum);
+            ratingBarGradeLabel.setText(String.valueOf(rating / sum));
             ratingBar.setRating(rating / sum);
         }
         else{

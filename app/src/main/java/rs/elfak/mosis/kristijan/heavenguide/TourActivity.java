@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.firestore.GeoPoint;
@@ -59,6 +60,8 @@ public class TourActivity extends AppCompatActivity {
     private Button tourDeleteButton;
     private Button tourJoinButton;
     private Button tourEndButton;
+    private Button tourAddAttractionButton;
+    private Switch tourAttractionsSwitch;
 
     private Context context = this;
 
@@ -81,6 +84,8 @@ public class TourActivity extends AppCompatActivity {
         tourDeleteButton = findViewById(R.id.tour_delete_button);
         tourJoinButton = findViewById(R.id.tour_join_button);
         tourEndButton = findViewById(R.id.tour_end_button);
+        tourAddAttractionButton = findViewById(R.id.tour_add_attraction_button);
+        tourAttractionsSwitch = findViewById(R.id.tour_attractions_switch);
 
         getTour();
 
@@ -143,14 +148,38 @@ public class TourActivity extends AppCompatActivity {
             }
         });
 
+        tourAddAttractionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO : provera dal ga vec ima
+                myTour.getAttractions().add(UserData.getInstance().attraction.getUid());
+                DBService.getInstance().AddTour(myTour, UserData.getInstance().uId);
+            }
+        });
+
+        tourAttractionsSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                linearLayoutTourImages.removeAllViews();
+                if(!tourAttractionsSwitch.isChecked()){
+                    // TODO : filtriranje
+
+                    getAttractions(myTour.getAttractions());
+                }else{
+                    getAttractions(UserData.getInstance().itsMeM.getAttractions());
+                }
+            }
+        });
 
         tourAttractionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent( (Activity) TourActivity.this, AttractionActivity.class);
                 UserData.getInstance().attraction = myAttractions.get(i);
                 UserData.getInstance().attractionPhoto = attractionPhotos.get(i);
-                startActivity(intent);
+                if(!profileP.equals("manager")) {
+                    Intent intent = new Intent((Activity) TourActivity.this, AttractionActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -161,12 +190,20 @@ public class TourActivity extends AppCompatActivity {
             tourStartButton.setVisibility(View.INVISIBLE);
             tourEndButton.setEnabled(false);
             tourEndButton.setVisibility(View.INVISIBLE);
+            tourAddAttractionButton.setEnabled(false);
+            tourAddAttractionButton.setVisibility(View.INVISIBLE);
+            tourAttractionsSwitch.setEnabled(false);
+            tourAttractionsSwitch.setVisibility(View.INVISIBLE);
         }
         if(profileP.equals("guide")){
             tourDeleteButton.setEnabled(false);
             tourDeleteButton.setVisibility(View.INVISIBLE);
             tourJoinButton.setEnabled(false);
             tourJoinButton.setVisibility(View.INVISIBLE);
+            tourAddAttractionButton.setEnabled(false);
+            tourAddAttractionButton.setVisibility(View.INVISIBLE);
+            tourAttractionsSwitch.setEnabled(false);
+            tourAttractionsSwitch.setVisibility(View.INVISIBLE);
         }
         if(profileP.equals("manager")){
             tourStartButton.setEnabled(false);
@@ -226,6 +263,7 @@ public class TourActivity extends AppCompatActivity {
     }
 
     private void getAttractions(ArrayList<String> attractionIds){
+        atractionItems.clear();
         attractionsAdapter = new ProfileFriendsAdapter((Activity) context , atractionItems);
         tourAttractionsListView.setAdapter(attractionsAdapter);
         myAttractions.clear();
@@ -252,14 +290,15 @@ public class TourActivity extends AppCompatActivity {
                 attractionsAdapter.notifyDataSetChanged();
             }
         });
-        //TODO nzm kako radi ovaj ListView
+
     }
     public void addImageView(LayoutInflater layoutInflater, Bitmap image){
 
         View view = layoutInflater.inflate(R.layout.region_images_layout, linearLayoutTourImages, false);
         ImageView imageView = view.findViewById(R.id.single_region_image_view);
 
-        imageView.setImageBitmap(Bitmap.createScaledBitmap(image,  650, 400, false));
+        //imageView.setImageBitmap(Bitmap.createScaledBitmap(image,  650, 400, false));
+        imageView.setImageBitmap(image);
         linearLayoutTourImages.addView(view);
     }
     private void setReviewInfo(ArrayList<Review> reviews){

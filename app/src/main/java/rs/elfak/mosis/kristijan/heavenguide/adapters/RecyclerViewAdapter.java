@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rs.elfak.mosis.kristijan.heavenguide.R;
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.SearchRecyclerItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> implements Filterable {
 
@@ -73,7 +75,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         SearchRecyclerItem currentItem = mSearchRecyclerList.get(position);
         Bitmap picture = currentItem.getImageResource();
-        holder.mImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) picture,  80, 80,false));
+        if(UserData.getInstance().userType == userType.manager){
+            holder.mImageView.setImageResource(R.mipmap.ic_tour_icon_hik_foreground);
+        }
+        else{
+            holder.mImageView.setImageBitmap(Bitmap.createScaledBitmap((Bitmap) picture,  80, 80,false));
+        }
         holder.mTextView1.setText(currentItem.getText1());
     }
 

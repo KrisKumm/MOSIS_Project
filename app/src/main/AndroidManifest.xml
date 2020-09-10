@@ -56,7 +56,14 @@
         </activity>
 
         <service android:name=".service.TourService" />
-        <service android:name=".service.NotificationService" />
+        <service android:name=".service.NotificationService" android:enabled="true" />
+
+        <receiver
+            android:name=".service.NotificationService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+        </receiver>
     </application>
 
 </manifest>

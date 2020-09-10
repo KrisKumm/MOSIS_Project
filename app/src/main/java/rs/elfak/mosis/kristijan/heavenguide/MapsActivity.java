@@ -269,8 +269,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getAttractions() {
-        GeoPoint topLeft = new GeoPoint(meMarker.getPosition().latitude + 0.1, meMarker.getPosition().longitude - 0.1);
-        GeoPoint bottomRight = new GeoPoint(meMarker.getPosition().latitude - 0.1, meMarker.getPosition().longitude + 0.1);
+        GeoPoint topLeft = new GeoPoint(meMarker.getPosition().latitude + 3, meMarker.getPosition().longitude - 3);
+        GeoPoint bottomRight = new GeoPoint(meMarker.getPosition().latitude - 3, meMarker.getPosition().longitude + 3);
         DBService.getInstance().GetAttractionsByLocation(topLeft, bottomRight, new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {

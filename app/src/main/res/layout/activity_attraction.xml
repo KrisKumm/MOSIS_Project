@@ -10,7 +10,9 @@
         android:id="@+id/imageViewAttraction"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -21,6 +23,7 @@
         android:textSize="40sp"
         android:textStyle="bold"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         app:layout_constraintTop_toBottomOf="@id/imageViewAttraction"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -32,6 +35,7 @@
         android:textSize="30sp"
         android:textStyle="italic"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         app:layout_constraintTop_toBottomOf="@id/attraction_name_label"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -42,6 +46,7 @@
         app:layout_constraintTop_toBottomOf="@id/attraction_region_label"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
         android:text="Rating:"
         android:textSize="20sp"/>
 
@@ -82,6 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         android:text="Description of the attraction"
         android:textSize="25sp"
         app:layout_constraintStart_toEndOf="parent"

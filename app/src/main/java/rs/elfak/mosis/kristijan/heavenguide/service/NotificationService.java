@@ -36,11 +36,19 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
         if(myuid == null)
         myuid = intent.getExtras().getString("MY_UID");
         setNotificationUpdateHandler();
 
         return START_STICKY;
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        Intent intent = new Intent("com.android.ServiceStopped");
+        sendBroadcast(intent);
     }
 
     @Override
