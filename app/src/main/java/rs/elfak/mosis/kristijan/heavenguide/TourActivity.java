@@ -151,9 +151,10 @@ public class TourActivity extends AppCompatActivity {
         tourAddAttractionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO : provera dal ga vec ima
-                myTour.getAttractions().add(UserData.getInstance().attraction.getUid());
-                DBService.getInstance().AddTour(myTour, UserData.getInstance().uId);
+                if(myTour.getAttractions().contains(UserData.getInstance().attraction.getUid())){
+                    myTour.getAttractions().add(UserData.getInstance().attraction.getUid());
+                    DBService.getInstance().AddTour(myTour, UserData.getInstance().uId);
+                }
             }
         });
 
@@ -162,11 +163,11 @@ public class TourActivity extends AppCompatActivity {
             public void onClick(View view) {
                 linearLayoutTourImages.removeAllViews();
                 if(!tourAttractionsSwitch.isChecked()){
-                    // TODO : filtriranje
-
                     getAttractions(myTour.getAttractions());
                 }else{
-                    getAttractions(UserData.getInstance().itsMeM.getAttractions());
+                    ArrayList<String> filteredArray = new ArrayList<>(UserData.getInstance().itsMeM.getAttractions());
+                    filteredArray.removeAll(myTour.getAttractions());
+                    getAttractions(filteredArray);
                 }
             }
         });
@@ -176,7 +177,7 @@ public class TourActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 UserData.getInstance().attraction = myAttractions.get(i);
                 UserData.getInstance().attractionPhoto = attractionPhotos.get(i);
-                if(!profileP.equals("manager")) {
+                if(!profileP.equals("manager") || !tourAttractionsSwitch.isChecked()) {
                     Intent intent = new Intent((Activity) TourActivity.this, AttractionActivity.class);
                     startActivity(intent);
                 }
@@ -215,7 +216,6 @@ public class TourActivity extends AppCompatActivity {
         }
 
     }
-
     public void getTour(){
 
         if(UserData.getInstance().tour != null){

@@ -18,6 +18,7 @@ import android.widget.SearchView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import androidx.navigation.NavController;
@@ -118,6 +119,8 @@ public class ProfileActivity extends AppCompatActivity {
                 listener.remove();
                 stopService(new Intent( ProfileActivity.this, NotificationService.class));
                 drawer.closeDrawers();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                mAuth.signOut();
                 finish();
                 Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(i);
@@ -258,7 +261,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void goToTour(int position) {
         UserData.getInstance().tour = searchTours.get(position);
-        UserData.getInstance().tourPhoto = searchPictures.get(position);
         Intent attractionActivity = new Intent(ProfileActivity.this , TourActivity.class );
         startActivity(attractionActivity);
     }
@@ -287,7 +289,7 @@ public class ProfileActivity extends AppCompatActivity {
                         StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
                             @Override
                             public void onCallback(Object object) {
-                                insertItem(searchPictures.size(), (Bitmap) object, attraction.getName());
+                                insertItem((Bitmap) object, attraction.getName());
                                 searchPictures.add((Bitmap) object);
                             }
                         });
@@ -304,7 +306,7 @@ public class ProfileActivity extends AppCompatActivity {
                         StorageService.getInstance().downloadPhoto("attraction", attraction.getUid(), "cover", new FirebaseCallback() {
                             @Override
                             public void onCallback(Object object) {
-                                insertItem(searchPictures.size(), (Bitmap) object, attraction.getName());
+                                insertItem((Bitmap) object, attraction.getName());
                                 searchPictures.add((Bitmap) object);
                             }
                         });
@@ -323,13 +325,14 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onCallback(Object object) {
                         searchTours.add((Tour) object);
                         final Tour tour = (Tour) object;
-                        StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
-                            @Override
-                            public void onCallback(Object object) {
-                                insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
-                                searchPictures.add((Bitmap) object);
-                            }
-                        });
+                        insertItem(null, tour.getName());
+//                        StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
+//                            @Override
+//                            public void onCallback(Object object) {
+//                                insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
+//                                searchPictures.add((Bitmap) object);
+//                            }
+//                        });
                     }
                 });
             }
@@ -343,7 +346,7 @@ public class ProfileActivity extends AppCompatActivity {
                         StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
                             @Override
                             public void onCallback(Object object) {
-                                insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
+                                insertItem((Bitmap) object, tour.getName());
                                 searchPictures.add((Bitmap) object);
                             }
                         });
@@ -365,7 +368,7 @@ public class ProfileActivity extends AppCompatActivity {
                         StorageService.getInstance().downloadPhoto("guide", user.getUid(), "cover", new FirebaseCallback() {
                             @Override
                             public void onCallback(Object object) {
-                                insertItem(searchPictures.size(), (Bitmap) object, user.getName());
+                                insertItem((Bitmap) object, user.getName());
                                 searchPictures.add((Bitmap) object);
                             }
                         });
@@ -382,7 +385,7 @@ public class ProfileActivity extends AppCompatActivity {
                         StorageService.getInstance().downloadPhoto("tourist", user.getUid(), "cover", new FirebaseCallback() {
                             @Override
                             public void onCallback(Object object) {
-                                insertItem(searchPictures.size(), (Bitmap) object, user.getName());
+                                insertItem((Bitmap) object, user.getName());
                                 searchPictures.add((Bitmap) object);
                             }
                         });
@@ -414,9 +417,9 @@ public class ProfileActivity extends AppCompatActivity {
 //        });
 //    }
 
-    public void insertItem(int position, Bitmap picture , String name) {
-        searchRecyclerItemArrayList.add(position, new SearchRecyclerItem(picture, name));
-        mAdapter.notifyItemInserted(position);
+    public void insertItem(Bitmap picture , String name) {
+        searchRecyclerItemArrayList.add(new SearchRecyclerItem(picture, name));
+        mAdapter.notifyDataSetChanged();
     }
 //    public void removeItem(int position) {
 //        searchRecyclerItemArrayList.remove(position);

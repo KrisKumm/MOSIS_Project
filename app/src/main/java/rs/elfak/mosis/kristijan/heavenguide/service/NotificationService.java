@@ -37,7 +37,7 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        if(myuid == null)
+        if(myuid == null && intent != null)
         myuid = intent.getExtras().getString("MY_UID");
         setNotificationUpdateHandler();
 

@@ -48,9 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     private FirebaseAuth mAuth;
 
-    public RadioGroup rg;
-    public RadioButton touristRB, tourGuideRB;
-
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String PROFILE = "profile";
     public String profileP;
@@ -69,9 +66,6 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.login);
         final Button registerButton = findViewById(R.id.register);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-        rg = findViewById(R.id.radioGroup);
-        touristRB = findViewById(R.id.touristRB);
-        tourGuideRB = findViewById(R.id.tourGuideRB);
 
         usernameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         passwordEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -172,14 +166,9 @@ public class LoginActivity extends AppCompatActivity {
 
         setRegisterBtnHandler(registerButton, loadingProgressBar);
 
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                FirebaseUser curUser = mAuth.getCurrentUser();
-                if(curUser != null)
-                    getLoggedInUserData(curUser);
-            }
-        });
+       FirebaseUser curUser = mAuth.getCurrentUser();
+       if(curUser != null)
+            getLoggedInUserData(curUser);
 
     }
     private void getLoggedInUserData(FirebaseUser curUser){
@@ -188,7 +177,6 @@ public class LoginActivity extends AppCompatActivity {
         UserData.getInstance().gmail = curUser.getEmail();
 
         final Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
-        if(tourGuideRB.isChecked()){
             DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
@@ -207,11 +195,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
-
-
-
-        }
-        else if(touristRB.isChecked()){
             DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
@@ -230,8 +213,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
-        else{
             DBService.getInstance().GetManager(UserData.getInstance().uId, new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
@@ -247,7 +228,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
     }
 
     private void setSharedPreference(String userType) {

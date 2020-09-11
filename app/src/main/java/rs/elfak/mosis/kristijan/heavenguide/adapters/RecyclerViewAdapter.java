@@ -75,7 +75,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         SearchRecyclerItem currentItem = mSearchRecyclerList.get(position);
         Bitmap picture = currentItem.getImageResource();
-        if(UserData.getInstance().userType == userType.manager){
+        if(picture == null){
             holder.mImageView.setImageResource(R.mipmap.ic_tour_icon_hik_foreground);
         }
         else{
