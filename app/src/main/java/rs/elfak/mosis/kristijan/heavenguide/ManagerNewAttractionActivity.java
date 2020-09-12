@@ -69,10 +69,13 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
                             new GeoPoint(Double.parseDouble(newAttractionLatitude.getText().toString()),Double.parseDouble(newAttractionLongitude.getText().toString())),
                             stars, newAttractionRegionName.getText().toString());
                     String uid = DBService.getInstance().AddAttraction(newAttraction, UserData.getInstance().uId);
-                    StorageService.getInstance().uploadPhoto("attraction", uid, "cover", picture, ManagerNewAttractionActivity.this);
-                    Toast.makeText(ManagerNewAttractionActivity.this, "A new attraction has been created", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(ManagerNewAttractionActivity.this, ProfileActivity.class);
-                    startActivity(i);
+                    if(uid != null){
+                        UserData.getInstance().itsMeM.getAttractions().add(uid);
+                        StorageService.getInstance().uploadPhoto("attraction", uid, "cover", picture, ManagerNewAttractionActivity.this);
+                        Toast.makeText(ManagerNewAttractionActivity.this, "A new attraction has been created", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(ManagerNewAttractionActivity.this, ProfileActivity.class);
+                        startActivity(i);
+                    }
                 }
                 else{
                     Toast.makeText(ManagerNewAttractionActivity.this, "Some field is empty", Toast.LENGTH_SHORT).show();

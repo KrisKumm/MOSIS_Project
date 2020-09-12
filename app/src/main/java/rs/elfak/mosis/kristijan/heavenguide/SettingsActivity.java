@@ -1,8 +1,10 @@
 package rs.elfak.mosis.kristijan.heavenguide;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -49,6 +51,26 @@ public class SettingsActivity extends AppCompatActivity {
                 if(profileP.equals("guide")){
                     DBService.getInstance().AddUser(UserData.getInstance().itsMeG);
                 }
+            }
+        });
+
+        settingsTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int nightModeFlags =  SettingsActivity.this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                switch (nightModeFlags) {
+                    case Configuration.UI_MODE_NIGHT_YES:
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        break;
+                    case Configuration.UI_MODE_NIGHT_NO:
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        break;
+                    default:
+                        break;
+                }
+//                if(settingsTheme.isChecked()){
+//
+//                }
             }
         });
     }

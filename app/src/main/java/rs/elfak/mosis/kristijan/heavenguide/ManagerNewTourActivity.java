@@ -65,12 +65,16 @@ public class ManagerNewTourActivity extends AppCompatActivity {
                                         newTourStartTime.getText().toString(), newTourEndTime.getText().toString(), newTourRegionName.getText().toString(),
                                         new ArrayList<String>(), new ArrayList<String>());
                                 String tourUid = DBService.getInstance().AddTour(newTour, UserData.getInstance().uId);
-                                guide.getMyTours().add(tourUid);
-                                DBService.getInstance().AddGuide(guide);
-                                StorageService.getInstance().uploadPhoto("tour", tourUid, "cover", picture, ManagerNewTourActivity.this);
-                                Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
-                                startActivity(i);
+                                if(tourUid != null){
+                                    UserData.getInstance().itsMeM.getTours().add(tourUid);
+                                    guide.getMyTours().add(tourUid);
+                                    DBService.getInstance().AddGuide(guide);
+                                    StorageService.getInstance().uploadPhoto("tour", tourUid, "cover", picture, ManagerNewTourActivity.this);
+                                    Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
+                                    Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
+                                    startActivity(i);
+                                }
+
                             } else {
                                 Toast.makeText(ManagerNewTourActivity.this, "Guide with that name doesen't exist", Toast.LENGTH_SHORT).show();
                             }

@@ -128,6 +128,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        if(UserData.getInstance().userType == userType.manager){
+            navigationView.getMenu().findItem(R.id.nav_friends).setVisible(false);
+        }
+
         setNotificationsUpdateHandler();
 
         relativeLayoutSearch = findViewById(R.id.relativeLayoutSearch);
@@ -172,6 +176,11 @@ public class ProfileActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String searchText) {
+                searchRecyclerItemArrayList.clear();
+                searchPictures.clear();
+                searchTours.clear();
+                attractions.clear();
+                mAdapter.notifyDataSetChanged();
                 if(attractionsRadioButton.isChecked())
                     getAttractions(searchText);
                 else if(toursRadioButton.isChecked())
@@ -326,13 +335,6 @@ public class ProfileActivity extends AppCompatActivity {
                         searchTours.add((Tour) object);
                         final Tour tour = (Tour) object;
                         insertItem(null, tour.getName());
-//                        StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
-//                            @Override
-//                            public void onCallback(Object object) {
-//                                insertItem(searchPictures.size(), (Bitmap) object, tour.getName());
-//                                searchPictures.add((Bitmap) object);
-//                            }
-//                        });
                     }
                 });
             }
@@ -343,13 +345,7 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onCallback(Object object) {
                     searchTours = (ArrayList<Tour>) object;
                     for(final Tour tour : searchTours){
-                        StorageService.getInstance().downloadPhoto("tour", tour.getUid(), "cover", new FirebaseCallback() {
-                            @Override
-                            public void onCallback(Object object) {
-                                insertItem((Bitmap) object, tour.getName());
-                                searchPictures.add((Bitmap) object);
-                            }
-                        });
+                        insertItem(null, tour.getName());
                     }
                 }
             });

@@ -27,6 +27,7 @@ import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileFriendsItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
@@ -65,17 +66,12 @@ public class FriendsFragment extends Fragment {
 
         TextView textView1 = root.findViewById(R.id.text_friends1);
 
-        if(profileP.equals("manager")){
-            friendsListView.setVisibility(View.GONE);
-            textView1.setText("YOU HAVE NO FRIENDS");
-        }
-        else{
-            friendsListView = root.findViewById(R.id.profile_friends_list_view);
-            textView1.setVisibility(View.GONE);
-            setListClickHandler(root);
-            getFriends(root);
-            fillFriendsList(root);
-        }
+        friendsListView = root.findViewById(R.id.profile_friends_list_view);
+        textView1.setVisibility(View.GONE);
+        setListClickHandler(root);
+        getFriends(root);
+        fillFriendsList(root);
+
         return root;
     }
 

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 
 public class OtherPersonActivity extends AppCompatActivity {
@@ -77,7 +78,7 @@ public class OtherPersonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String message = UserData.getInstance().name + " would like to add you as their friend. Shall I connect you two? You can accept below by clicking ACCEPT";
-                Notification newNotification = new Notification(otherUser.getUid(), message, UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 1);
+                Notification newNotification = new Notification(otherUser.getUid(), message, UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), getNotificationType(1));
                 DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUid()), newNotification);
                 Toast.makeText(OtherPersonActivity.this, "Notification sent!", Toast.LENGTH_SHORT).show();
                 addFriendButton.setEnabled(false);
@@ -115,7 +116,9 @@ public class OtherPersonActivity extends AppCompatActivity {
                 popUpSendButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Notification newNotification = new Notification(otherUser.getUid(), popUpMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
+
+                        Notification newNotification = new Notification(otherUser.getUid(), popUpMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId),
+                               getNotificationType(0) );
                         DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUid()), newNotification);
                         dialog.dismiss();
                     }
@@ -180,5 +183,15 @@ public class OtherPersonActivity extends AppCompatActivity {
         avatar.setImageBitmap(Bitmap.createScaledBitmap(picture,  100, 100,false));
         otherUsernameLabel.setText(otherUser.getName());
     }
+    private int getNotificationType(int offset){
+        int type = 0;
+        if(UserData.getInstance().userType == userType.tourist)
+            type = 1 * 4 + offset;
+        else if(UserData.getInstance().userType == userType.guide)
+            type = 2 * 4 + offset;
+        else
+            type = 3 * 4 + offset;
 
+        return type;
+    }
 }

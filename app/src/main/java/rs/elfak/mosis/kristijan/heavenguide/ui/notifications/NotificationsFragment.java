@@ -109,10 +109,10 @@ public class NotificationsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
                 ProfileNotificationItem clickedNotification = profileNotifications.get(i);
-                if(clickedNotification.getNotification().getType() == 0){
+                if(clickedNotification.getNotification().getType() % 4 == 0){
                     createNewNotificationDialogType0(root, clickedNotification);
                 }
-                if(clickedNotification.getNotification().getType() == 1){
+                if(clickedNotification.getNotification().getType() % 4 == 1){
                     createNewNotificationDialogType1(root, clickedNotification);
                 }
 

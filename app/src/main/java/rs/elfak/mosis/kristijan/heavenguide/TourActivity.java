@@ -151,7 +151,7 @@ public class TourActivity extends AppCompatActivity {
         tourAddAttractionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(myTour.getAttractions().contains(UserData.getInstance().attraction.getUid())){
+                if(!myTour.getAttractions().contains(UserData.getInstance().attraction.getUid())){
                     myTour.getAttractions().add(UserData.getInstance().attraction.getUid());
                     DBService.getInstance().AddTour(myTour, UserData.getInstance().uId);
                 }
@@ -162,6 +162,8 @@ public class TourActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 linearLayoutTourImages.removeAllViews();
+                atractionItems.clear();
+                attractionsAdapter.notifyDataSetChanged();
                 if(!tourAttractionsSwitch.isChecked()){
                     getAttractions(myTour.getAttractions());
                 }else{
@@ -273,7 +275,6 @@ public class TourActivity extends AppCompatActivity {
                 @Override
                 public void onCallback(Object object) {
                     Attraction attraction  = (Attraction) object;
-                    myAttractions.add(attraction);
                     setAttractionInfo(attraction);
                 }
             });
@@ -285,6 +286,7 @@ public class TourActivity extends AppCompatActivity {
             @Override
             public void onCallback(Object object) {
                 atractionItems.add(new ProfileFriendsItem((Bitmap) object, attraction.getName()));
+                myAttractions.add(attraction);
                 attractionPhotos.add((Bitmap) object);
                 addImageView(layoutInflater, (Bitmap) object);
                 attractionsAdapter.notifyDataSetChanged();

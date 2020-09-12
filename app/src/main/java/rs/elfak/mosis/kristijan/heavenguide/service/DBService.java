@@ -422,6 +422,12 @@ public class DBService
     public DocumentReference GetUserReference(String id){
         return fStore.collection("users").document(id);
     }
+    public DocumentReference GetGuideReference(String id){
+        return fStore.collection("guides").document(id);
+    }
+    public DocumentReference GetManagerReference(String id){
+        return fStore.collection("managers").document(id);
+    }
     public DocumentReference GetTourGroupReference(String id){
         return fStore.collection("tour-groups").document(id);
     }
