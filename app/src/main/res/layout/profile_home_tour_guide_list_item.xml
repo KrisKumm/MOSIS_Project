@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
+    android:background="@color/colorBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
@@ -12,6 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Start-end time/date:"
+        android:textColor="@color/colorTitle60"
         android:textSize="20sp"/>
 
     <TextView
@@ -23,7 +25,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="25dp"
         android:text="Start time/date label:"
-        android:textSize="20sp"/>.
+        android:textColor="@color/colorTitle60"
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/profile_home_tour_tour_name_label"
@@ -34,6 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_home_tour_guide_start_label"
         android:layout_marginTop="15dp"
         android:text="Tour Name"
+        android:textColor="@color/colorNumber"
         android:textSize="30sp"
         android:textStyle="bold"/>
 

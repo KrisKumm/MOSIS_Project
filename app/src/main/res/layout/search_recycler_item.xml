@@ -5,18 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
+    android:background="@color/colorBackground"
     app:cardCornerRadius="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="4dp">
+        android:layout_margin="4dp"
+        android:background="@color/colorBackground">
 
         <ImageView
             android:id="@+id/search_recycler_imageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:padding="2dp" />
+            android:padding="2dp"
+            android:background="@color/colorAccent"/>
 
         <TextView
             android:id="@+id/search_recycler_textView"
@@ -25,7 +28,7 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/search_recycler_imageView"
             android:text="Name name name"
-            android:textColor="@android:color/black"
+            android:textColor="@color/colorNumber"
             android:textSize="30sp"
             android:textStyle="bold"
             android:layout_marginLeft="10dp"/>

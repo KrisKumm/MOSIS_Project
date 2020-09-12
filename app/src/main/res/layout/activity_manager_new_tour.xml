@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".ManagerNewTourActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackground">
 
     <TextView
         android:id="@+id/text_view_new_tour_manager"
@@ -18,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="Enter information for a new tour!"
-        android:textColor="@color/ic_me_icon2_background"
+        android:textColor="@color/colorTitle60"
         android:textStyle="italic"
         android:textSize="20sp"
         android:textAlignment="center"/>
@@ -31,6 +33,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:hint="Guide name for this tour.."
+        android:textColor="@color/colorNumber"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +47,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:hint="Name..."
+        android:textColor="@color/colorNumber"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +61,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:hint="Description..."
+        android:textColor="@color/colorNumber"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +75,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:hint="Start time..."
+        android:textColor="@color/colorNumber"
         android:inputType="time"
         android:selectAllOnFocus="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,6 +89,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:hint="End time..."
+        android:textColor="@color/colorNumber"
         android:inputType="time"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,6 +103,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:hint="Region Name..."
+        android:textColor="@color/colorNumber"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,6 +114,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new tour"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText"
         android:layout_marginTop="10dp"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"

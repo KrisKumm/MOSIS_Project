@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".TourActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground">
 
     <HorizontalScrollView
         android:id="@+id/scroll_view_tour_images"
@@ -35,6 +37,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:text="Tour around region-name"
+        android:textColor="@color/colorNumber"
         android:textStyle="bold"
         android:textSize="30sp"/>
 
@@ -47,6 +50,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:text="TourGuide: tourguide-name"
+        android:textColor="@color/colorTitle60"
         android:textSize="20sp"/>
 
     <TextView
@@ -58,6 +62,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:text="tour start-end time"
+        android:textColor="@color/colorNumber"
         android:textSize="20sp"/>
 
     <TextView
@@ -69,13 +74,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:text="Rating:"
+        android:textColor="@color/colorTitle60"
         android:textSize="20sp"/>
 
     <ImageView
         android:id="@+id/rating_image"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:background="@drawable/baseline_star_black_18dp"
+        android:background="@drawable/ic_round_star_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tour_guide_label"
         android:layout_marginTop="15dp"
@@ -91,6 +97,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:text="Description of the tour..."
+        android:textColor="@color/colorTitle60"
         android:textSize="20sp"/>
 
     <ListView
@@ -101,7 +108,9 @@
         app:layout_constraintTop_toBottomOf="@id/description_tour_label"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"/>
+        android:layout_marginEnd="10dp"
+        android:background="@color/colorCardBackground"
+        android:textColor="@color/colorNumber"/>
 
     <View
         android:id="@+id/divider_tour"
@@ -122,7 +131,9 @@
             app:layout_constraintTop_toBottomOf="@+id/divider_tour"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="Start"/>
+            android:text="Start"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/colorBtnText"/>
 
         <Button
             android:id="@+id/tour_add_attraction_button"
@@ -133,7 +144,9 @@
             app:layout_constraintTop_toBottomOf="@+id/divider_tour"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="Add attraction"/>
+            android:text="Add attraction"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/colorBtnText"/>
 
         <Button
             android:id="@+id/tour_delete_button"
@@ -144,7 +157,9 @@
             app:layout_constraintTop_toBottomOf="@+id/divider_tour"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="Delete tour"/>
+            android:text="Delete tour"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/colorBtnText"/>
 
         <Button
             android:id="@+id/tour_end_button"
@@ -155,7 +170,9 @@
             app:layout_constraintTop_toBottomOf="@+id/divider_tour"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="End"/>
+            android:text="End"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/colorBtnText"/>
 
         <Button
             android:id="@+id/tour_join_button"
@@ -167,7 +184,9 @@
             app:layout_constraintTop_toBottomOf="@+id/divider_tour"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="Join"/>
+            android:text="Join"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/colorBtnText"/>
 
         <Switch
             android:id="@+id/tour_attractions_switch"
@@ -179,7 +198,8 @@
             app:layout_constraintTop_toBottomOf="@+id/divider_tour"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            />
+            android:background="@drawable/custom_button"
+            android:textColor="@color/colorBtnText"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,11 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".SettingsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground">
 
         <TextView
             android:id="@+id/settings_edit_profile"
@@ -120,8 +122,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Make Changes"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorCardBackground"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/colorBtnText"
             android:layout_marginTop="30dp"
             android:selectAllOnFocus="true"
             app:layout_constraintEnd_toEndOf="parent"

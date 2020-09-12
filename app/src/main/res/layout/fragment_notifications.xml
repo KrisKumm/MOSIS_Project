@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment"
+    android:background="@color/colorBackground"
     android:id="@+id/fragment_notifications_profile_layout">
 
     <TextView
@@ -17,6 +18,7 @@
         android:textAlignment="center"
         android:textSize="30sp"
         android:text="Notifications"
+        android:textColor="@color/colorNumber"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +40,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_notifications"/>
+        app:layout_constraintTop_toBottomOf="@id/divider_notifications"
+        android:background="@color/colorCardBackground"
+        android:textColor="@color/colorNumber"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/colorBackground"
     tools:context=".RegisterActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,9 +21,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_email"
+        android:textColor="@color/colorNumber"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +39,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_username"
+        android:textColor="@color/colorNumber"
         android:inputType="textPersonName"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +54,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_password"
+        android:textColor="@color/colorNumber"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,6 +69,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:text="@string/prompt_image"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,8 +95,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select your account type!"
+        android:textColor="@color/colorTitle60"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -109,19 +116,23 @@
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label1">
+        app:layout_constraintTop_toBottomOf="@+id/label1"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText">
         <RadioButton
             android:id="@+id/touristRB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/tourist"/>
+            android:text="@string/tourist"
+            android:textColor="@color/colorBtnText"/>
         <RadioButton
             android:id="@+id/tourGuideRB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/tourGuide"/>
+            android:text="@string/tourGuide"
+            android:textColor="@color/colorBtnText"/>
     </RadioGroup>
 
     <Button
@@ -129,6 +140,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText"
         android:layout_marginStart="24dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="24dp"

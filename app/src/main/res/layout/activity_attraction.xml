@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".AttractionActivity">
 
     <ImageView
@@ -22,6 +23,7 @@
         android:text="Attraction Name!"
         android:textSize="40sp"
         android:textStyle="bold"
+        android:textColor="@color/colorNumber"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         app:layout_constraintTop_toBottomOf="@id/imageViewAttraction"
@@ -34,6 +36,7 @@
         android:text="Region: Name!"
         android:textSize="30sp"
         android:textStyle="italic"
+        android:textColor="@color/colorNumber"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         app:layout_constraintTop_toBottomOf="@id/attraction_name_label"
@@ -48,7 +51,8 @@
         android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp"
         android:text="Rating:"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:textColor="@color/colorTitle60" />
 
     <RatingBar
         android:id="@+id/rating_bar_attraction"
@@ -70,7 +74,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:text="Rating:"
-        android:textSize="30sp"/>
+        android:textSize="30sp"
+        android:textColor="@color/colorTitle60" />
 
     <View
         android:id="@+id/divider_attraction_1"
@@ -90,6 +95,7 @@
         android:layout_marginLeft="10dp"
         android:text="Description of the attraction"
         android:textSize="25sp"
+        android:textColor="@color/colorTitle60"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_attraction_1"/>
 
@@ -108,7 +114,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/divider_attraction_2"/>
+        app:layout_constraintTop_toBottomOf="@+id/divider_attraction_2"
+        android:background="@color/colorCardBackground"
+        android:textColor="@color/colorNumber"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

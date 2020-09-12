@@ -68,9 +68,6 @@ public class SettingsActivity extends AppCompatActivity {
                     default:
                         break;
                 }
-//                if(settingsTheme.isChecked()){
-//
-//                }
             }
         });
     }

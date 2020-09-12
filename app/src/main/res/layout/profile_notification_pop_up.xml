@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     android:orientation="vertical">
 
     <TextView
@@ -19,7 +20,7 @@
         android:textSize="20sp"
         android:textAlignment="center"
         android:textStyle="italic"
-        android:textColor="@color/ic_me_icon2_background"/>
+        android:textColor="@color/colorTitle60"/>
 
     <TextView
         android:id="@+id/notification_popup_message"
@@ -32,7 +33,7 @@
         android:text="Notification Message"
         android:textSize="20sp"
         android:textStyle="normal"
-        android:textColor="@color/ic_me_icon2_background"/>
+        android:textColor="@color/colorNumber"/>
 
     <Button
         android:id="@+id/notification_popup_reply_button"
@@ -43,7 +44,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:text="REPLY"
-        android:textColor="@color/ic_me_icon2_background" />
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText" />
 
     <Button
         android:id="@+id/notification_popup_ok_button"
@@ -54,7 +56,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:text="OK"
-        android:textColor="@color/ic_me_icon2_background"/>
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText"/>
 
     <EditText
         android:id="@+id/notification_popup_reply_message"
@@ -67,7 +70,7 @@
         android:hint="Enter your message here..."
         android:textSize="20sp"
         android:textStyle="normal"
-        android:textColor="@color/ic_me_icon2_background"
+        android:textColor="@color/colorNumber"
         android:autofillHints="Enter your message here..."/>
 
     <Button
@@ -79,6 +82,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp"
         android:text="SEND"
-        android:textColor="@color/ic_me_icon2_background"/>
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/colorBackground"
     android:id="@+id/popup_new_star_layout">
 
     <TextView
@@ -17,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp"
         android:text="Add a new star!"
-        android:textColor="@color/ic_me_icon2_background"
+        android:textColor="@color/colorTitle60"
         android:textStyle="italic"
         android:textSize="20sp"
         android:textAlignment="center"/>
@@ -28,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:hint="Enter your star snippet here..."
-        android:textColor="@color/ic_me_icon2_background"
+        android:textColor="@color/colorNumber"
         android:textSize="20sp"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/popup_new_star_image_button"
         android:layout_marginTop="10dp"
         android:text="Take a picture!"
-        android:textColor="@color/ic_me_icon2_background"
+        android:textColor="@color/colorTitle60"
         android:textStyle="italic"
         android:textSize="20sp"
         android:textAlignment="center"/>
@@ -67,6 +68,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/popup_new_star_text_2"
         android:layout_marginTop="10dp"
-        android:text="CREATE"/>
+        android:text="CREATE"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorBtnText"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
