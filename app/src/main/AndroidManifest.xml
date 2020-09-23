@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="rs.elfak.mosis.kristijan.heavenguide">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -9,27 +10,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:hardwareAccelerated="false"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".ManagerNewAttractionActivity" />
-        <activity android:name=".ManagerNewTourActivity" />
-        <activity android:name=".TourActivity" />
-        <activity android:name=".AttractionActivity" />
-        <activity android:name=".OtherPersonActivity" />
-        <activity
-            android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RegisterActivity" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -43,6 +35,30 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".MapsLatLonActivity"
+            android:label="@string/title_activity_maps_lat_lon"></activity>
+
+        <receiver
+            android:name=".service.TourRestarted"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="restartservice" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".ManagerNewAttractionActivity" />
+        <activity android:name=".ManagerNewTourActivity" />
+        <activity android:name=".TourActivity" />
+        <activity android:name=".AttractionActivity" />
+        <activity android:name=".OtherPersonActivity" />
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".RegisterActivity" />
+        <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
@@ -55,15 +71,19 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.TourService" />
-        <service android:name=".service.NotificationService" android:enabled="true" />
+        <service
+            android:name=".service.TourService"
+            android:enabled="true"
+            android:foregroundServiceType="location" />
+        <service
+            android:name=".service.NotificationService"
+            android:enabled="true" />
 
         <receiver
             android:name=".service.NotificationService"
             android:enabled="true"
             android:exported="true"
-            android:label="RestartServiceWhenStopped">
-        </receiver>
+            android:label="RestartServiceWhenStopped"></receiver>
     </application>
 
 </manifest>

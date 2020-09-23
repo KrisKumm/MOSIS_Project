@@ -23,6 +23,7 @@
         android:text="Location Updates"
         android:background="@drawable/custom_button"
         android:textColor="@color/colorBtnText"
+        android:alpha="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/map"
         android:layout_marginLeft="20dp"/>
@@ -36,6 +37,7 @@
         android:text="GPS/SavePower"
         android:background="@drawable/custom_button"
         android:textColor="@color/colorBtnText"
+        android:alpha="0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/map"
         android:layout_marginRight="20dp"/>

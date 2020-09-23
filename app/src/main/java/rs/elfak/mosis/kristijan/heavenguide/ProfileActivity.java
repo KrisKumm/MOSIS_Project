@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import androidx.navigation.NavController;
@@ -30,12 +31,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.adapters.RecyclerViewAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.Manager;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.SearchRecyclerItem;
@@ -128,6 +131,15 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefreshSRL);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData(); // your code
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
         if(UserData.getInstance().userType == userType.manager){
             navigationView.getMenu().findItem(R.id.nav_friends).setVisible(false);
         }
@@ -138,6 +150,54 @@ public class ProfileActivity extends AppCompatActivity {
         buildRecyclerView();
         relativeLayoutSearch.setEnabled(false);
         relativeLayoutSearch.setVisibility(View.INVISIBLE);
+    }
+
+    public void refreshData(){
+        if (UserData.getInstance().userType.toString().equals("toruist")){
+            DBService.getInstance().GetUser(UserData.getInstance().uId, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    User usr = (User) object;
+                        UserData.getInstance().name = usr.getName();
+                        UserData.getInstance().userType = userType.tourist;
+                        UserData.getInstance().friends = usr.getFriends();
+                        UserData.getInstance().notifications = usr.notifications;
+                        UserData.getInstance().tourGroupId = usr.getMyTourGroup();
+                        UserData.getInstance().myTours = usr.getMyTours();
+                        UserData.getInstance().itsMeT = usr;
+                }
+            });
+        }
+
+        if (UserData.getInstance().userType.toString().equals("guide")) {
+            DBService.getInstance().GetGuide(UserData.getInstance().uId, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    TourGuide usr = (TourGuide) object;
+                    UserData.getInstance().name = usr.getName();
+                    UserData.getInstance().userType = userType.guide;
+                    UserData.getInstance().friends = usr.getFriends();
+                    UserData.getInstance().notifications = usr.notifications;
+                    UserData.getInstance().tourGroupId = usr.getMyTourGroup();
+                    UserData.getInstance().myTours = usr.getMyTours();
+                    UserData.getInstance().itsMeG = usr;
+                }
+            });
+        }
+
+        if (UserData.getInstance().userType.toString().equals("manager")) {
+            DBService.getInstance().GetManager(UserData.getInstance().uId, new FirebaseCallback() {
+                @Override
+                public void onCallback(Object object) {
+                    Manager usr = (Manager) object;
+                    UserData.getInstance().name = usr.getName();
+                    UserData.getInstance().userType = userType.manager;
+                    UserData.getInstance().notifications = usr.notifications;
+                    UserData.getInstance().itsMeM = usr;
+                }
+            });
+        }
+
     }
 
     @Override
@@ -441,12 +501,21 @@ public class ProfileActivity extends AppCompatActivity {
         service.putExtra("MY_UID", UserData.getInstance().uId);
         startService(service);
         if(listener == null){
-            listener = DBService.getInstance().OnNotificationsUpdate(DBService.getInstance().GetUserReference(UserData.getInstance().uId), new FirebaseCallback() {
+
+            listener = DBService.getInstance().OnNotificationsUpdate(getUserRefrence(), new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
                    UserData.getInstance().notifications = (ArrayList<Notification>) object;
                 }
             });
     }
+}
+private DocumentReference getUserRefrence(){
+        if(UserData.getInstance().userType.toString().equals("tourist"))
+            return DBService.getInstance().GetUserReference(UserData.getInstance().uId);
+        else if(UserData.getInstance().userType.toString().equals("guide"))
+            return DBService.getInstance().GetManagerReference(UserData.getInstance().uId);
+        else
+            return DBService.getInstance().GetGuideReference(UserData.getInstance().uId);
 }
 }

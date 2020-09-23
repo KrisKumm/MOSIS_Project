@@ -113,7 +113,7 @@ public class DBService
     public void GetAttractionsByName(String name, final  FirebaseCallback firebaseCallback){
 
         final ArrayList<Attraction> attractions = new ArrayList<Attraction>();
-        final Query query = fStore.collection("attractions").whereEqualTo("name" , name);
+        final Query query = fStore.collection("attractions").orderBy("name").startAt(name).endAt(name+'\uf8ff');
 
         query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -190,6 +190,7 @@ public class DBService
         ListenerRegistration subscription = docRef.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot snapshot, FirebaseFirestoreException e) {
+                if(snapshot != null)
                 firebaseCallback.onCallback(snapshot.toObject(TourGroup.class));
             }
         });
@@ -296,7 +297,7 @@ public class DBService
     public void GetToursByName(String name, final FirebaseCallback firebaseCallback){
 
         final ArrayList<Tour> tours = new ArrayList<Tour>();
-        final Query query = fStore.collection("tours").whereEqualTo("name" , name);
+        final Query query = fStore.collection("tours").orderBy("name").startAt(name).endAt(name+'\uf8ff');
 
         query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -376,7 +377,7 @@ public class DBService
     }
     public void GetUsersByName(String name, final FirebaseCallback firebaseCallback){
         final ArrayList<User> users = new ArrayList<User>();
-        final Query query = fStore.collection("users").whereEqualTo("name" , name);
+        final Query query = fStore.collection("users").orderBy("name").startAt(name).endAt(name+'\uf8ff');;
 
         query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -637,14 +638,23 @@ public class DBService
             }
         });
     }
-    public void DeleteStar(DocumentReference documentReference, String id){
-
-        documentReference.collection("stars").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void DeleteStars(final DocumentReference documentReference, String id){
+        getStars(documentReference, new FirebaseCallback() {
             @Override
-            public void onSuccess(Void aVoid) {
-                // URADI NESTO AKO OCES
+            public void onCallback(Object object) {
+                ArrayList<Star> stars = (ArrayList<Star>) object;
+
+                for (Star star : stars){
+                    documentReference.collection("star").document(star.getUid()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void avoid) {
+                            //dodaj neki TOST nzm
+                        }
+                    });
+                }
             }
         });
+
     }
     public void getStars(DocumentReference documentReference, final FirebaseCallback firebaseCallback){
 

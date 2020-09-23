@@ -34,6 +34,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
+import rs.elfak.mosis.kristijan.heavenguide.service.TourService;
 
 public class TourActivity extends AppCompatActivity {
 
@@ -92,14 +93,16 @@ public class TourActivity extends AppCompatActivity {
         tourStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TourGroup tourGroup = new TourGroup(null, myTour.getUid(), myTour.getGuideId(), true, new GeoPoint(0,0), new ArrayList<String>());
-                String uidGrupe = DBService.getInstance().AddTourGroup(tourGroup);
+                if(myGuide.getMyTourGroup() == null){
+                    TourGroup tourGroup = new TourGroup(null, myTour.getUid(), myTour.getGuideId(), true, new GeoPoint(0,0), new ArrayList<String>());
+                    String uidGrupe = DBService.getInstance().AddTourGroup(tourGroup);
 
-                myGuide.setMyTourGroup(uidGrupe);
-                DBService.getInstance().AddGuide(myGuide);
+                    myGuide.setMyTourGroup(uidGrupe);
+                    DBService.getInstance().AddGuide(myGuide);
 
-                for(String id: myTour.getPendingTourists()){
-                    DBService.getInstance().UpdateUserTourGroup(id, uidGrupe);
+                    for(String id: myTour.getPendingTourists()){
+                        DBService.getInstance().UpdateUserTourGroup(id, uidGrupe);
+                    }
                 }
             }
         });
@@ -130,21 +133,30 @@ public class TourActivity extends AppCompatActivity {
         tourEndButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBService.getInstance().DeleteTourGroup(myGuide.getMyTourGroup());
-                myGuide.setMyTourGroup(null);
-                DBService.getInstance().AddGuide(myGuide);
-                for(String id: myTour.getPendingTourists()){
-                    DBService.getInstance().GetUser(id, new FirebaseCallback() {
-                        @Override
-                        public void onCallback(Object object) {
-                            User user = (User) object;
-                            user.setMyTourGroup(null);
-                            DBService.getInstance().AddUser(user);
-                        }
-                    });
+                if(myGuide.getMyTourGroup() != null){
+                    DBService.getInstance().DeleteStars(DBService.getInstance().GetTourGroupReference(myGuide.getMyTourGroup()),myGuide.getMyTourGroup());
+                    DBService.getInstance().DeleteTourGroup(myGuide.getMyTourGroup());
+                    myGuide.setMyTourGroup(null);
+                    DBService.getInstance().AddGuide(myGuide);
+                    for(String id: myTour.getPendingTourists()){
+                        DBService.getInstance().GetUser(id, new FirebaseCallback() {
+                            @Override
+                            public void onCallback(Object object) {
+                                User user = (User) object;
+                                user.setMyTourGroup(null);
+                                DBService.getInstance().AddUser(user);
+                            }
+                        });
+                    }
+                    myTour.getPendingTourists().clear();
+                    DBService.getInstance().AddTour(myTour, "");
+
+                    Intent service = new Intent(TourActivity.this, TourService.class);
+                    service.putExtra("TOUR_GROUP", myGuide.getMyTourGroup());
+                    service.putExtra("MY_UID", UserData.getInstance().uId);
+                    service.putExtra("USER_TYPE", UserData.getInstance().userType.toString());
+                    startService(service);
                 }
-                myTour.getPendingTourists().clear();
-                DBService.getInstance().AddTour(myTour, "");
             }
         });
 

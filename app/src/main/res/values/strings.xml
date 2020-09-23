@@ -49,5 +49,6 @@
     <!-- Sync Preferences -->
     <string name="turn_gps_title">Turn GPS on/off</string>
     <string name="show_my_gps_title">Show my tracker on the map</string>
+    <string name="title_activity_maps_lat_lon">Map</string>
 
 </resources>

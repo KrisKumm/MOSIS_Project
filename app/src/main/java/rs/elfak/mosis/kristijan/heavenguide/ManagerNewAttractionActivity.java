@@ -29,13 +29,15 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
 
     private EditText newAttractionName, newAttractionDescription;
     private EditText newAttractionLatitude, newAttractionLongitude, newAttractionRegionName;
-    private Button newAttractionImageButton, newAttractionAddButton;
+    private Button newAttractionImageButton, newAttractionAddButton, newAttractionGetLatLonButton;
     private ImageView newAttractionImageView;
 
     private static final int RESULT_LOAD_IMAGE = 1; // Za gallery
     public Bitmap picture;
     public Context context;
     public int activity = 4;
+
+    private static final int RESULT_GET_LATLON = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +51,13 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
         newAttractionRegionName = findViewById(R.id.new_attraction_attraction_region);
         newAttractionImageButton = findViewById(R.id.new_attraction_attraction_image_button);
         newAttractionAddButton = findViewById(R.id.new_attraction_add_button);
+        newAttractionGetLatLonButton = findViewById(R.id.new_attraction_get_latlon_button);
         newAttractionImageView = findViewById(R.id.new_attraction_attraction_image_view);
 
+        setButtons();
+    }
+
+    public void setButtons(){
         newAttractionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +90,14 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
 
             }
         });
+
+        newAttractionGetLatLonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent getLatLonIntent = new Intent(ManagerNewAttractionActivity.this, MapsLatLonActivity.class);
+                startActivityForResult(getLatLonIntent, RESULT_GET_LATLON);
+            }
+        });
     }
 
     @Override
@@ -101,6 +116,17 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
             try {
                 picture = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
 
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        if(requestCode == RESULT_GET_LATLON  && resultCode == RESULT_OK && data != null) {
+            String lat = data.getExtras().getString("lat");
+            String lon = data.getExtras().getString("lon");
+            try {
+                newAttractionLatitude.setText(lat);
+                newAttractionLongitude.setText(lon);
             }
             catch(Exception e){
                 e.printStackTrace();

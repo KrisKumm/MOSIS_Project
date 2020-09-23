@@ -11,6 +11,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -163,23 +165,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //        MyAppSingleton myApplication = (MyAppSingleton)getApplicationContext();
 //        savedLocations = myApplication.getMyLocations();
-         tourBegunCheck();
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng start = new LatLng(43.3209, 21.8958);
+        LatLng start = new LatLng(43.3314676, 21.883697);
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(start));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 14f));
         mMap.setBuildingsEnabled(true);
@@ -188,6 +180,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
         mMap.getUiSettings().setRotateGesturesEnabled(true);
 
+        setLocationRequestAndCallback();
+        setSwitches();
+        setMarkerListeners();
+        createRegions();
+        setStarButton();
+        tourBegunCheck();
+        updateGPS();
+    }
+
+    private void setLocationRequestAndCallback(){
         //set all properties of LocationRequest
         locationRequest = new LocationRequest();
         //how often does the default location check  occur?
@@ -208,7 +210,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //getAttractions();
             }
         };
+    }
 
+    private void setSwitches() {
+        sw_locationsupdates = findViewById(R.id.sw_locationsupdates);
+        sw_gps = findViewById(R.id.sw_gps);
+        sw_gps.setChecked(true);
+        sw_locationsupdates.setChecked(true);
+//        sw_gps.setVisibility(View.INVISIBLE);
+//        sw_locationsupdates.setVisibility(View.INVISIBLE);
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        startLocationUpdates();
+        sw_gps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sw_gps.isChecked()){
+                    // most accurate - use GPS
+                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                }
+                else {
+                    locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                }
+            }
+        });
+
+        sw_locationsupdates.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sw_locationsupdates.isChecked()){
+                    // turn on location tracking
+                    startLocationUpdates();
+                }
+                else {
+                    // turn off tracking
+                    stopLocationUpdates();
+                }
+            }
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
+        updateGPS();
+    }
+
+    private void stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
+    }
+
+    private void setMarkerListeners(){
         mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -260,79 +311,53 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
-
-        createMeMarks();
-        createRegions();
-        setSwitches();
-        setStarButton();
-        updateGPS();
     }
 
-    private void getAttractions() {
-        GeoPoint topLeft = new GeoPoint(meMarker.getPosition().latitude + 3, meMarker.getPosition().longitude - 3);
-        GeoPoint bottomRight = new GeoPoint(meMarker.getPosition().latitude - 3, meMarker.getPosition().longitude + 3);
-        DBService.getInstance().GetAttractionsByLocation(topLeft, bottomRight, new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                attractionsAroundMe = (ArrayList<Attraction>) object;
-                drawAttractionsMarker();
-            }
-        });
-    }
+    private void createRegions() {
+        LatLng tvrdjavaCentar = new LatLng(43.325864, 21.895371);
+        LatLng tvrdjava1 = new LatLng(43.3236536, 21.8959328);
+        LatLng tvrdjava2 = new LatLng(43.325232, 21.892303);
+        LatLng tvrdjava3 = new LatLng(43.326616, 21.892664);
+        LatLng tvrdjava4 = new LatLng(43.327764, 21.895554);
+        LatLng tvrdjava5 = new LatLng(43.326924, 21.898051);
+        LatLng tvrdjava6 = new LatLng(43.325790, 21.898403);
+        mMap.addMarker(
+                new MarkerOptions()
+                        .position(tvrdjavaCentar)
+                        .title("Tvrdjava")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        );
+        mMap.addPolygon(
+                new PolygonOptions()
+                        .add(tvrdjava1, tvrdjava2, tvrdjava3, tvrdjava4, tvrdjava5, tvrdjava6, tvrdjava1)
+                        .strokeWidth(5f)
+                        .strokeColor(Color.BLACK)
+                        .fillColor(Color.argb(70, 80, 80, 200))
+        );
 
-    private void drawAttractionsMarker() {
-        for(Attraction attraction: attractionsAroundMe){
-            LatLng latLng = new LatLng(attraction.getLocation().getLatitude(), attraction.getLocation().getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title(attraction.getName());
-            markerOptions.snippet("Attraction");
-            Marker mark = mMap.addMarker(markerOptions);
-            attractionsAroundMeMarkers.add(mark);
-        }
-    }
+        LatLng CegarKamenica1 = new LatLng(43.352926, 21.943050);
+        LatLng CegarKamenica2 = new LatLng(43.365382, 21.965142);
+        LatLng CegarKamenica3 = new LatLng(43.379051, 21.942874);
+        LatLng CegarKamenica4 = new LatLng(43.367385, 21.928685);
+        mMap.addPolygon(
+                new PolygonOptions()
+                        .add(CegarKamenica1, CegarKamenica2, CegarKamenica3, CegarKamenica4, CegarKamenica1)
+                        .strokeWidth(5f)
+                        .strokeColor(Color.BLACK)
+                        .fillColor(Color.argb(70, 80, 80, 200))
+        );
 
-    private void removeAttractionsMarker(){
-        for(Marker marker: attractionsAroundMeMarkers){
-            marker.remove();
-        }
-    }
-
-    private void setSwitches() {
-        sw_locationsupdates = findViewById(R.id.sw_locationsupdates);
-        sw_gps = findViewById(R.id.sw_gps);
-        sw_gps.setChecked(true);
-        sw_locationsupdates.setChecked(true);
-//        sw_gps.setVisibility(View.INVISIBLE);
-//        sw_locationsupdates.setVisibility(View.INVISIBLE);
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        startLocationUpdates();
-        sw_gps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (sw_gps.isChecked()){
-                    // most accurate - use GPS
-                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                }
-                else {
-                    locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                }
-            }
-        });
-
-        sw_locationsupdates.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (sw_locationsupdates.isChecked()){
-                    // turn on location tracking
-                    startLocationUpdates();
-                }
-                else {
-                    // turn off tracking
-                    stopLocationUpdates();
-                }
-            }
-        });
+        LatLng brzibrod1 = new LatLng(43.315479, 21.939550);
+        LatLng brzibrod2 = new LatLng(43.306585, 21.937801);
+        LatLng brzibrod3 = new LatLng(43.310934, 21.975312);
+        LatLng brzibrod4 = new LatLng(43.302136, 21.973415);
+        mMap.addPolygon(
+                new PolygonOptions()
+                        .add(brzibrod1, brzibrod2, brzibrod4, brzibrod3, brzibrod1)
+                        .strokeWidth(5f)
+                        .strokeColor(Color.BLACK)
+                        .fillColor(Color.argb(70, 80, 80, 200))
+        );
     }
 
     private void setStarButton(){
@@ -379,69 +404,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dialog.show();
             }
         });
+
     }
 
-    private void createRegions() {
-        LatLng tvrdjavaCentar = new LatLng(43.325864, 21.895371);
-        LatLng tvrdjava1 = new LatLng(43.3236536, 21.8959328);
-        LatLng tvrdjava2 = new LatLng(43.325232, 21.892303);
-        LatLng tvrdjava3 = new LatLng(43.326616, 21.892664);
-        LatLng tvrdjava4 = new LatLng(43.327764, 21.895554);
-        LatLng tvrdjava5 = new LatLng(43.326924, 21.898051);
-        LatLng tvrdjava6 = new LatLng(43.325790, 21.898403);
-
-        mMap.addMarker(
-                new MarkerOptions()
-                        .position(tvrdjavaCentar)
-                        .title("Tvrdjava")
-                        .snippet("Centralna tacka tvrdjave")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        );
-        mMap.addPolygon(
-                new PolygonOptions()
-                        .add(tvrdjava1, tvrdjava2, tvrdjava3, tvrdjava4, tvrdjava5, tvrdjava6, tvrdjava1)
-                        .strokeWidth(5f)
-                        .strokeColor(Color.BLACK)
-                        .fillColor(Color.argb(70, 80, 80, 200))
-        );
+    private void getAttractions() {
+        GeoPoint topLeft = new GeoPoint(meMarker.getPosition().latitude + 3, meMarker.getPosition().longitude - 3);
+        GeoPoint bottomRight = new GeoPoint(meMarker.getPosition().latitude - 3, meMarker.getPosition().longitude + 3);
+        DBService.getInstance().GetAttractionsByLocation(topLeft, bottomRight, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                attractionsAroundMe = (ArrayList<Attraction>) object;
+                drawAttractionsMarker();
+            }
+        });
     }
 
-    private void createMeMarks() {
-        LatLng home = new LatLng(43.320922, 21.894367);
-        mMap.addMarker(
-                new MarkerOptions()
-                        .position(home)
-                        .title("Kris")
-                        .snippet("It me")
-                //.icon(bitmapDescriptorFromVector(getApplicationContext(),R.mipmap.ic_me_icon2_round))
-        );
-        mMap.addCircle(
-                new CircleOptions()
-                        .center(home)
-                        .radius(10.0)
-                        .strokeWidth(2f)
-                        .strokeColor(Color.BLACK)
-                        .fillColor(Color.argb(70, 200, 80, 80))
-        );
+    private void drawAttractionsMarker() {
+        for(Attraction attraction: attractionsAroundMe){
+            LatLng latLng = new LatLng(attraction.getLocation().getLatitude(), attraction.getLocation().getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(attraction.getName());
+            markerOptions.snippet("Attraction");
+            Marker mark = mMap.addMarker(markerOptions);
+            attractionsAroundMeMarkers.add(mark);
+        }
     }
 
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-    private void stopLocationUpdates() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
-    }
-
-    @SuppressLint("MissingPermission")
-    private void startLocationUpdates() {
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
-        updateGPS();
+    private void removeAttractionsMarker(){
+        for(Marker marker: attractionsAroundMeMarkers){
+            marker.remove();
+        }
     }
 
     @Override
@@ -468,15 +461,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                }
         }
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-//            popUpStarImageCamera.setImageBitmap(photo);
-//        }
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -546,42 +530,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
     private void tourBegunCheck() {
         if(UserData.getInstance().tourGroupId != null)
         {
             tourBegun = true;
+            addNewStarButton.setVisibility(View.VISIBLE);
         }
         else {
             tourBegun = false;
+            addNewStarButton.setVisibility(View.GONE);
         }
         tourServiceIO();
     }
+
     private void tourServiceIO() {
-        if(tourBegun){
+        if(tourBegun)
             startTour();
-            Intent service = new Intent(this, TourService.class);
-            service.putExtra("TOUR_GROUP", UserData.getInstance().tourGroupId);
-            service.putExtra("MY_UID", UserData.getInstance().uId);
-            service.putExtra("USER_TYPE", UserData.getInstance().userType.toString());
-            startService(service);
-        }
-        else{
-            stopService(new Intent(this, TourService.class));
-        }
+
+        Intent service = new Intent(this, TourService.class);
+        service.putExtra("TOUR_GROUP", UserData.getInstance().tourGroupId);
+        service.putExtra("MY_UID", UserData.getInstance().uId);
+        service.putExtra("USER_TYPE", UserData.getInstance().userType.toString());
+        startService(service);
+
 
     }
+
     public void startTour(){
         onGroupUpdate(UserData.getInstance().tourGroupId);
         onGroupStarsUpdate(UserData.getInstance().tourGroupId);
     }
+
     public void onGroupUpdate(String id){
         DocumentReference documentReference = DBService.getInstance().GetTourGroupReference(id);
-//        StorageService.getInstance().downloadPhoto("guide", tourGroup.getTourGuide(), "cover", new FirebaseCallback() {
-//            @Override
-//            public void onCallback(Object object) {
-//                guidePhoto = (Bitmap) object;
-//            }
-//        });
+        StorageService.getInstance().downloadPhoto("guide", tourGroup.getTourGuide(), "cover", new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                guidePhoto = (Bitmap) object;
+            }
+        });
         groupListener = DBService.getInstance().OnTourGroupUpdate(id, new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
@@ -597,11 +585,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     .position(meLatLng)
                                     .title("Kris")
                                     .snippet("It me")
-                                    .icon(bitmapDescriptorFromVector(getApplicationContext(), R.mipmap.ic_me_icon2_round)));
+                                    .icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(guidePhoto,  100, 100, false))));
                 }
             }
         });
     }
+
     public void onGroupStarsUpdate(String id){
 
         DocumentReference documentReference = DBService.getInstance().GetTourGroupReference(id);
@@ -636,5 +625,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int upperbound = 1000000;
         int int_random = rand.nextInt(upperbound);
         return String.valueOf(int_random);
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
