@@ -110,6 +110,9 @@ public class TourActivity extends AppCompatActivity {
         tourDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UserData.getInstance().itsMeM.getTours().remove(myTour.getUid());
+                DBService.getInstance().AddManager(UserData.getInstance().itsMeM);
+                DBService.getInstance().DeleteTourFromGuide(myTour.getGuideId(), myTour.getUid());
                 DBService.getInstance().DeleteTour(myTour.getUid());
             }
         });
@@ -123,6 +126,8 @@ public class TourActivity extends AppCompatActivity {
                         nesamPrijevljen = false;
                 }
                 if(nesamPrijevljen){
+                    UserData.getInstance().itsMeT.getMyTours().add(myTour.getUid());
+                    DBService.getInstance().AddUser(UserData.getInstance().itsMeT);
                     myTour.getPendingTourists().add(UserData.getInstance().uId);
                     DBService.getInstance().AddTour(myTour, "");
                     tourJoinButton.setEnabled(false);
@@ -144,6 +149,7 @@ public class TourActivity extends AppCompatActivity {
                             public void onCallback(Object object) {
                                 User user = (User) object;
                                 user.setMyTourGroup(null);
+                                user.getMyTours().remove(myTour.getUid());
                                 DBService.getInstance().AddUser(user);
                             }
                         });

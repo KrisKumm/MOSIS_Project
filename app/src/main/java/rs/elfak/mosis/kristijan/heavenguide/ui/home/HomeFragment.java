@@ -217,6 +217,7 @@ public class HomeFragment extends Fragment {
     }
     public void getMyTours(final FirebaseCallback firebaseCallback){
         myTours = new ArrayList<Tour>();
+        if(UserData.getInstance().myTours != null)
         for(String tourId : UserData.getInstance().myTours){
             DBService.getInstance().GetTour(tourId, new FirebaseCallback() {
                 @Override

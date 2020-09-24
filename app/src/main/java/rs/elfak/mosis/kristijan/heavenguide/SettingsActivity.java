@@ -3,9 +3,12 @@ package rs.elfak.mosis.kristijan.heavenguide;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,7 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
                     default:
                         break;
                 }
+
             }
         });
+
     }
+
 }

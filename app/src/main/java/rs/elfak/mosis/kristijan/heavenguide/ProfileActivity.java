@@ -502,7 +502,7 @@ public class ProfileActivity extends AppCompatActivity {
         startService(service);
         if(listener == null){
 
-            listener = DBService.getInstance().OnNotificationsUpdate(getUserRefrence(), new FirebaseCallback() {
+            listener = DBService.getInstance().OnNotificationsUpdate(getUserReference(), new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
                    UserData.getInstance().notifications = (ArrayList<Notification>) object;
@@ -510,7 +510,7 @@ public class ProfileActivity extends AppCompatActivity {
             });
     }
 }
-private DocumentReference getUserRefrence(){
+private DocumentReference getUserReference(){
         if(UserData.getInstance().userType.toString().equals("tourist"))
             return DBService.getInstance().GetUserReference(UserData.getInstance().uId);
         else if(UserData.getInstance().userType.toString().equals("guide"))

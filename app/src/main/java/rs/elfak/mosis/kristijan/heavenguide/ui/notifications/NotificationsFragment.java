@@ -17,16 +17,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 
-import rs.elfak.mosis.kristijan.heavenguide.ManagerNewTourActivity;
-import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileNotificationAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.R;
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
@@ -165,7 +162,7 @@ public class NotificationsFragment extends Fragment {
             public void onClick(View view) {
                 if(!popUpReplyMessage.getText().toString().isEmpty()){
                     Notification newNotification = new Notification(UserData.getInstance().uId, popUpReplyMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
-                    DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(profileNotificationItem.getNotification().getSender().getId()), newNotification);
+                    DBService.getInstance().AddNotification(getUserReference(profileNotificationItem, profileNotificationItem.getNotification().getSender().getId()), newNotification);
                     DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
                     dialog.dismiss();
                 }
@@ -179,7 +176,14 @@ public class NotificationsFragment extends Fragment {
         dialog = dialogBuilder.create();
         dialog.show();
     }
-
+    private DocumentReference getUserReference(ProfileNotificationItem clickedNotification, String id){
+        if(clickedNotification.getNotification().getType() / 4 == 1)
+            return DBService.getInstance().GetUserReference(id);
+        else if(clickedNotification.getNotification().getType() / 4 == 2)
+            return DBService.getInstance().GetManagerReference(id);
+        else
+            return DBService.getInstance().GetGuideReference(id);
+    }
     public void createNewNotificationDialogType1(final View root, final ProfileNotificationItem profileNotificationItem) {
         dialogBuilder = new AlertDialog.Builder(root.getContext());
         final View notificationPopUp = getLayoutInflater().inflate(R.layout.popup_friend_request, null);

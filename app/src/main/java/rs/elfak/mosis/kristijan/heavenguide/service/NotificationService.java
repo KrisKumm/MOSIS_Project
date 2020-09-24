@@ -15,12 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.ProfileActivity;
 import rs.elfak.mosis.kristijan.heavenguide.R;
+import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.ui.notifications.NotificationsFragment;
 
@@ -57,7 +59,7 @@ public class NotificationService extends Service {
     }
     private void setNotificationUpdateHandler(){
         if(listener == null){
-            listener = DBService.getInstance().OnNotificationUpdate(DBService.getInstance().GetUserReference(myuid), new FirebaseCallback() {
+            listener = DBService.getInstance().OnNotificationUpdate(getUserReference(), new FirebaseCallback() {
                 @Override
                 public void onCallback(Object object) {
                    Notification newNotification = (Notification) object;
@@ -93,6 +95,14 @@ public class NotificationService extends Service {
         }
         mNotificationManager.notify(1 , notification);
 
+    }
+    private DocumentReference getUserReference(){
+        if(UserData.getInstance().userType.toString().equals("tourist"))
+            return DBService.getInstance().GetUserReference(UserData.getInstance().uId);
+        else if(UserData.getInstance().userType.toString().equals("guide"))
+            return DBService.getInstance().GetManagerReference(UserData.getInstance().uId);
+        else
+            return DBService.getInstance().GetGuideReference(UserData.getInstance().uId);
     }
     @Nullable
     @Override

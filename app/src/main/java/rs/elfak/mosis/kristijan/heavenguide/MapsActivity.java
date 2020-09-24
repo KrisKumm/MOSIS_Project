@@ -560,23 +560,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void startTour(){
         onGroupUpdate(UserData.getInstance().tourGroupId);
         onGroupStarsUpdate(UserData.getInstance().tourGroupId);
+        getTourGroup();
     }
 
     public void onGroupUpdate(String id){
-        DocumentReference documentReference = DBService.getInstance().GetTourGroupReference(id);
-        StorageService.getInstance().downloadPhoto("guide", tourGroup.getTourGuide(), "cover", new FirebaseCallback() {
-            @Override
-            public void onCallback(Object object) {
-                guidePhoto = (Bitmap) object;
-            }
-        });
         groupListener = DBService.getInstance().OnTourGroupUpdate(id, new FirebaseCallback() {
             @Override
             public void onCallback(Object object) {
                 tourGroup = (TourGroup) object;
 
 
-                if(UserData.getInstance().userType == userType.tourist && tourGroup != null){
+                if(UserData.getInstance().userType == userType.tourist && tourGroup != null && guidePhoto != null){
                     LatLng meLatLng = new LatLng(tourGroup.getTourGuideLocation().getLatitude(), tourGroup.getTourGuideLocation().getLongitude());
                     if(guideMarker != null)
                         guideMarker.remove();
@@ -619,7 +613,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
+    public  void getTourGroup(){
+        DBService.getInstance().GetTourGroup(UserData.getInstance().tourGroupId, new FirebaseCallback() {
+            @Override
+            public void onCallback(Object object) {
+                tourGroup = (TourGroup) object;
+                if(UserData.getInstance().userType.toString().equals("tourist"))
+                    StorageService.getInstance().downloadPhoto("guide", tourGroup.getTourGuide(), "cover", new FirebaseCallback() {
+                        @Override
+                        public void onCallback(Object object) {
+                            guidePhoto = (Bitmap) object;
+                        }
+                    });
+            }
+        });
+    }
     public String getRandomNumber(){
         Random rand = new Random();
         int upperbound = 1000000;

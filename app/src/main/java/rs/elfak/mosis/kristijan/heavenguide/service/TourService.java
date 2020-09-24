@@ -150,7 +150,7 @@ public class TourService extends Service {
         @Override
         public void onSuccess(Location location) {
             currentLocation = location;
-            if(currentLocation != null){
+            if(currentLocation != null && userType.equals("guide")){
                 UpdateGuideLocation(groupId,new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude()));
             }
             else{

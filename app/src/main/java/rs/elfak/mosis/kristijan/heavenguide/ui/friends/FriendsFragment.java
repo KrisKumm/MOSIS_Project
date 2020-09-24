@@ -60,7 +60,6 @@ public class FriendsFragment extends Fragment {
                 textView.setText(s);
             }
         });
-
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, getContext().MODE_PRIVATE);
         profileP = sharedPreferences.getString(PROFILE, "");
 

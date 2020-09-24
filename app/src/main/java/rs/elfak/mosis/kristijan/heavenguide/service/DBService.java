@@ -518,6 +518,11 @@ public class DBService
             }
         });
     }
+    public void DeleteTourFromGuide(String id, String tourUid){
+        final DocumentReference documentReference = fStore.collection("guides").document(id);
+
+        documentReference.update("myTours", FieldValue.arrayRemove(tourUid));
+    }
     public void DeleteGuide(String id){
         final DocumentReference documentReference = fStore.collection("guides").document(id);
         documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -594,7 +599,7 @@ public class DBService
         ListenerRegistration subscription = query.addSnapshotListener(MetadataChanges.EXCLUDE, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
-
+                if(snapshot != null)
                 for (DocumentChange dc : snapshot.getDocumentChanges()) {
                     switch (dc.getType()) {
                         case ADDED:
@@ -618,6 +623,7 @@ public class DBService
             @Override
             public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
                 ArrayList<Notification> notifications = new ArrayList<Notification>();
+                if(snapshot != null)
                 for (DocumentSnapshot dc : snapshot) {
                         notifications.add(dc.toObject(Notification.class));
                 }
@@ -676,6 +682,7 @@ public class DBService
             @Override
             public void onEvent(QuerySnapshot snapshot, FirebaseFirestoreException e) {
                 ArrayList<Star> stars = new ArrayList<Star>();
+                if(snapshot != null)
                 for(DocumentSnapshot ds : snapshot){
                     stars.add(ds.toObject(Star.class));
                 }
