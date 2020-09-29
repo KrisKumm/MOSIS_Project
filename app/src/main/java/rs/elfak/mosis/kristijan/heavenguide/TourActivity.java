@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.GeoPoint;
 
@@ -31,6 +32,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileFriendsItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Review;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
@@ -53,7 +55,7 @@ public class TourActivity extends AppCompatActivity {
     private TextView tourName;
     private TextView tourGuideName;
     private TextView tourStartEndTime;
-    private TextView tourRatingGrade;
+//    private TextView tourRatingGrade;
     private TextView tourDescription;
     private ListView tourTouristsListView;
     private ListView tourAttractionsListView;
@@ -78,7 +80,7 @@ public class TourActivity extends AppCompatActivity {
         tourName = findViewById(R.id.tour_name_label);
         tourGuideName = findViewById(R.id.tour_guide_label);
         tourStartEndTime = findViewById(R.id.tour_start_end_label);
-        tourRatingGrade = findViewById(R.id.tour_rating_grade_label);
+//        tourRatingGrade = findViewById(R.id.tour_rating_grade_label);
         tourDescription = findViewById(R.id.description_tour_label);
         tourAttractionsListView = findViewById(R.id.tour_attractions_list_view);
         tourStartButton = findViewById(R.id.tour_start_button);
@@ -103,6 +105,7 @@ public class TourActivity extends AppCompatActivity {
                     for(String id: myTour.getPendingTourists()){
                         DBService.getInstance().UpdateUserTourGroup(id, uidGrupe);
                     }
+                    Toast.makeText(TourActivity.this, "Tour has been started!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -114,6 +117,8 @@ public class TourActivity extends AppCompatActivity {
                 DBService.getInstance().AddManager(UserData.getInstance().itsMeM);
                 DBService.getInstance().DeleteTourFromGuide(myTour.getGuideId(), myTour.getUid());
                 DBService.getInstance().DeleteTour(myTour.getUid());
+                Toast.makeText(TourActivity.this, "Tour has been deleted!", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
 
@@ -124,6 +129,7 @@ public class TourActivity extends AppCompatActivity {
                 for (String ids : myTour.getPendingTourists()){
                     if(ids == UserData.getInstance().uId)
                         nesamPrijevljen = false;
+                    Toast.makeText(TourActivity.this, "You have already joined this tour!", Toast.LENGTH_LONG).show();
                 }
                 if(nesamPrijevljen){
                     UserData.getInstance().itsMeT.getMyTours().add(myTour.getUid());
@@ -131,6 +137,7 @@ public class TourActivity extends AppCompatActivity {
                     myTour.getPendingTourists().add(UserData.getInstance().uId);
                     DBService.getInstance().AddTour(myTour, "");
                     tourJoinButton.setEnabled(false);
+                    Toast.makeText(TourActivity.this, "You have joined this tour!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -162,6 +169,8 @@ public class TourActivity extends AppCompatActivity {
                     service.putExtra("MY_UID", UserData.getInstance().uId);
                     service.putExtra("USER_TYPE", UserData.getInstance().userType.toString());
                     startService(service);
+
+                    Toast.makeText(TourActivity.this, "This tour has just ended!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -172,6 +181,8 @@ public class TourActivity extends AppCompatActivity {
                 if(!myTour.getAttractions().contains(UserData.getInstance().attraction.getUid())){
                     myTour.getAttractions().add(UserData.getInstance().attraction.getUid());
                     DBService.getInstance().AddTour(myTour, UserData.getInstance().uId);
+
+                    Toast.makeText(TourActivity.this, "Attraction has been added to this tour!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -184,10 +195,12 @@ public class TourActivity extends AppCompatActivity {
                 attractionsAdapter.notifyDataSetChanged();
                 if(!tourAttractionsSwitch.isChecked()){
                     getAttractions(myTour.getAttractions());
+                    Toast.makeText(TourActivity.this, "Attractions in this tour!", Toast.LENGTH_LONG).show();
                 }else{
                     ArrayList<String> filteredArray = new ArrayList<>(UserData.getInstance().itsMeM.getAttractions());
                     filteredArray.removeAll(myTour.getAttractions());
                     getAttractions(filteredArray);
+                    Toast.makeText(TourActivity.this, "Attractions out of this tour!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -201,10 +214,13 @@ public class TourActivity extends AppCompatActivity {
                     Intent intent = new Intent((Activity) TourActivity.this, AttractionActivity.class);
                     startActivity(intent);
                 }
+                else{
+                    Toast.makeText(TourActivity.this, "Attraction is selected!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
-        if(profileP.equals("tourist")){
+        if(UserData.getInstance().userType == userType.tourist){
             tourDeleteButton.setEnabled(false);
             tourDeleteButton.setVisibility(View.INVISIBLE);
             tourStartButton.setEnabled(false);
@@ -216,7 +232,7 @@ public class TourActivity extends AppCompatActivity {
             tourAttractionsSwitch.setEnabled(false);
             tourAttractionsSwitch.setVisibility(View.INVISIBLE);
         }
-        if(profileP.equals("guide")){
+        if(UserData.getInstance().userType == userType.guide){
             tourDeleteButton.setEnabled(false);
             tourDeleteButton.setVisibility(View.INVISIBLE);
             tourJoinButton.setEnabled(false);
@@ -226,7 +242,7 @@ public class TourActivity extends AppCompatActivity {
             tourAttractionsSwitch.setEnabled(false);
             tourAttractionsSwitch.setVisibility(View.INVISIBLE);
         }
-        if(profileP.equals("manager")){
+        if(UserData.getInstance().userType == userType.manager){
             tourStartButton.setEnabled(false);
             tourStartButton.setVisibility(View.INVISIBLE);
             tourJoinButton.setEnabled(false);

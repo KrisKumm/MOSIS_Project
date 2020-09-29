@@ -69,9 +69,10 @@ public class ManagerNewTourActivity extends AppCompatActivity {
                                     UserData.getInstance().itsMeM.getTours().add(tourUid);
                                     guide.getMyTours().add(tourUid);
                                     DBService.getInstance().AddGuide(guide);
-                                    Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ManagerNewTourActivity.this, "A new tour has been created", Toast.LENGTH_LONG).show();
                                     Intent i = new Intent(ManagerNewTourActivity.this, ProfileActivity.class);
                                     startActivity(i);
+                                    finish();
                                 }
 
                             } else {

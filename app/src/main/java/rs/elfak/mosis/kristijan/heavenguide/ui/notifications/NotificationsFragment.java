@@ -30,6 +30,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileNotificationItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 
@@ -104,7 +105,7 @@ public class NotificationsFragment extends Fragment {
         notificationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
+                //Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
                 ProfileNotificationItem clickedNotification = profileNotifications.get(i);
                 if(clickedNotification.getNotification().getType() % 4 == 0){
                     createNewNotificationDialogType0(root, clickedNotification);
@@ -142,7 +143,7 @@ public class NotificationsFragment extends Fragment {
         popUpOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
+                DBService.getInstance().DeleteNotification(getUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
                 dialog.dismiss();
             }
         });
@@ -161,13 +162,13 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(!popUpReplyMessage.getText().toString().isEmpty()){
-                    Notification newNotification = new Notification(UserData.getInstance().uId, popUpReplyMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), 0);
-                    DBService.getInstance().AddNotification(getUserReference(profileNotificationItem, profileNotificationItem.getNotification().getSender().getId()), newNotification);
-                    DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
+                    Notification newNotification = new Notification(UserData.getInstance().uId, popUpReplyMessage.getText().toString(), UserData.getInstance().name, getUserReference(UserData.getInstance().uId), 0);
+                    DBService.getInstance().AddNotification(profileNotificationItem.getNotification().getSender(), newNotification);
+                    DBService.getInstance().DeleteNotification(getUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
                     dialog.dismiss();
                 }
                 else{
-                   // Toast.makeText(ProfileActivity.class, "message is empty", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(root.getContext(), "message is empty", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -176,10 +177,18 @@ public class NotificationsFragment extends Fragment {
         dialog = dialogBuilder.create();
         dialog.show();
     }
-    private DocumentReference getUserReference(ProfileNotificationItem clickedNotification, String id){
+    private DocumentReference getUserReferenceFromNotification(ProfileNotificationItem clickedNotification, String id){
         if(clickedNotification.getNotification().getType() / 4 == 1)
             return DBService.getInstance().GetUserReference(id);
         else if(clickedNotification.getNotification().getType() / 4 == 2)
+            return DBService.getInstance().GetManagerReference(id);
+        else
+            return DBService.getInstance().GetGuideReference(id);
+    }
+    private DocumentReference getUserReference(String id){
+        if(UserData.getInstance().userType == userType.tourist)
+            return DBService.getInstance().GetUserReference(id);
+        else if(UserData.getInstance().userType == userType.manager)
             return DBService.getInstance().GetManagerReference(id);
         else
             return DBService.getInstance().GetGuideReference(id);
@@ -201,6 +210,7 @@ public class NotificationsFragment extends Fragment {
             public void onClick(View view) {
                 DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
                 dialog.dismiss();
+                Toast.makeText(root.getContext(), "Friend declined!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -219,8 +229,8 @@ public class NotificationsFragment extends Fragment {
                     }
                 });
                 DBService.getInstance().DeleteNotification(DBService.getInstance().GetUserReference(UserData.getInstance().uId), profileNotificationItem.getNotification().getUid());
-
                 dialog.dismiss();
+                Toast.makeText(root.getContext(), "Friend accepted!", Toast.LENGTH_SHORT).show();
             }
         });
 

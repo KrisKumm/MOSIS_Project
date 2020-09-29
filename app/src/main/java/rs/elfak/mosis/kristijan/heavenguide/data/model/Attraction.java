@@ -1,5 +1,7 @@
 package rs.elfak.mosis.kristijan.heavenguide.data.model;
 
+import android.widget.Button;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Exclude;

@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Attraction;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
@@ -30,6 +32,7 @@ public class AttractionActivity extends AppCompatActivity {
     private TextView ratingBarGradeLabel;
     private TextView attractionDescription;
     private ListView reviewList;
+    private Button managerDeleteButton;
 
 //    ReviewListAdapter & ReviewListItem & ReviewListItemArray
 //    private RecyclerViewAdapter mAdapter;
@@ -48,6 +51,21 @@ public class AttractionActivity extends AppCompatActivity {
         ratingBarGradeLabel = findViewById(R.id.rating_bar_grade_label);
         attractionDescription = findViewById(R.id.description_attraction_label);
         reviewList = findViewById(R.id.attraction_reviews_list);
+        managerDeleteButton = findViewById(R.id.manager_delete_attraction_button);
+
+        if(UserData.getInstance().userType != userType.manager){
+            managerDeleteButton.setVisibility(View.GONE);
+        }
+        managerDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Delete Attraction if manager
+                if(UserData.getInstance().userType == userType.manager){
+
+                }
+                Toast.makeText(AttractionActivity.this, "Attraction deleted!", Toast.LENGTH_LONG).show();
+            }
+        });
 
         getAttraction();
     }

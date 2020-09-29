@@ -86,7 +86,7 @@ public class FriendsFragment extends Fragment {
                 UserData.getInstance().friendPhoto = friendPhotos.get(i);
                 Intent intent = new Intent( getActivity().getBaseContext() , OtherPersonActivity.class);
                 startActivity(intent);
-                Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
+                //Toast.makeText((Activity) root.getContext(), "click to item: " + i, Toast.LENGTH_SHORT).show();
             }
         });
     }

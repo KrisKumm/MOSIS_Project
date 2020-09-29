@@ -79,9 +79,10 @@ public class ManagerNewAttractionActivity extends AppCompatActivity {
                     if(uid != null){
                         UserData.getInstance().itsMeM.getAttractions().add(uid);
                         StorageService.getInstance().uploadPhoto("attraction", uid, "cover", picture, ManagerNewAttractionActivity.this);
-                        Toast.makeText(ManagerNewAttractionActivity.this, "A new attraction has been created", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ManagerNewAttractionActivity.this, "A new attraction has been created", Toast.LENGTH_LONG).show();
                         Intent i = new Intent(ManagerNewAttractionActivity.this, ProfileActivity.class);
                         startActivity(i);
+                        finish();
                     }
                 }
                 else{

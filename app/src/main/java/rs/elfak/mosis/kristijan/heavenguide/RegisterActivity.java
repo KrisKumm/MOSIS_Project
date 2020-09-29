@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,8 +40,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     public EditText emailET, usernameET, passwordET;
     public Button imageB, registerB;
+    public TextView profileTypeLabel;
     public RadioGroup rg;
-    public RadioButton touristRB, tourGuideRB;
+    public RadioButton touristRB;
 
     public ImageView avatar;
     private static final int RESULT_LOAD_IMAGE = 1; // Za gallery
@@ -62,9 +64,10 @@ public class RegisterActivity extends AppCompatActivity {
         imageB = findViewById(R.id.imageButton);
         avatar = findViewById(R.id.imageViewAvatar);
         registerB = findViewById(R.id.registerButton);
+
+        profileTypeLabel = findViewById(R.id.label1);
         rg = findViewById(R.id.radioGroup);
         touristRB = findViewById(R.id.touristRB);
-        tourGuideRB = findViewById(R.id.tourGuideRB);
 
         imageB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,34 +80,42 @@ public class RegisterActivity extends AppCompatActivity {
         registerB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                final FirebaseUser manager = mAuth.getCurrentUser();
                 mAuth.createUserWithEmailAndPassword(emailET.getText().toString(), passwordET.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            UserData.getInstance().gmail = user.getEmail();
-                            UserData.getInstance().uId = user.getUid();
-                            if(tourGuideRB.isChecked()) {
-                                UserData.getInstance().userType = userType.guide;
-                                DBService.getInstance().AddGuide(new TourGuide(usernameET.getText().toString(), UserData.getInstance().uId , new ArrayList<String>(),
-                                        "" , new ArrayList<String>() , "ZYoXf3MCcCaqBywc8gOXgHUQGaf1"));
-                                StorageService.getInstance().uploadPhoto("guide", UserData.getInstance().uId , "cover", picture, RegisterActivity.this);
+
+                            FirebaseUser user = task.getResult().getUser();
+
+                            Intent i;
+                            if(UserData.getInstance() != null && UserData.getInstance().userType == userType.manager) {
+                                DBService.getInstance().AddGuide(new TourGuide(usernameET.getText().toString(), user.getUid(), new ArrayList<String>(),
+                                        "" , new ArrayList<String>() , UserData.getInstance().uId));
+                                UserData.getInstance().itsMeM.getTourGuides().add(user.getUid());
+                                DBService.getInstance().AddManager(UserData.getInstance().itsMeM);
+                                StorageService.getInstance().uploadPhoto("guide", user.getUid() , "cover", picture, RegisterActivity.this);
+                                Toast.makeText(RegisterActivity.this, "New Guide has been created!", Toast.LENGTH_LONG).show();
+                                i = new Intent(RegisterActivity.this, ProfileActivity.class);
                             }
                             else {
+                                UserData.getInstance().gmail = user.getEmail();
+                                UserData.getInstance().uId = user.getUid();
                                 DBService.getInstance().AddUser(new User(usernameET.getText().toString(), UserData.getInstance().uId , new ArrayList<String>()));
                                 UserData.getInstance().userType = userType.tourist;
                                 StorageService.getInstance().uploadPhoto("tourist", UserData.getInstance().uId , "cover", picture, RegisterActivity.this);
-                            }
-                            Toast.makeText(RegisterActivity.this, "You have been registered!", Toast.LENGTH_SHORT).show();
 
-                            RegisterActivity.this.finish();
-                            Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                                Toast.makeText(RegisterActivity.this, "New User has been created!", Toast.LENGTH_LONG).show();
+                                i = new Intent(RegisterActivity.this, LoginActivity.class);
+                            }
+                            Toast.makeText(RegisterActivity.this, "You have been registered!", Toast.LENGTH_LONG).show();
+
+//                            RegisterActivity.this.finish();
                             startActivity(i);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(RegisterActivity.this, "Register failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Register failed.", Toast.LENGTH_LONG).show();
                         }
 
                         // ...
@@ -113,6 +124,12 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
+
+        if(UserData.getInstance().userType == userType.manager){
+            profileTypeLabel.setVisibility(View.GONE);
+            rg.setVisibility(View.GONE);
+            touristRB.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,6 +52,7 @@ public class MapsLatLonActivity extends FragmentActivity implements OnMapReadyCa
                 locationIntent.putExtra("lat", lat);
                 locationIntent.putExtra("lon", lon);
                 setResult(Activity.RESULT_OK, locationIntent);
+                Toast.makeText(MapsLatLonActivity.this, "Location has been taken!", Toast.LENGTH_LONG).show();
                 finish();
             }
         });

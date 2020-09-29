@@ -65,27 +65,27 @@
         android:textColor="@color/colorNumber"
         android:textSize="20sp"/>
 
-    <TextView
-        android:id="@+id/tour_rating_grade_label"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tour_guide_label"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:text="Rating:"
-        android:textColor="@color/colorTitle60"
-        android:textSize="20sp"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tour_rating_grade_label"-->
+<!--        android:layout_width="70dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/tour_guide_label"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:text="Rating:"-->
+<!--        android:textColor="@color/colorTitle60"-->
+<!--        android:textSize="20sp"/>-->
 
-    <ImageView
-        android:id="@+id/rating_image"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="@drawable/ic_round_star_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tour_guide_label"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="85dp"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/rating_image"-->
+<!--        android:layout_width="20dp"-->
+<!--        android:layout_height="20dp"-->
+<!--        android:background="@drawable/ic_round_star_24"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/tour_guide_label"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:layout_marginEnd="85dp"/>-->
 
     <TextView
         android:id="@+id/description_tour_label"

@@ -40,8 +40,10 @@ public class NotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         if(myuid == null && intent != null)
-        myuid = intent.getExtras().getString("MY_UID");
-        setNotificationUpdateHandler();
+            if(intent != null){
+                myuid = intent.getExtras().getString("MY_UID");
+                setNotificationUpdateHandler();
+            }
 
         return START_STICKY;
     }
@@ -100,9 +102,9 @@ public class NotificationService extends Service {
         if(UserData.getInstance().userType.toString().equals("tourist"))
             return DBService.getInstance().GetUserReference(UserData.getInstance().uId);
         else if(UserData.getInstance().userType.toString().equals("guide"))
-            return DBService.getInstance().GetManagerReference(UserData.getInstance().uId);
-        else
             return DBService.getInstance().GetGuideReference(UserData.getInstance().uId);
+        else
+            return DBService.getInstance().GetManagerReference(UserData.getInstance().uId);
     }
     @Nullable
     @Override

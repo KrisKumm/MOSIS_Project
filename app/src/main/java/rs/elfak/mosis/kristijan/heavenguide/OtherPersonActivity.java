@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import rs.elfak.mosis.kristijan.heavenguide.data.UserData;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.Notification;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.User;
@@ -80,7 +82,7 @@ public class OtherPersonActivity extends AppCompatActivity {
                 String message = UserData.getInstance().name + " would like to add you as their friend. Shall I connect you two? You can accept below by clicking ACCEPT";
                 Notification newNotification = new Notification(otherUser.getUid(), message, UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId), getNotificationType(1));
                 DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUid()), newNotification);
-                Toast.makeText(OtherPersonActivity.this, "Notification sent!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OtherPersonActivity.this, "Notification sent!", Toast.LENGTH_LONG).show();
                 addFriendButton.setEnabled(false);
             }
         });
@@ -98,12 +100,14 @@ public class OtherPersonActivity extends AppCompatActivity {
 
                 otherUser.getFriends().remove(UserData.getInstance().uId);
                 DBService.getInstance().AddUser(otherUser);
+                Toast.makeText(OtherPersonActivity.this, "Friend has been removed!", Toast.LENGTH_LONG).show();
             }
         });
 
         sendNotificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(OtherPersonActivity.this, "Enter your notification!", Toast.LENGTH_LONG).show();
                 dialogBuilder = new AlertDialog.Builder(OtherPersonActivity.this);
                 final View sendNotificationPopUp = getLayoutInflater().inflate(R.layout.popup_other_person_send_notification, null);
 
@@ -117,10 +121,11 @@ public class OtherPersonActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        Notification newNotification = new Notification(otherUser.getUid(), popUpMessage.getText().toString(), UserData.getInstance().name, DBService.getInstance().GetUserReference(UserData.getInstance().uId),
+                        Notification newNotification = new Notification(otherUser.getUid(), popUpMessage.getText().toString(), UserData.getInstance().name, getUserReference(UserData.getInstance().uId),
                                getNotificationType(0) );
                         DBService.getInstance().AddNotification(DBService.getInstance().GetUserReference(otherUser.getUid()), newNotification);
                         dialog.dismiss();
+                        Toast.makeText(OtherPersonActivity.this, "Notification has been sent!", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -134,11 +139,12 @@ public class OtherPersonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DBService.getInstance().DeleteUser(otherUser.getUid());
+                Toast.makeText(OtherPersonActivity.this, "This User has been deleted!", Toast.LENGTH_LONG).show();
                 finish();
             }
         });
 
-        if(profileP.equals("tourist")){
+        if(UserData.getInstance().userType == userType.tourist){
             deleteAccountButton.setEnabled(false);
             deleteAccountButton.setVisibility(View.INVISIBLE);
             deleteAccountLabel.setEnabled(false);
@@ -150,7 +156,7 @@ public class OtherPersonActivity extends AppCompatActivity {
                 addFriendLabel.setVisibility(View.INVISIBLE);
             }
         }
-        if(profileP.equals("guide")){
+        if(UserData.getInstance().userType == userType.guide){
             deleteAccountButton.setEnabled(false);
             deleteAccountButton.setVisibility(View.INVISIBLE);
             deleteAccountLabel.setEnabled(false);
@@ -162,7 +168,7 @@ public class OtherPersonActivity extends AppCompatActivity {
                 addFriendLabel.setVisibility(View.INVISIBLE);
             }
         }
-        if(profileP.equals("manager")){
+        if(UserData.getInstance().userType == userType.manager){
             addFriendButton.setEnabled(false);
             addFriendButton.setVisibility(View.INVISIBLE);
             removeFriendButton.setEnabled(false);
@@ -193,5 +199,13 @@ public class OtherPersonActivity extends AppCompatActivity {
             type = 3 * 4 + offset;
 
         return type;
+    }
+    private DocumentReference getUserReference(String id){
+        if(UserData.getInstance().userType == userType.tourist)
+            return DBService.getInstance().GetUserReference(id);
+        else if(UserData.getInstance().userType == userType.manager)
+            return DBService.getInstance().GetManagerReference(id);
+        else
+            return DBService.getInstance().GetGuideReference(id);
     }
 }

@@ -50,45 +50,11 @@
             app:layout_constraintTop_toBottomOf="@+id/settings_edit_name"/>
 
         <TextView
-            android:id="@+id/settings_configure_gps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_settings"
-            android:text="Configure GPS"
-            android:textColor="@color/colorTitle60"
-            android:textStyle="italic"
-            android:textSize="20sp"
-            android:layout_marginTop="20dp"/>
-
-        <Switch
-            android:id="@+id/settings_gps_sw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settings_configure_gps"
-            android:layout_marginTop="10dp"
-            android:text="Turn on/off GPS"
-            android:textColor="@color/colorNumber"
-            android:textSize="20sp" />
-
-        <View
-            android:id="@+id/divider_settings1"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/colorNumber"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settings_gps_sw"/>
-
-        <TextView
             android:id="@+id/settings_set_theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_settings1"
+            app:layout_constraintTop_toBottomOf="@+id/divider_settings"
             android:text="Set theme mode"
             android:textColor="@color/colorTitle60"
             android:textStyle="italic"

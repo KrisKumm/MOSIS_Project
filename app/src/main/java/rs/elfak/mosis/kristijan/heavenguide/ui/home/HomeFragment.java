@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 
 import rs.elfak.mosis.kristijan.heavenguide.ManagerNewAttractionActivity;
 import rs.elfak.mosis.kristijan.heavenguide.ManagerNewTourActivity;
+import rs.elfak.mosis.kristijan.heavenguide.OtherPersonActivity;
+import rs.elfak.mosis.kristijan.heavenguide.RegisterActivity;
 import rs.elfak.mosis.kristijan.heavenguide.TourActivity;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourAdapter;
 import rs.elfak.mosis.kristijan.heavenguide.adapters.ProfileTourGuideAdapter;
@@ -33,6 +36,7 @@ import rs.elfak.mosis.kristijan.heavenguide.data.model.Tour;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.TourGuide;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourGuideItem;
 import rs.elfak.mosis.kristijan.heavenguide.data.model.items.ProfileTourItem;
+import rs.elfak.mosis.kristijan.heavenguide.data.model.userType;
 import rs.elfak.mosis.kristijan.heavenguide.service.DBService;
 import rs.elfak.mosis.kristijan.heavenguide.service.FirebaseCallback;
 import rs.elfak.mosis.kristijan.heavenguide.service.StorageService;
@@ -50,7 +54,7 @@ public class HomeFragment extends Fragment {
     private ImageView avatar;
     private Bitmap picture;
     private TextView usernameLabel, roleLabel, upcomingTours;
-    private Button managerNewTourButton, managerNewAttractionButton;
+    private Button managerNewTourButton, managerNewAttractionButton, managerNewGuideButton;
 
     private ListView toursListView;
     //private ArrayList<User> tourUserData;
@@ -84,6 +88,7 @@ public class HomeFragment extends Fragment {
         upcomingTours = root.findViewById(R.id.upcoming_tours_text);
         managerNewTourButton = root.findViewById(R.id.profile_home_manager_tour_button);
         managerNewAttractionButton = root.findViewById(R.id.profile_home_manager_attraction_button);
+        managerNewGuideButton = root.findViewById(R.id.profile_home_manager_register_guide_button);
 
         StorageService.getInstance().downloadPhoto(UserData.getInstance().userType.toString(), UserData.getInstance().uId, "cover", new FirebaseCallback() {
             @Override
@@ -112,6 +117,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 Intent i = new Intent(root.getContext(), ManagerNewTourActivity.class);
                 startActivity(i);
+                Toast.makeText(root.getContext(), "Create new Tour here!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -120,28 +126,40 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 Intent i = new Intent(root.getContext(), ManagerNewAttractionActivity.class);
                 startActivity(i);
+                Toast.makeText(root.getContext(), "Create new Attraction here!", Toast.LENGTH_LONG).show();
             }
         });
 
-        if(profileP.equals("tourist")){
+        managerNewGuideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(root.getContext(), RegisterActivity.class);
+                startActivity(i);
+                Toast.makeText(root.getContext(), "Create new Tour Guide here!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        if(UserData.getInstance().userType == userType.tourist){
             toursListView.setEnabled(true);
             toursListView.setVisibility(View.VISIBLE);
             toursGuideListView.setEnabled(false);
             toursGuideListView.setVisibility(View.INVISIBLE);
             managerNewTourButton.setVisibility(View.GONE);
             managerNewAttractionButton.setVisibility(View.GONE);
+            managerNewGuideButton.setVisibility(View.GONE);
             fillToursList(root);
         }
-        if(profileP.equals("guide")){
+        if(UserData.getInstance().userType == userType.guide){
             toursGuideListView.setEnabled(true);
             toursGuideListView.setVisibility(View.VISIBLE);
             toursListView.setEnabled(false);
             toursListView.setVisibility(View.INVISIBLE);
             managerNewTourButton.setVisibility(View.GONE);
             managerNewAttractionButton.setVisibility(View.GONE);
+            managerNewGuideButton.setVisibility(View.GONE);
             fillToursGuideList(root);
         }
-        if(profileP.equals("manager")){
+        if(UserData.getInstance().userType == userType.manager){
             toursListView.setEnabled(false);
             toursListView.setVisibility(View.INVISIBLE);
             toursGuideListView.setEnabled(false);

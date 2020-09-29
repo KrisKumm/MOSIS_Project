@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Manager{
 
-    private String uId;
+    private String uid;
     private String name;
     private String portrait;
     private ArrayList<String> tourGuides;
@@ -21,7 +21,7 @@ public class Manager{
     Manager(){}
 
     Manager(String uId, String name, String portrait, ArrayList<String> tourGuides , ArrayList<String> attractions, ArrayList<String> tours){
-        this.uId = uId;
+        this.uid = uId;
         this.name = name;
         this.portrait = portrait;
         this.tourGuides = tourGuides;
@@ -30,7 +30,7 @@ public class Manager{
     }
 
     public String getUid(){
-        return this.uId;
+        return this.uid;
     }
     public String getName(){
         return this.name;

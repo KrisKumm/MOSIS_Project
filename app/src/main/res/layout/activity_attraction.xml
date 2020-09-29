@@ -1,122 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:layout_height="wrap_content"
     tools:context=".AttractionActivity">
 
-    <ImageView
-        android:id="@+id/imageViewAttraction"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground">
 
-    <TextView
-        android:id="@+id/attraction_name_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Attraction Name!"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorNumber"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintTop_toBottomOf="@id/imageViewAttraction"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <ImageView
+            android:id="@+id/imageViewAttraction"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/attraction_region_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Region: Name!"
-        android:textSize="30sp"
-        android:textStyle="italic"
-        android:textColor="@color/colorNumber"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintTop_toBottomOf="@id/attraction_name_label"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/attraction_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Attraction Name!"
+            android:textColor="@color/colorNumber"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageViewAttraction" />
 
-    <TextView
-        android:id="@+id/rating_bar_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/attraction_region_label"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="10dp"
-        android:text="Rating:"
-        android:textSize="20sp"
-        android:textColor="@color/colorTitle60" />
+        <TextView
+            android:id="@+id/attraction_region_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Region: Name!"
+            android:textColor="@color/colorNumber"
+            android:textSize="30sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/attraction_name_label" />
 
-    <RatingBar
-        android:id="@+id/rating_bar_attraction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/attraction_region_label"
-        app:layout_constraintLeft_toRightOf="@id/rating_bar_label"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:numStars="5"
-        android:stepSize="1"/>
+        <TextView
+            android:id="@+id/rating_bar_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:text="Rating:"
+            android:textColor="@color/colorTitle60"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/attraction_region_label" />
 
-    <TextView
-        android:id="@+id/rating_bar_grade_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/attraction_region_label"
-        app:layout_constraintLeft_toRightOf="@id/rating_bar_attraction"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:text="Rating:"
-        android:textSize="30sp"
-        android:textColor="@color/colorTitle60" />
+        <RatingBar
+            android:id="@+id/rating_bar_attraction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:numStars="5"
+            android:stepSize="1"
+            app:layout_constraintLeft_toRightOf="@id/rating_bar_label"
+            app:layout_constraintTop_toBottomOf="@id/attraction_region_label" />
 
-    <View
-        android:id="@+id/divider_attraction_1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rating_bar_attraction"/>
+        <TextView
+            android:id="@+id/rating_bar_grade_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Rating:"
+            android:textColor="@color/colorTitle60"
+            android:textSize="30sp"
+            app:layout_constraintLeft_toRightOf="@id/rating_bar_attraction"
+            app:layout_constraintTop_toBottomOf="@id/attraction_region_label" />
 
-    <TextView
-        android:id="@+id/description_attraction_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:text="Description of the attraction"
-        android:textSize="25sp"
-        android:textColor="@color/colorTitle60"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_attraction_1"/>
+        <View
+            android:id="@+id/divider_attraction_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rating_bar_attraction" />
 
-    <View
-        android:id="@+id/divider_attraction_2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description_attraction_label"/>
+        <TextView
+            android:id="@+id/description_attraction_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Description of the attraction"
+            android:textColor="@color/colorTitle60"
+            android:textSize="25sp"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_attraction_1" />
 
-    <ListView
-        android:id="@+id/attraction_reviews_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/divider_attraction_2"
-        android:background="@color/colorCardBackground"
-        android:textColor="@color/colorNumber"/>
+        <View
+            android:id="@+id/divider_attraction_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:outlineSpotShadowColor="@color/design_default_color_on_secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_attraction_label" />
 
+        <ListView
+            android:id="@+id/attraction_reviews_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorCardBackground"
+            android:textColor="@color/colorNumber"
+            app:layout_constraintTop_toBottomOf="@+id/divider_attraction_2" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/manager_delete_attraction_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/attraction_reviews_list"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

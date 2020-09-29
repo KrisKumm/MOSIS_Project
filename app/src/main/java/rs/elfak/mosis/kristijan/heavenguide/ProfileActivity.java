@@ -513,7 +513,7 @@ public class ProfileActivity extends AppCompatActivity {
 private DocumentReference getUserReference(){
         if(UserData.getInstance().userType.toString().equals("tourist"))
             return DBService.getInstance().GetUserReference(UserData.getInstance().uId);
-        else if(UserData.getInstance().userType.toString().equals("guide"))
+        else if(UserData.getInstance().userType.toString().equals("manager"))
             return DBService.getInstance().GetManagerReference(UserData.getInstance().uId);
         else
             return DBService.getInstance().GetGuideReference(UserData.getInstance().uId);
